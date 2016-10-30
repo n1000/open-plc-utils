@@ -5,19 +5,10 @@ add_executable(chkpib chkpib.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
 	../key/keys.c
-	../nvm/fdmanifest.c
-	../nvm/manifest.c
 	../pib/pibpeek1.c
 	../pib/pibpeek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexstring.c
-	../tools/putoptv.c
-	../tools/strfbits.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(chkpib2 chkpib2.c
 	../key/HPAVKeyNID.c
@@ -26,30 +17,14 @@ add_executable(chkpib2 chkpib2.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
 	../key/keys.c
-	../nvm/manifest.c
 	../pib/pibpeek1.c
 	../pib/pibpeek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexstring.c
-	../tools/putoptv.c
-	../tools/strfbits.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(getpib getpib.c
-	../nvm/nvmseek2.c
-	../tools/basespec.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexout.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(modpib modpib.c
 	../key/HPAVKeyNID.c
@@ -61,109 +36,40 @@ add_executable(modpib modpib.c
 	../key/keys.c
 	../pib/pibpeek1.c
 	../pib/pibpeek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexencode.c
-	../tools/hexstring.c
-	../tools/memincr.c
-	../tools/putoptv.c
-	../tools/synonym.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pib2xml pib2xml.c
 	../nodes/xmlschema.c
-	../nvm/nvmseek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/output.c
-	../tools/putoptv.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pibcomp pibcomp.c
-	../nvm/nvmseek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexoffset.c
-	../tools/hexview.c
-	../tools/putoptv.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pibdump pibdump.c
-	../nvm/nvmseek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexoffset.c
-	../tools/hexview.c
-	../tools/putoptv.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pibruin pibruin.c
-	../nvm/nvmseek2.c
-	../plc/ParseRule.c
-	../plc/rules.c
-	../tools/assist.c
-	../tools/basespec.c
-	../tools/bytespec.c
-	../tools/checksum32.c
-	../tools/codelist.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getargv.c
-	../tools/getoptv.c
-	../tools/ipv4spec.c
-	../tools/ipv6spec.c
-	../tools/lookup.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/version.c
+	$<TARGET_OBJECTS:plc>
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pibrump pibrump.c
 	../pib/pibfile1.c
-	../plc/rules.c
-	../plc/rules.c
-	../plc/rules.c
-	../plc/rules.c
-	../plc/rules.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexstring.c
-	../tools/memout.c
-	../tools/putoptv.c
-	../tools/reword.c
-	../tools/version.c
+	$<TARGET_OBJECTS:plc>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(psgraph psgraph.c
 	../pib/pibscalers.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(psin psin.c
 	../pib/pibfile1.c
 	../pib/piblock.c
 	../pib/pibscalers.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pskey pskey.c
 	../key/SHA256Block.c
@@ -171,49 +77,21 @@ add_executable(pskey pskey.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
 	../pib/pibfile1.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexout.c
-	../tools/putoptv.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(psnotch psnotch.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(psout psout.c
 	../pib/pibfile.c
 	../pib/pibfile1.c
 	../pib/pibfile2.c
 	../pib/pibscalers.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(setpib setpib.c
-	../nvm/nvmseek2.c
-	../tools/basespec.c
-	../tools/bytespec.c
-	../tools/checksum32.c
-	../tools/dataspec.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/hexpeek.c
-	../tools/memencode.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(xml2pib xml2pib.c
 	../nodes/xmledit.c
@@ -222,12 +100,5 @@ add_executable(xml2pib xml2pib.c
 	../nodes/xmlopen.c
 	../nodes/xmlscan.c
 	../nodes/xmltree.c
-	../tools/checksum32.c
-	../tools/emalloc.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/output.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)

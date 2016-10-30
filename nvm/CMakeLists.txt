@@ -1,43 +1,27 @@
 add_executable(chknvm chknvm.c
+	../ram/sdrampeek.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
+	)
+add_executable(chknvm2 chknvm2.c
+	$<TARGET_OBJECTS:nvm>
+	$<TARGET_OBJECTS:tools>
+	)
+add_executable(nvmmerge nvmmerge.c
+	$<TARGET_OBJECTS:tools>
+	)
+add_executable(nvmsplit nvmsplit.c
+	$<TARGET_OBJECTS:tools>
+	)
+
+add_library(nvm OBJECT
 	../nvm/fdmanifest.c
 	../nvm/manifest.c
 	../nvm/nvm.c
-	../nvm/nvm.c
+	../nvm/nvmfile.c
+	../nvm/nvmfile1.c
+	../nvm/nvmfile2.c
 	../nvm/nvmpeek1.c
 	../nvm/nvmpeek2.c
-	../ram/sdrampeek.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/fdchecksum32.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/strfbits.c
-	../tools/version.c
-	)
-add_executable(chknvm2 chknvm2.c
-	../nvm/manifest.c
-	../nvm/nvm.c
-	../nvm/nvm.c
-	../nvm/nvmpeek1.c
-	../nvm/nvmpeek2.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/strfbits.c
-	../tools/version.c
-	)
-add_executable(nvmmerge nvmmerge.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/version.c
-	)
-add_executable(nvmsplit nvmsplit.c
-	../tools/checksum32.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/version.c
+	../nvm/nvmseek2.c
 	)

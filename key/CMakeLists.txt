@@ -8,13 +8,7 @@ add_executable(hpavkey hpavkey.c
 	../key/SHA256Fetch.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexout.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(hpavkeys hpavkeys.c
 	../key/HPAVKeyDAK.c
@@ -26,35 +20,19 @@ add_executable(hpavkeys hpavkeys.c
 	../key/SHA256Fetch.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexout.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(mac2pw mac2pw.c
 	../key/MACPasswords.c
 	../key/RNDPasswords.c
 	../key/putpwd.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(mac2pwd mac2pwd.c
 	../key/MACPasswords.c
 	../key/RNDPasswords.c
 	../key/putpwd.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(rkey rkey.c
 	../key/HPAVKeyDAK.c
@@ -66,12 +44,5 @@ add_executable(rkey rkey.c
 	../key/SHA256Fetch.c
 	../key/SHA256Reset.c
 	../key/SHA256Write.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexout.c
-	../tools/putoptv.c
-	../tools/strincr.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)

@@ -1,104 +1,37 @@
 add_executable(edru edru.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/readpacket.c
-	../tools/basespec.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(edsu edsu.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/sendpacket.c
-	../tools/basespec.c
-	../tools/efreopen.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/hexencode.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(efbu efbu.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/sendpacket.c
-	../tools/basespec.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/hexencode.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(efeu efeu.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/readpacket.c
-	../ether/sendpacket.c
-	../tools/basespec.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/memswap.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(efru efru.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/readpacket.c
-	../tools/basespec.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(efsu efsu.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
+	)
+add_executable(nics nics.c
+	$<TARGET_OBJECTS:ether>
+	$<TARGET_OBJECTS:tools>
+	)
+
+add_library(ether OBJECT
 	../ether/channel.c
 	../ether/closechannel.c
+	../ether/hostnics.c
 	../ether/openchannel.c
 	../ether/readpacket.c
 	../ether/sendpacket.c
-	../tools/basespec.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdump.c
-	../tools/hexencode.c
-	../tools/hexload.c
-	../tools/putoptv.c
-	../tools/synonym.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
-	)
-add_executable(nics nics.c
-	../ether/hostnics.c
-	../tools/decdecode.c
-	../tools/decstring.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexstring.c
-	../tools/putoptv.c
-	../tools/version.c
 	)

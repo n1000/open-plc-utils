@@ -1,15 +1,11 @@
 add_executable(evse evse.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/readpacket.c
-	../ether/sendpacket.c
+	$<TARGET_OBJECTS:ether>
 	../mme/EthernetHeader.c
 	../mme/HomePlugHeader1.c
 	../mme/UnwantedMessage.c
 	../mme/readmessage.c
 	../mme/sendmessage.c
-	../plc/Devices.c
+	$<TARGET_OBJECTS:plc>
 	../slac/evse_cm_atten_char.c
 	../slac/evse_cm_mnbc_sound.c
 	../slac/evse_cm_set_key.c
@@ -18,30 +14,16 @@ add_executable(evse evse.c
 	../slac/evse_cm_start_atten_char.c
 	../slac/slac_debug.c
 	../slac/slac_session.c
-	../tools/config.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexdump.c
-	../tools/hexencode.c
-	../tools/hexstring.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
 add_executable(pev pev.c
-	../ether/channel.c
-	../ether/closechannel.c
-	../ether/openchannel.c
-	../ether/readpacket.c
-	../ether/sendpacket.c
+	$<TARGET_OBJECTS:ether>
 	../mme/EthernetHeader.c
 	../mme/HomePlugHeader1.c
 	../mme/UnwantedMessage.c
 	../mme/readmessage.c
 	../mme/sendmessage.c
-	../plc/Devices.c
+	$<TARGET_OBJECTS:plc>
 	../slac/pev_cm_atten_char.c
 	../slac/pev_cm_mnbc_sound.c
 	../slac/pev_cm_set_key.c
@@ -51,16 +33,5 @@ add_executable(pev pev.c
 	../slac/slac_connect.c
 	../slac/slac_debug.c
 	../slac/slac_session.c
-	../tools/config.c
-	../tools/error.c
-	../tools/getoptv.c
-	../tools/hexdecode.c
-	../tools/hexdump.c
-	../tools/hexencode.c
-	../tools/hexstring.c
-	../tools/memincr.c
-	../tools/putoptv.c
-	../tools/todigit.c
-	../tools/uintspec.c
-	../tools/version.c
+	$<TARGET_OBJECTS:tools>
 	)
