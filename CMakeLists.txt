@@ -1,0 +1,18 @@
+cmake_minimum_required (VERSION 2.6)
+project (open-plc-utils)
+
+set(CMAKE_C_FLAGS "-DMAKEFILE -DAR7x00")
+
+add_subdirectory(ether)
+add_subdirectory(key)
+add_subdirectory(mdio)
+add_subdirectory(mme)
+add_subdirectory(nodes)
+add_subdirectory(nvm)
+add_subdirectory(pib)
+add_subdirectory(plc)
+add_subdirectory(ram)
+add_subdirectory(scripts)
+add_subdirectory(serial)
+add_subdirectory(slac)
+add_subdirectory(tools)
