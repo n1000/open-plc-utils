@@ -20,5 +20,4 @@ add_library(slac_lib STATIC
 	../slac/slac_connect.c
 	../slac/slac_debug.c
 	../slac/slac_session.c
-	../slac/slac_structs.c
 	)

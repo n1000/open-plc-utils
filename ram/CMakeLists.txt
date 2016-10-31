@@ -6,9 +6,6 @@ target_link_libraries(sdram tools_lib)
 
 add_library(ram_lib STATIC
 	../ram/nvram.c
-	../ram/nvrampeek.c
 	../ram/sdramfile.c
-	../ram/sdramfileA.c
 	../ram/sdrampeek.c
-	../ram/sdramtext.c
 	)
