@@ -1,4 +1,4 @@
-add_library(nodes_lib STATIC
+add_library(lib_nodes STATIC
 	../nodes/xmledit.c
 	../nodes/xmlfree.c
 	../nodes/xmlnode.c

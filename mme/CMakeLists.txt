@@ -1,10 +1,10 @@
 add_executable(hpav hpav.c)
-target_link_libraries(hpav mme_lib ether_lib tools_lib)
+target_link_libraries(hpav lib_mme lib_ether lib_tools)
 
 add_executable(mme mme.c)
-target_link_libraries(mme mme_lib tools_lib)
+target_link_libraries(mme lib_mme lib_tools)
 
-add_library(mme_lib STATIC
+add_library(lib_mme STATIC
 	../mme/ARPCPrint.c
 	../mme/Devices.c
 	../mme/EthernetHeader.c

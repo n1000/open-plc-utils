@@ -1,16 +1,16 @@
 add_executable(chknvm chknvm.c)
-target_link_libraries(chknvm nvm_lib ram_lib tools_lib)
+target_link_libraries(chknvm lib_nvm lib_ram lib_tools)
 
 add_executable(chknvm2 chknvm2.c)
-target_link_libraries(chknvm2 nvm_lib tools_lib)
+target_link_libraries(chknvm2 lib_nvm lib_tools)
 
 add_executable(nvmmerge nvmmerge.c)
-target_link_libraries(nvmmerge tools_lib)
+target_link_libraries(nvmmerge lib_tools)
 
 add_executable(nvmsplit nvmsplit.c)
-target_link_libraries(nvmsplit tools_lib)
+target_link_libraries(nvmsplit lib_tools)
 
-add_library(nvm_lib STATIC
+add_library(lib_nvm STATIC
 	../nvm/fdmanifest.c
 	../nvm/manifest.c
 	../nvm/nvm.c

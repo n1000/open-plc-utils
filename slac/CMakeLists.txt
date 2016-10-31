@@ -1,10 +1,10 @@
 add_executable(evse evse.c)
-target_link_libraries(evse plc_lib slac_lib mme_lib ether_lib tools_lib)
+target_link_libraries(evse lib_plc lib_slac lib_mme lib_ether lib_tools)
 
 add_executable(pev pev.c)
-target_link_libraries(pev plc_lib slac_lib mme_lib ether_lib tools_lib)
+target_link_libraries(pev lib_plc lib_slac lib_mme lib_ether lib_tools)
 
-add_library(slac_lib STATIC
+add_library(lib_slac STATIC
 	../slac/evse_cm_atten_char.c
 	../slac/evse_cm_mnbc_sound.c
 	../slac/evse_cm_set_key.c
