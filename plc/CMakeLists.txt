@@ -1,586 +1,178 @@
-add_executable(CMEncrypt CMEncrypt.c
-	$<TARGET_OBJECTS:ether>
-	../key/SHA256Block.c
-	../key/SHA256Fetch.c
-	../key/SHA256Reset.c
-	../key/SHA256Write.c
-	../mme/EthernetHeader.c
-	../mme/HomePlugHeader.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(ampID ampID.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(ampboot ampboot.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amphost amphost.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amplist amplist.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amprate amprate.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amprule amprule.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(ampstat ampstat.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amptest amptest.c
-	$<TARGET_OBJECTS:ether>
-	../mme/ARPCPrint.c
-	../mme/EthernetHeader.c
-	../mme/FirmwareMessage.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amptone amptone.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(amptool amptool.c
-	$<TARGET_OBJECTS:ether>
-	../key/keys.c
-	../key/keys.c
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	../ram/nvram.c
-	../ram/sdrampeek.c
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(ampwait ampwait.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(coqos_add coqos_add.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(coqos_info coqos_info.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(coqos_man coqos_man.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(coqos_mod coqos_mod.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(coqos_rel coqos_rel.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int64host int64host.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6k int6k.c
-	$<TARGET_OBJECTS:ether>
-	../key/keys.c
-	../key/keys.c
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile1.c
-	../pib/pibpeek1.c
-	$<TARGET_OBJECTS:plc>
-	../ram/nvram.c
-	../ram/sdramfile.c
-	../ram/sdrampeek.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kboot int6kboot.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6keth int6keth.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kf int6kf.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	../ram/sdramfile.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6khost int6khost.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile1.c
-	$<TARGET_OBJECTS:plc>
-	../ram/sdramfile.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kid int6kid.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6klist int6klist.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6klog int6klog.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kmdio int6kmdio.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kmdio2 int6kmdio2.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kmod int6kmod.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6krate int6krate.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6krule int6krule.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kstat int6kstat.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6ktest int6ktest.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6ktone int6ktone.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(int6kwait int6kwait.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(mdustats mdustats.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcID plcID.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcboot plcboot.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile2.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcdevs plcdevs.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcfwd plcfwd.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcget plcget.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plchost plchost.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile2.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plchostd plchostd.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile.c
-	../pib/pibfile1.c
-	../pib/pibfile2.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plchostd2 plchostd2.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile2.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plclist plclist.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plclog plclog.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcmdio16 plcmdio16.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcmdio32 plcmdio32.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcotst plcotst.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcrate plcrate.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcrule plcrule.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcset plcset.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcstat plcstat.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plctest plctest.c
-	$<TARGET_OBJECTS:ether>
-	../mme/ARPCPrint.c
-	../mme/EthernetHeader.c
-	../mme/FirmwareMessage.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plctone plctone.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plctool plctool.c
-	$<TARGET_OBJECTS:ether>
-	../key/keys.c
-	../key/keys.c
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:nvm>
-	../pib/pibfile2.c
-	../pib/pibpeek2.c
-	$<TARGET_OBJECTS:plc>
-	../ram/nvram.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(plcwait plcwait.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/QualcommHeader1.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(sada sada.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/MMECode.c
-	../mme/QualcommHeader.c
-	../mme/UnwantedMessage.c
-	$<TARGET_OBJECTS:plc>
-	$<TARGET_OBJECTS:tools>
-	)
+add_executable(CMEncrypt CMEncrypt.c)
+target_link_libraries(CMEncrypt plc_lib key_lib ether_lib mme_lib tools_lib)
 
-add_library(plc OBJECT
+add_executable(ampID ampID.c)
+target_link_libraries(ampID plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(ampboot ampboot.c)
+target_link_libraries(ampboot plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(amphost amphost.c)
+target_link_libraries(amphost plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(amplist amplist.c)
+target_link_libraries(amplist plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(amprate amprate.c)
+target_link_libraries(amprate plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(amprule amprule.c)
+target_link_libraries(amprule plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(ampstat ampstat.c)
+target_link_libraries(ampstat plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(amptest amptest.c)
+target_link_libraries(amptest plc_lib nvm_lib ether_lib mme_lib tools_lib)
+
+add_executable(amptone amptone.c)
+target_link_libraries(amptone plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(amptool amptool.c)
+target_link_libraries(amptool plc_lib key_lib pib_lib ram_lib nvm_lib ether_lib mme_lib tools_lib)
+
+add_executable(ampwait ampwait.c)
+target_link_libraries(ampwait plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(coqos_add coqos_add.c)
+target_link_libraries(coqos_add plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(coqos_info coqos_info.c)
+target_link_libraries(coqos_info plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(coqos_man coqos_man.c)
+target_link_libraries(coqos_man plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(coqos_mod coqos_mod.c)
+target_link_libraries(coqos_mod plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(coqos_rel coqos_rel.c)
+target_link_libraries(coqos_rel plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int64host int64host.c)
+target_link_libraries(int64host plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6k int6k.c)
+target_link_libraries(int6k plc_lib nvm_lib pib_lib key_lib ram_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kboot int6kboot.c)
+target_link_libraries(int6kboot plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6keth int6keth.c)
+target_link_libraries(int6keth plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kf int6kf.c)
+target_link_libraries(int6kf plc_lib nvm_lib pib_lib ram_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6khost int6khost.c)
+target_link_libraries(int6khost plc_lib nvm_lib pib_lib ram_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kid int6kid.c)
+target_link_libraries(int6kid plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6klist int6klist.c)
+target_link_libraries(int6klist plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6klog int6klog.c)
+target_link_libraries(int6klog plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kmdio int6kmdio.c)
+target_link_libraries(int6kmdio plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kmdio2 int6kmdio2.c)
+target_link_libraries(int6kmdio2 plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kmod int6kmod.c)
+target_link_libraries(int6kmod plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6krate int6krate.c)
+target_link_libraries(int6krate plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6krule int6krule.c)
+target_link_libraries(int6krule plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kstat int6kstat.c)
+target_link_libraries(int6kstat plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6ktest int6ktest.c)
+target_link_libraries(int6ktest plc_lib nvm_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6ktone int6ktone.c)
+target_link_libraries(int6ktone plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(int6kwait int6kwait.c)
+target_link_libraries(int6kwait plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(mdustats mdustats.c)
+target_link_libraries(mdustats plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcID plcID.c)
+target_link_libraries(plcID plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcboot plcboot.c)
+target_link_libraries(plcboot plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcdevs plcdevs.c)
+target_link_libraries(plcdevs plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcfwd plcfwd.c)
+target_link_libraries(plcfwd plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcget plcget.c)
+target_link_libraries(plcget plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plchost plchost.c)
+target_link_libraries(plchost plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(plchostd plchostd.c)
+target_link_libraries(plchostd plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(plchostd2 plchostd2.c)
+target_link_libraries(plchostd2 plc_lib nvm_lib pib_lib ether_lib mme_lib tools_lib)
+
+add_executable(plclist plclist.c)
+target_link_libraries(plclist plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plclog plclog.c)
+target_link_libraries(plclog plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcmdio16 plcmdio16.c)
+target_link_libraries(plcmdio16 plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcmdio32 plcmdio32.c)
+target_link_libraries(plcmdio32 plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcotst plcotst.c)
+target_link_libraries(plcotst plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcrate plcrate.c)
+target_link_libraries(plcrate plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcrule plcrule.c)
+target_link_libraries(plcrule plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcset plcset.c)
+target_link_libraries(plcset plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcstat plcstat.c)
+target_link_libraries(plcstat plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plctest plctest.c)
+target_link_libraries(plctest plc_lib nvm_lib ether_lib mme_lib tools_lib)
+
+add_executable(plctone plctone.c)
+target_link_libraries(plctone plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(plctool plctool.c)
+target_link_libraries(plctool plc_lib nvm_lib pib_lib key_lib ram_lib ether_lib mme_lib tools_lib)
+
+add_executable(plcwait plcwait.c)
+target_link_libraries(plcwait plc_lib ether_lib mme_lib tools_lib)
+
+add_executable(sada sada.c)
+target_link_libraries(sada plc_lib ether_lib mme_lib tools_lib)
+
+add_library(plc_lib STATIC
 	../plc/Antiphon.c
 	../plc/Attributes1.c
 	../plc/Attributes2.c
@@ -591,7 +183,6 @@ add_library(plc OBJECT
 	../plc/BootParameters1.c
 	../plc/BootParameters2.c
 	../plc/Confirm.c
-	../plc/Devices.c
 	../plc/Display.c
 	../plc/EmulateHost.c
 	../plc/EmulateHost64.c

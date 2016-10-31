@@ -66,7 +66,6 @@
  *   custom include files;
  *--------------------------------------------------------------------*/
 
-#include "../plc/plc.h"
 #include "../mme/mme.h"
 #include "../tools/types.h"
 

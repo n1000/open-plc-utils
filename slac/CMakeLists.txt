@@ -1,29 +1,16 @@
-add_executable(evse evse.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/HomePlugHeader1.c
-	../mme/UnwantedMessage.c
-	../mme/readmessage.c
-	../mme/sendmessage.c
-	$<TARGET_OBJECTS:plc>
+add_executable(evse evse.c)
+target_link_libraries(evse plc_lib slac_lib mme_lib ether_lib tools_lib)
+
+add_executable(pev pev.c)
+target_link_libraries(pev plc_lib slac_lib mme_lib ether_lib tools_lib)
+
+add_library(slac_lib STATIC
 	../slac/evse_cm_atten_char.c
 	../slac/evse_cm_mnbc_sound.c
 	../slac/evse_cm_set_key.c
 	../slac/evse_cm_slac_match.c
 	../slac/evse_cm_slac_param.c
 	../slac/evse_cm_start_atten_char.c
-	../slac/slac_debug.c
-	../slac/slac_session.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(pev pev.c
-	$<TARGET_OBJECTS:ether>
-	../mme/EthernetHeader.c
-	../mme/HomePlugHeader1.c
-	../mme/UnwantedMessage.c
-	../mme/readmessage.c
-	../mme/sendmessage.c
-	$<TARGET_OBJECTS:plc>
 	../slac/pev_cm_atten_char.c
 	../slac/pev_cm_mnbc_sound.c
 	../slac/pev_cm_set_key.c
@@ -33,5 +20,5 @@ add_executable(pev pev.c
 	../slac/slac_connect.c
 	../slac/slac_debug.c
 	../slac/slac_session.c
-	$<TARGET_OBJECTS:tools>
+	../slac/slac_structs.c
 	)

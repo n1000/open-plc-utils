@@ -224,14 +224,6 @@
 #define PLC_LONGTIME (unsigned)(~0)
 
 /*====================================================================*
- *   common mac address names;
- *--------------------------------------------------------------------*/
-
-#define PLCDEVICES 3
-
-extern struct _term_ const devices [PLCDEVICES];
-
-/*====================================================================*
  *
  *   the plc structure holds everything needed to perform powerline
  *   device management operations including a channel structure for

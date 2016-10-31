@@ -1,20 +1,16 @@
-add_executable(chknvm chknvm.c
-	../ram/sdrampeek.c
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(chknvm2 chknvm2.c
-	$<TARGET_OBJECTS:nvm>
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(nvmmerge nvmmerge.c
-	$<TARGET_OBJECTS:tools>
-	)
-add_executable(nvmsplit nvmsplit.c
-	$<TARGET_OBJECTS:tools>
-	)
+add_executable(chknvm chknvm.c)
+target_link_libraries(chknvm nvm_lib ram_lib tools_lib)
 
-add_library(nvm OBJECT
+add_executable(chknvm2 chknvm2.c)
+target_link_libraries(chknvm2 nvm_lib tools_lib)
+
+add_executable(nvmmerge nvmmerge.c)
+target_link_libraries(nvmmerge tools_lib)
+
+add_executable(nvmsplit nvmsplit.c)
+target_link_libraries(nvmsplit tools_lib)
+
+add_library(nvm_lib STATIC
 	../nvm/fdmanifest.c
 	../nvm/manifest.c
 	../nvm/nvm.c

@@ -1,4 +1,4 @@
-add_library(tools OBJECT
+add_library(tools_lib STATIC
     assist.c
     b64dump.c
     basespec.c
