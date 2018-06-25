@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Qualcomm Atheros Open Powerline Toolkit &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="#" />
+    <link rel="next" title="Overview" href="overview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="qualcomm-atheros-open-powerline-toolkit">
+<h1>Qualcomm Atheros Open Powerline Toolkit<a class="headerlink" href="#qualcomm-atheros-open-powerline-toolkit" title="Permalink to this headline">¶</a></h1>
+<p>This document is the manual for the Qualcomm Atheros Open Powerline Toolkit. New users should read the first chapter before starting using the toolkit because it will answer many questions about toolkit installation, structure, content and application. New users may want to add this page and toolkit.html to their browser favorites for later reference.</p>
+<p>HomePlug AV is a registered trademark of the HomePlug Powerline Alliance. Linux is a trademark of Linus Tovalds. Windows is a registered trademark of Microsoft Corporation. <em>INT6000</em>, <em>INT6300</em>, <em>INT6400</em>, <em>AR6410</em>, <em>QCA7000</em>, <em>AR7400</em> and <em>AR7420</em> are powerline products from Qualcomm Atheros.</p>
+<p>Version: open-plc-utils-0.0.4</p>
+<div class="section" id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Charles Maier &lt;<a class="reference external" href="mailto:razzlefratz&#37;&#52;&#48;gmail&#46;com">razzlefratz<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</li>
+<li>Andrew Barnes &lt;<a class="reference external" href="mailto:abarnes&#37;&#52;&#48;qca&#46;qualcomm&#46;com">abarnes<span>&#64;</span>qca<span>&#46;</span>qualcomm<span>&#46;</span>com</a>&gt;</li>
+<li>Marc Bertola &lt;<a class="reference external" href="mailto:mbertola&#37;&#52;&#48;qti&#46;qualcomm&#46;com">mbertola<span>&#64;</span>qti<span>&#46;</span>qualcomm<span>&#46;</span>com</a>&gt;</li>
+<li>Florian Fainelli &lt;<a class="reference external" href="mailto:f&#46;fainelli&#37;&#52;&#48;gmail&#46;com">f<span>&#46;</span>fainelli<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</li>
+<li>Nate Houghton &lt;<a class="reference external" href="mailto:nathan&#37;&#52;&#48;brainwerk&#46;org">nathan<span>&#64;</span>brainwerk<span>&#46;</span>org</a>&gt;</li>
+<li>Mathieu Poullet &lt;<a class="reference external" href="mailto:m&#46;poullet&#37;&#52;&#48;avm&#46;de">m<span>&#46;</span>poullet<span>&#64;</span>avm<span>&#46;</span>de</a>&gt;</li>
+<li>Stefan Wahren &lt;<a class="reference external" href="mailto:stefan&#46;wahren&#37;&#52;&#48;i2se&#46;com">stefan<span>&#46;</span>wahren<span>&#64;</span>i2se<span>&#46;</span>com</a>&gt;</li>
+<li>Bill Wike &lt;<a class="reference external" href="mailto:bwike&#37;&#52;&#48;qca&#46;qualcomm&#46;com">bwike<span>&#64;</span>qca<span>&#46;</span>qualcomm<span>&#46;</span>com</a>&gt;</li>
+<li>Alejandro Vasquez &lt;<a class="reference external" href="mailto:avasquez&#37;&#52;&#48;qca&#46;qualcomm&#46;com">avasquez<span>&#64;</span>qca<span>&#46;</span>qualcomm<span>&#46;</span>com</a>&gt;</li>
+</ul>
+</div>
+<div class="section" id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-distribution">Toolkit Distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-installation-on-linux">Toolkit Installation on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-installation-on-mac-os-x">Toolkit Installation on Mac OS X</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-installation-on-windows-xp">Toolkit Installation on <em>Windows XP</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-installation-on-windows-7">Toolkit Installation on <em>Windows 7</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-programs">Toolkit Programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-folders">Toolkit Folders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#packages">Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#toolkit-support">Toolkit Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#device-form-factors">Device Form Factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#device-communications">Device Communications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#device-configurations">Device Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#powerline-workstations">Powerline Workstations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#send-to-self-patch">Send-to-self Patch</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="software.html">Software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="software.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#security-considerations">Security Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#platform-options">Platform Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#gnu-makefiles-on-linux">GNU Makefiles on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#stand-alone-compiling-on-gnu-linux">Stand-alone Compiling on GNU/Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#cross-compiling-on-gnu-linux">Cross-Compiling on GNU/Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#compilation-with-visual-studio-net-2003">Compilation with Visual Studio .NET 2003</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#microsoft-solution-files">Microsoft Solution Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#header-files">Header Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#compiler-constants">Compiler Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#libpcap-winpcap-and-bpf"><strong class="program">LibPcap</strong>,  <strong class="program">WinPcap</strong> and <strong class="program">BPF</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#structure-packing">Structure Packing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#endian-ness">Endian-ness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#packet-basics">Packet Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="software.html#frame-encoding">Frame Encoding</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="firmware.html">Firmware</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#firmware-components">Firmware Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#architecture-overview">Architecture Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#firmware-boot-process">Firmware Boot Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-configuration">Boot from Host Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#things-to-remember">Things to Remember</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#every-little-bit-hurts">Every Little Bit Hurts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#liar-liar-pants-on-fire">Liar! Liar! Pants on Fire!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#but-wait-there-s-more">But wait! There&#8217;s more ...</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#upgrade-device-int6000-int6300-int6400">Upgrade Device (INT6000/INT6300/INT6400)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#update-local-host-int6000-int6300-int6400">Update Local Host (INT6000/INT6300/INT6400)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-int6000">Boot from Host (INT6000)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-int6300">Boot from Host (INT6300)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-int6400">Boot from Host (INT6400)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-ar7400">Boot from Host (AR7400)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#boot-from-host-ar7420">Boot from Host (AR7420)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firmware.html#flash-memory-ar6410-ar7420">Flash Memory (AR6410/AR7420)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="procedures.html">Procedures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#select-an-interface-on-linux">Select an Interface on Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#select-an-interface-on-windows">Select an Interface on Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#procedure-identify-device">Identify a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#browse-the-network">Browse the Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#forming-a-network">Forming a Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#configuring-a-device">Configuring a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#upgrading-firmware-and-pib">Upgrading Firmware and PIB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#upgrading-pib-only">Upgrading PIB Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#starting-a-device">Starting a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#testing-a-device">Testing a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#programming-nvram">Programming NVRAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#pairing-uart-devices-post-pts">Pairing UART Devices post PTS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#trouble-shooting-problems">Trouble-shooting Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#slac-configuration">SLAC Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html#slac-demonstration">SLAC Demonstration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripting.html">Scripting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#linux-script-basics">Linux Script Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#host-independence">Host Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#checking-device-connection">Checking Device Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#random-device-identity">Random Device Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#actual-device-identity">Actual Device Identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#editing-a-pib">Editing a PIB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#initialize-a-device">Initialize a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#update-a-device">Update a Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#generating-powerline-traffic">Generating Powerline Traffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#reading-phy-rates">Reading PHY Rates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripting.html#user-interaction">User Interaction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support Function Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="support.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#command-line-functions">Command Line Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#ethernet-functions">Ethernet Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#network-functions">Network Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#generic-functions">Generic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#message-debug-functions">Message Debug Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#key-generation-functions">Key Generation Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#xml-editing-functions">XML Editing Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#download-functions">Download Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#procrastination-functions">Procrastination Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#traffic-functions">Traffic Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support.html#slac-functions-and-variables">SLAC Functions and Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="drivers.html">Serial Drivers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#principles-of-operation">Principles of Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#spi-serial-driver">SPI Serial Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#register-functions">Register Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#interrupt-functions">Interrupt Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#transmit-functions">Transmit Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#receive-functions">Receive Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#dma-functions">DMA Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#support-functions">Support Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drivers.html#kernel-functions">Kernel Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Qualcomm Atheros Open Powerline Toolkit</a><ul>
+<li><a class="reference internal" href="#authors">Authors</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="next chapter">Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/open-plc-utils.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

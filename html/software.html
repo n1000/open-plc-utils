@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Software &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Firmware" href="firmware.html" />
+    <link rel="prev" title="Hardware" href="hardware.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="firmware.html" title="Firmware"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hardware.html" title="Hardware"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="software">
+<span id="id1"></span><h1>Software<a class="headerlink" href="#software" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="software-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="program">Open Powerline Toolkit</strong> is designed to support hardware engineers and embedded software developers working on GNU/Linux and Linux-like systems. Debian GNU/Linux is the platform of choice because it is open source and has extensive cross-platform support. The toolkit has been compiled and executed on several platforms but Qualcomm Atheros does not necessarily support the toolkit on those platforms. Qualcomm Atheros has made every effort to enable cross-platform compatibility by conforming to POSIX standards and following good programming practice but there are limitations on any such effort.</p>
+</div>
+<div class="section" id="security-considerations">
+<span id="software-security"></span><h2>Security Considerations<a class="headerlink" href="#security-considerations" title="Permalink to this headline">¶</a></h2>
+<p>Toolkit programs are installed in <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with owner <code class="docutils literal"><span class="pre">root</span></code> and group <code class="docutils literal"><span class="pre">root</span></code> (<strong class="command">chown root:root</strong>) and with read and execute permissions for owner, group and others (<strong class="command">chmod 0555</strong>). This lets anyone execute these programs even though they are owned by user <code class="docutils literal"><span class="pre">root</span></code>.</p>
+<p>Additionally,  programs that send raw Ethernet frames are installed with seteuid owner (<strong class="command">chmod 4555</strong>) so that they will execute with <code class="docutils literal"><span class="pre">root</span></code> user privileges, regardless of the user executing them. This lets any user send raw Ethernet frames but it also presents a security risk on the host computer. For example, program <strong class="program">int6k</strong> is intended to read and write <code class="file docutils literal"><span class="pre">.nvm</span></code> and <code class="file docutils literal"><span class="pre">.pib</span></code> files but a malicious user could use it to overwrite other files normally protected by standard file permissions.</p>
+<p>You can change the default file permissions by changing the <strong class="command">-m 4555</strong> option on the <strong class="command">install</strong> command in various <code class="file docutils literal"><span class="pre">Makefiles</span></code>. Be aware that doing so will restrict program access to the the <code class="docutils literal"><span class="pre">root</span></code> user.</p>
+</div>
+<div class="section" id="platform-options">
+<span id="software-platform-options"></span><h2>Platform Options<a class="headerlink" href="#platform-options" title="Permalink to this headline">¶</a></h2>
+<p>Qualcomm Atheros makes no claim that the <strong class="program">Open Powerline Toolkit</strong> will compile  and link in all environments without generating warnings or errors. Different compilers, and compiler versions, treat certain conditions differently and different distributions include different header files or define standard constants and macros differently. Developers should expect to make some source code and makefile modifications to match their environment.</p>
+<p>The principle consideration is support for raw Ethernet frames. Other considerations include POSIX compliance,  system header file locations,  compiler version and library support. This section discusses some of these considerations.</p>
+<div class="section" id="gnu-linux">
+<span id="platform-linux"></span><h3><strong class="program">GNU/Linux</strong><a class="headerlink" href="#gnu-linux" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit will compile and execute on <strong class="program">GNU/Linux</strong> systems without modification by using standard Linux header files and native Linux libraries. Raw socket support is native to the Linux Kernel. This is the preferred environment due to cost, networking speed and ease of access to Layer 2 networking.</p>
+<p>Qualcomm Atheros has cross-compiled and executed versions of the toolkit on <em>MontaVista</em> and <em>AMiLDA</em> Linux both for <em>MIPSEL</em> processors. Most toolkit makefiles have symbolic hooks for cross-compilers but Qualcomm Atheros does not support cross-compilation efforts on any platform.</p>
+</div>
+<div class="section" id="gnu-linux-with-libpcap">
+<span id="platform-linux-libpcap"></span><h3>GNU/Linux with Libpcap<a class="headerlink" href="#gnu-linux-with-libpcap" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit can compile and will execute on <strong class="program">GNU/Linux</strong> systems having the <strong class="program">libpcap</strong> development package and runtime libraries installed; however, this feature is disabled by default because it is not needed on Linux and offers no benefits over native Linux sockets.</p>
+</div>
+<div class="section" id="gnu-linux-with-bpf">
+<span id="platform-linux-bpf"></span><h3>GNU/Linux with BPF<a class="headerlink" href="#gnu-linux-with-bpf" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit should compile and execute on <strong class="program">GNU/Linux</strong> systems having <strong class="program">BPF</strong> compiled into the kernel but modifications would be needed to toolkit source code. This configuration has not been tested but the source code is present to support it. Consult Qualcomm Atheros if this option is of interest to you.</p>
+</div>
+<div class="section" id="mac-os-x-with-bpf">
+<span id="platform-osx-bpf"></span><h3><em>Mac OS X</em> with BPF<a class="headerlink" href="#mac-os-x-with-bpf" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit will compile and execute on <strong class="program">Mac OS X</strong> without modification by using native BPF support compiled into the <strong class="program">Darwin</strong> kernel. Compilation is clean on <strong class="program">Leopard</strong> and should be fairly clean on <strong class="program">Tiger</strong>.</p>
+<p>You may observe compiler warnings concerning the <code class="docutils literal"><span class="pre">size_t</span></code> data type and <code class="docutils literal"><span class="pre">print</span></code> statements. These warning occur because <strong class="program">Mac OS X</strong> defined the <code class="docutils literal"><span class="pre">size_t</span></code> data type as a 64-bit integer while most other systems define it as a 32-bit integer. Ignore the warnings. We will eventually eliminate them all.</p>
+<p>You may observe a compiler warning concerning the definition of intrinsic function <code class="docutils literal"><span class="pre">snprinf</span></code>. We are not sure what causes this warning but it will be corrected eventually.</p>
+</div>
+<div class="section" id="windows-xp-with-winpcap">
+<span id="platform-windows-winpcap"></span><h3><em>Windows XP</em> with WinPcap<a class="headerlink" href="#windows-xp-with-winpcap" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit will compile and execute on Microsoft <em>Windows XP</em> having <strong class="program">WinPcap 4.0.1</strong> runtime libraries installed. To assist windows developers, the toolkit includes a Microsoft <em>Visual Studio .NET 2003</em> solution file plus required <strong class="program">WinPcap 4.0.1</strong> header files and libraries. The resulting programs should execute on any Microsoft <em>Windows</em> computer having <strong class="program">WinPcap 4.0.1</strong> runtime libraries installed. Qualcomm Atheros does not support the toolkit under any Microsoft <em>Windows</em> operating system at this time.</p>
+<p>Recent versions of the toolkit include self-extracting file <code class="file docutils literal"><span class="pre">.\VisualStudioNET\WinPcap4_0_1.exe</span></code> that installs <strong class="program">WinPcap 4.0.1</strong> libraries on your system in cases where you have another version installed. If this creates a conflict the you must resolve it to satisfy your system requirements.</p>
+<p>This is not the preferred Toolkit environment due to cost, networking overhead, difficulty accessing Layer network support and lack of a powerful native scripting language. Qualcomm Atheros has not implemented all Toolkit programs on Windows for technical reasons.</p>
+</div>
+</div>
+<div class="section" id="gnu-makefiles-on-linux">
+<span id="software-makefiles"></span><h2>GNU Makefiles on Linux<a class="headerlink" href="#gnu-makefiles-on-linux" title="Permalink to this headline">¶</a></h2>
+<p>The toolkit includes recursive GNU makefiles for Linux. The <code class="file docutils literal"><span class="pre">Makefile</span></code> in the root folder calls Makefiles in subordinate folders. Makefiles in subordinate folders can be run independently to produce individual toolkit components. Developers can control which components are compiled and installed by editing the <code class="docutils literal"><span class="pre">FOLDERS</span></code> symbol in the main Makefile.</p>
+<p>Component Makefiles have a standard format that includes the following targets:</p>
+<dl class="docutils">
+<dt>compile</dt>
+<dd>Compiles source code files prior to installation. Intermmediate files and target files are created in the same folder as the Makefile. This is the default target. That means that typing <strong class="command">make</strong> or <strong class="command">make compile</strong> have the same result.</dd>
+<dt>library</dt>
+<dd>Creates any special folders that are needed for installation. This target is built by the <strong class="command">install</strong> target but it can be built independently.</dd>
+<dt>scripts</dt>
+<dd>Installs scripts required for proper toolkit operation. This target must be built explicitly to prevent accidental loss of changes made to existing scripts. This target may be built at any time, before or after the <strong class="command">install</strong> target.</dd>
+<dt>manuals</dt>
+<dd>Creates manuals, documents or html pages. Documentation files are not automatically installed by any target. Installation is left to the user.</dd>
+<dt>install</dt>
+<dd>Installs executable files in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code>. This target automatically builds the <strong class="command">compile</strong> target before installation. This means that <strong class="command">make install</strong> will compile and install in one step.</dd>
+<dt>uninstall</dt>
+<dd>Removes installed components. This target does nothing for Makefiles that have <strong class="command">install</strong> targets defined.</dd>
+<dt>clean</dt>
+<dd>Removes intermmediate and temporary files. Temporary files are defined by variable <code class="docutils literal"><span class="pre">TRASH</span></code> at the start of each Makefile.</dd>
+<dt>fresh</dt>
+<dd>Removes intermmediate and temporary then re-compiles local targets. It is normally equivalent to <strong class="command">make clean</strong> followed by <strong class="command">make compile</strong>.</dd>
+</dl>
+<p>Developers wanting to compile the toolkit under <em>Windows</em> should use <em>Visual Studio .NET</em> solution files instead of makefiles.</p>
+<p>Developers wanting to compile the toolkit under <strong class="program">OpenBSD</strong> must make changes to accommodate variations in <strong class="program">make</strong> program syntax.</p>
+</div>
+<div class="section" id="stand-alone-compiling-on-gnu-linux">
+<span id="software-stand-alone"></span><h2>Stand-alone Compiling on GNU/Linux<a class="headerlink" href="#stand-alone-compiling-on-gnu-linux" title="Permalink to this headline">¶</a></h2>
+<p>You do not need makefiles to build toolkit programs because source files explicitly include all required components using <strong class="command">include</strong> statement blocks like that shown below. You will see similar blocks near the top of most programs.</p>
+<div class="section" id="the-makefile-constant">
+<h3>The <code class="docutils literal"><span class="pre">MAKEFILE</span></code> constant<a class="headerlink" href="#the-makefile-constant" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#ifndef MAKEFILE</span>
+<span class="cp">#include</span> <span class="cpf">&quot;../tools/getoptv.c&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;../tools/putoptv.c&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;../tools/version.c&quot;</span><span class="cp"></span>
+<span class="p">...</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>This mechanism has several advantages. First, the preprocessor <code class="docutils literal"><span class="pre">include</span></code> statements form a complete inventory of required files. Secondly, the relative pathnames help developers locate needed source files. Third,  the complete program can be compiled with one <strong class="command">gcc</strong> command, like the one shown below. This allows program compilation in environments where the <strong class="program">GNU make</strong> program or the Atheros <code class="file docutils literal"><span class="pre">Makefiles</span></code> are not available.</p>
+</div>
+<div class="section" id="id2">
+<h3>Stand-alone Compiling on GNU/Linux<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> gcc -o program program.c
+</pre></div>
+</div>
+<p>Most toolkit makefiles define the preprocessor constant <code class="docutils literal"><span class="pre">MAKEFILE</span></code> as a compiler option using <code class="docutils literal"><span class="pre">CFLAGS=</span> <span class="pre">...</span> <span class="pre">-DMAKEFILE</span> <span class="pre">...</span></code>. When this constant is defined, the compiler will not include components inside an include block like that shown above and so the <code class="file docutils literal"><span class="pre">Makefile</span></code> is responsible for compiling and linking all components. If the constant is not defined, because no <code class="file docutils literal"><span class="pre">Makefile</span></code> was used, the compiler will merely include everything needed.</p>
+</div>
+</div>
+<div class="section" id="cross-compiling-on-gnu-linux">
+<span id="software-cross-compile"></span><h2>Cross-Compiling on GNU/Linux<a class="headerlink" href="#cross-compiling-on-gnu-linux" title="Permalink to this headline">¶</a></h2>
+<p>Makefiles are setup for cross-compilation using custom toolchains. File <code class="file docutils literal"><span class="pre">make.def</span></code>, in the main toolkit folder, defines cross-comilation symbols referenced in lower-level makefiles. Lower-level makefiles include <code class="file docutils literal"><span class="pre">make.def</span></code> before building their targets. The following is an example <code class="file docutils literal"><span class="pre">make.def</span></code> file used when cross-compiling for the ADM5120 MIPSEL-based gateway.</p>
+<div class="section" id="cross-compiling-with-make-def">
+<h3>Cross-compiling with make.def<a class="headerlink" href="#cross-compiling-with-make-def" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-make"><div class="highlight"><pre><span></span><span class="c"># file: make.def</span>
+
+<span class="c"># ====================================================================</span>
+<span class="c"># Edimax Hardware;</span>
+<span class="c"># --------------------------------------------------------------------</span>
+
+<span class="nv">PLATFORM</span><span class="o">=</span>-D_ADM5120_
+<span class="nv">MODEL</span><span class="o">=</span>-D_6104KP_
+<span class="nv">ENDIAN</span><span class="o">=</span>-D_LITTLE_ENDIAN_
+<span class="nv">GATEWAY</span><span class="o">=</span>y
+
+<span class="c"># ====================================================================</span>
+<span class="c"># AMiLDA Software; uncomment these lines when cross-compiling;</span>
+<span class="c"># --------------------------------------------------------------------</span>
+
+<span class="c"># CROSS=/export/tools/mipsel-linux-uclibc/bin/mipsel-uclibc-</span>
+<span class="c"># CROSS_LINUX=/export/tools/bin/mipsel-linux-</span>
+
+<span class="c"># ====================================================================</span>
+<span class="c"># toolchain;</span>
+<span class="c"># --------------------------------------------------------------------</span>
+
+<span class="nv">CC</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>gcc
+<span class="nv">STRIP</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>strip
+<span class="nv">LD</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>ld
+<span class="nv">AR</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>ar
+<span class="nv">RANLIB</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>ranlib
+<span class="nv">CAS</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>gcc -c
+<span class="nv">CPP</span><span class="o">=</span><span class="k">$(</span>CROSS<span class="k">)</span>gcc -E
+
+<span class="c"># ====================================================================</span>
+<span class="c"># folders;</span>
+<span class="c"># --------------------------------------------------------------------</span>
+
+<span class="nv">BIN</span><span class="o">=</span>/usr/local/bin
+<span class="nv">MAN</span><span class="o">=</span>/usr/share/man/man7
+<span class="nv">WWW</span><span class="o">=</span>/home/www
+<span class="nv">DOC</span><span class="o">=</span>/home/www/software/plc-utils/
+
+<span class="c"># ====================================================================</span>
+<span class="c"># permissions;</span>
+<span class="c"># --------------------------------------------------------------------</span>
+
+<span class="nv">OWNER</span><span class="o">=</span>0
+<span class="nv">GROUP</span><span class="o">=</span>0
+</pre></div>
+</div>
+<p>Developers are encouraged to make changes in this file rather than adding additional variables to the lower-level makefiles. For example, you can edit variable <code class="docutils literal"><span class="pre">BIN</span></code> to install toolkit programs in some location other than <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> or variable <code class="docutils literal"><span class="pre">WWW</span></code> to install HTML documentation on your local website.</p>
+</div>
+</div>
+<div class="section" id="compilation-with-visual-studio-net-2003">
+<span id="software-visualstudio"></span><h2>Compilation with Visual Studio .NET 2003<a class="headerlink" href="#compilation-with-visual-studio-net-2003" title="Permalink to this headline">¶</a></h2>
+<p>To build the <strong class="program">Open Powerline Toolkit</strong> on Windows XP, you must have access to a Windows computer with  <strong class="program">Visual Studio .NET 2003</strong> and <strong class="program">WinPcap</strong> runtime libraries installed. <strong class="program">WinPcap</strong> is an open source version of the packet capture library, <strong class="program">libpcap</strong>, widely used on <strong class="program">Linux</strong> and <strong class="program">OpenBSD</strong> systems. It is readily available on the Internet. Installation of these components is beyond the scope of this document.</p>
+<p>The Windows and Linux versions of the <strong class="program">Open Powerline Toolkit</strong> use the same code base but the Windows version requires a Microsoft solution file that includes special compiler settings and specific POSIX header files. The solution file and header files are included in the same archive as Linux version.</p>
+<div class="section" id="microsoft-visual-studio-net-2003">
+<h3>Microsoft Visual Studio .NET 2003<a class="headerlink" href="#microsoft-visual-studio-net-2003" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/VisualStudioNET.png" src="_images/VisualStudioNET.png" />
+<p>Use an application like <strong class="program">WinZip</strong> to extract archived files into a build folder of your choice. Use <strong class="program">Windows Explorer</strong> to locate solution file <code class="file docutils literal"><span class="pre">.\VisualStudioNET\plc-utils.sln</span></code> under the toolkit root folder. Double-click the file to open it with <strong class="program">Visual Studio .NET</strong>. In <strong class="program">Visual Studio .NET</strong>, open the <code class="docutils literal"><span class="pre">Solution</span> <span class="pre">Explorer</span></code> window and observe a display similar to that shown above.</p>
+<p>Figure 1 illustrates a <strong class="program">Visual Studio .NET</strong> window with the <code class="docutils literal"><span class="pre">Solution</span> <span class="pre">Explorer</span></code> pane exposed. In the <code class="docutils literal"><span class="pre">Solution</span> <span class="pre">Explorer</span></code> window, <strong class="command">right-click</strong> the <code class="docutils literal"><span class="pre">plc-utils</span></code> solution and select the <code class="docutils literal"><span class="pre">Rebuild</span></code> menu option. Compiliation should begin. Watch for comilation errors.</p>
+<p>On successful compilation of all projects in this solution, you should find executable programs in the <code class="file docutils literal"><span class="pre">Release</span></code> folder under each project folder. If not then look in the <code class="file docutils literal"><span class="pre">Debug</span></code> folder,  instead. You can now open a console window, change to each <code class="file docutils literal"><span class="pre">Release</span></code> or <code class="file docutils literal"><span class="pre">Debug</span></code> folder in turn and run the programs located there. Instead, we recommend that you create a <strong class="program">Windows Installer</strong> package by <strong class="command">right-clicking</strong> on the <code class="docutils literal"><span class="pre">Install</span></code> project in the <code class="docutils literal"><span class="pre">Solution</span> <span class="pre">Explorer</span></code> window and selecting the <code class="docutils literal"><span class="pre">Build</span></code> menu option. Compilation should resume.</p>
+<p>On successful completion of the install project build, you should find the <strong class="program">Windows Installer</strong> file <code class="file docutils literal"><span class="pre">plc-utils.msi</span></code> in the <code class="file docutils literal"><span class="pre">VisualStudioNET</span></code> folder above the <strong class="program">install</strong> project folder. Double-clicking on this file will start the <strong class="program">Windows Installer</strong> program.</p>
+<p>To distribute the toolkit package to other Windows computers,  copy the <strong class="program">Windows Installer</strong> file to a public network share or some type of portable media.</p>
+</div>
+</div>
+<div class="section" id="microsoft-solution-files">
+<span id="software-solution-files"></span><h2>Microsoft Solution Files<a class="headerlink" href="#microsoft-solution-files" title="Permalink to this headline">¶</a></h2>
+<p>The Atheros <strong class="program">Open Powerline Toolkit</strong> includes a <em>Visual Studio .NET</em> solution file, <code class="file docutils literal"><span class="pre">./VisualStudioNET/plc-utils.sln</span></code>,  that will build the toolkit on <strong class="program">Windows XP SP2</strong> from the Linux code base. The following information may be helpful to developers wanting to modify or extend the solution or port it to another version of Microsoft <strong class="program">Visual Studio</strong>:</p>
+<ul class="simple">
+<li>All projects are WIN32 Console Projects.</li>
+<li>All projects have pre-compiled headers suppressed.</li>
+<li>All projects should globally define preprocessor constant <code class="docutils literal"><span class="pre">MAKEFILE</span></code> to prevent proliferation of &#8220;already defined&#8221; link errors. See <a class="reference internal" href="#software-stand-alone"><span class="std std-ref">Stand-alone Compiling on GNU/Linux</span></a> for an explanation of this constant.</li>
+<li>All projects search folder <code class="file docutils literal"><span class="pre">..\include</span></code> for <a class="reference external" href="stdint.h.html">stdint.h</a> and <a class="reference external" href="unistd.h.html">unistd.h</a> because Microsoft does not provide them. These header files are customized or abbreviated versions of their POSIX counterparts and should be used when originals are available.</li>
+<li>Projects that perform raw Ethernet I/O should globally define preprocessor constant <code class="docutils literal"><span class="pre">WINPCAP</span></code> to enable appropriate code segments. Preprocessor error statements should (but may not) alert you if <code class="docutils literal"><span class="pre">WINPCAP</span></code> is not defined on <em>Windows</em> platforms.</li>
+<li>Projects that perform raw Ethernet I/O search folder <code class="file docutils literal"><span class="pre">..\include</span></code> for <strong class="program">WinPcap</strong> header files. These files are taken from the <strong class="program">WinPcap</strong> development package and may require periodic updates.  Header files <a class="reference external" href="pcap.h.html">pcap.h</a>, <a class="reference external" href="pcap-stdinc.h.html">pca-stdinc.h</a>, <a class="reference external" href="pcap-bpf.h.html">pcap-bpf.h</a>,  <a class="reference external" href="ipv6_misc.h.html">ipv6_misc.h</a> and <a class="reference external" href="bittypes.h.html">bittypes.h</a> belong in folder <code class="file docutils literal"><span class="pre">VisualStudioNET\include</span></code>. Other header files belong in folder <code class="file docutils literal"><span class="pre">VisualStudioNET\include\pcap</span></code>.</li>
+<li>Projects that perform raw Ethernet I/O should include folder <code class="file docutils literal"><span class="pre">..\library</span></code> for core <strong class="program">WinPcap</strong> libraries.</li>
+<li>Projects that perform raw Ethernet I/O should link to libraries <code class="file docutils literal"><span class="pre">ws2_32.lib</span></code>,  <code class="file docutils literal"><span class="pre">packet.lib</span></code> and <code class="file docutils literal"><span class="pre">wpcap.lib</span></code>. The first library is the Microsoft <strong class="program">Winsock2</strong> library. The others are core <strong class="program">WinPcap</strong> libraries.</li>
+</ul>
+</div>
+<div class="section" id="header-files">
+<span id="software-header-files"></span><h2>Header Files<a class="headerlink" href="#header-files" title="Permalink to this headline">¶</a></h2>
+<p>Atheros <strong class="program">Open Powerline Toolkit</strong> programs reference POSIX functions and constants where possible. Specifically, they make wide use of the data types <code class="docutils literal"><span class="pre">uint8_t</span></code>, <code class="docutils literal"><span class="pre">uint16_t</span></code> and <code class="docutils literal"><span class="pre">uint32_t</span></code> which are defined in file <code class="file docutils literal"><span class="pre">stdint.h</span></code>. Microsoft <em>Visual C</em> and <em>.NET</em> environments do not include this file. Consequently, Atheros provides an <a class="reference external" href="stdint.h.html">alternative stdint.h</a> in folder <code class="file docutils literal"><span class="pre">../Windows/include</span></code>. This file is open source and was designed to be compatible with the Microsoft development environments; however, you may occassionally experience warnings about the &#8220;benign redefinition&#8221; for some of these data types.</p>
+<p>Where possible, this toolkit includes <em>OpenBSD</em> network constants because the OpenBSD project pioneered many of the common network protocols and applications used today. Some systems do not include all <em>OpenBSD</em> network header files or do not define all <em>OpenBSD</em> network constants. Specifically, Microsoft systems do not provide file <code class="file docutils literal"><span class="pre">netinet/if_ether.h</span></code> and so an <a class="reference external" href="if_ether.h.html">alternative if_ether.h</a> is included in folder <code class="file docutils literal"><span class="pre">../Windows/include/netinet</span></code> and <em>Windows</em> applications should include it.</p>
+<p>When the <strong class="command">gcc -std=iso9899:1999</strong> option is enabled, some <em>OpenBSD</em> header files found on <strong class="program">GNU/Linux</strong> systems will exclude required constant definitions because they do not conform to that standard. Atheros is investigating the best way to address this problem.</p>
+<p>On some systems,  such as <em>OpenBSD</em>, <em>FreeBSD</em> and <em>Mac OS X</em>, header files must be included in specific order to avoid compilation errors. We have done our best to deal with this problem. Visit the <a class="reference external" href="http://www.gnu.org/software/hello/manual/autoconf/Header-Portability.html">GNU Autocnf Project</a> for more information about this.</p>
+</div>
+<div class="section" id="compiler-constants">
+<span id="software-compiler-constants"></span><h2>Compiler Constants<a class="headerlink" href="#compiler-constants" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="platform-constants">
+<span id="software-constants-platform"></span><h3>Platform Constants<a class="headerlink" href="#platform-constants" title="Permalink to this headline">¶</a></h3>
+<p>Platform constants conditionaly compile source code blocks based on the hardware architecture and host operating system. Hardware architecture constants are normally defined in system header files. Operating system constants are often compiler intrinsic or defined in system header files.</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">__APPLE__</span></code></dt>
+<dd>A intrinsic compiler constant indicating <em>Mac OS X</em> operating system support.</dd>
+<dt><code class="docutils literal"><span class="pre">__BYTE_ORDER</span></code></dt>
+<dd>A standard constant indicating big or little endian host architecture. Some systems may not define this constant and so an alternative should be used.</dd>
+<dt><code class="docutils literal"><span class="pre">LIBPCAP</span></code></dt>
+<dd>An Atheros constant, that must be manually defined in your makefile or solution file, to indicate that the target host will have <strong class="program">LibPcap</strong> support. It is not used by the toolkit,  at this time,  and so the associated code has not been tested.</dd>
+<dt><code class="docutils literal"><span class="pre">__linux__</span></code></dt>
+<dd>A standard constant indicating <em>GNU/Linux</em> kernel support. It is automatically defined on <em>GNU/Linux</em> systems.</dd>
+<dt><code class="docutils literal"><span class="pre">__OpenBSD__</span></code></dt>
+<dd>A standard constant indicating <em>OpenBSD</em> kernel support. It is automatically define on <em>OpenBSD</em> systems. It is not used by the toolkit,  at this time, and so the associated code has not been extensively tested.</dd>
+<dt><code class="docutils literal"><span class="pre">WIN32</span></code></dt>
+<dd>A standard constant indicating Microsoft <em>Windows</em> support. It is automatically defined in Microsoft <em>Windows</em> environments.</dd>
+<dt><code class="docutils literal"><span class="pre">WINPCAP</span></code></dt>
+<dd>An Atheros constant, that must be manually defined in your makefile or solution file, to indicate that the target host will have <strong class="program">WinPcap</strong> support. The toolkit only defines this constant in Windows Microsoft project files for programs that perform raw Ethernet I/O.</dd>
+</dl>
+</div>
+<div class="section" id="ethernet-constants">
+<span id="software-constants-ethernet"></span><h3>Ethernet Constants<a class="headerlink" href="#ethernet-constants" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit attempts to use existing definitions for Ethernet related constants where possible. This has been problematic due to inconsistencies in the way different systems structure their header files. Most of the following definitions already exist on <em>Linux</em>,  <em>OpenBSD</em> and <em>OS X</em> but there are still some differences between <em>Linux</em> distributions and many constants are undefined on <em>Windows</em>.</p>
+<p>The <em>Windows</em> version of the toolkit includes an abbreviated <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code> that provides constant definitions mentioned in this section.</p>
+<dl class="docutils">
+<dt>ETHER_ADDR_LEN</dt>
+<dd>The length of an Ethernet hardware address in bytes. The value is <code class="docutils literal"><span class="pre">6</span></code> bytes. On <em>Linux</em> and <em>OS X</em>, this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code>.</dd>
+<dt>ETHER_CRC_LEN</dt>
+<dd>The length of an Ethernet frame FCS trailer. The value is <code class="docutils literal"><span class="pre">4</span></code> bytes. On <em>Linux</em> and <em>OS X</em>, this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code>. Atheros also includes a conditional definition in <code class="file docutils literal"><span class="pre">int6k/int6k.h</span></code> because some <em>Linux</em> system do not define it anywhere.</dd>
+<dt>ETHER_HDR_LEN</dt>
+<dd>The length of an Ethernet frame header including the source address,  destination address and type/length field. The value is <code class="docutils literal"><span class="pre">14</span></code> bytes or <code class="docutils literal"><span class="pre">ETHER_ADDR_LEN</span></code> + <code class="docutils literal"><span class="pre">ETHER_ADDR_LEN</span></code> + <code class="docutils literal"><span class="pre">ETHER_TYPE_LEN</span></code>. On <em>Linux</em> and <em>OS X</em>, this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code>.</dd>
+<dt>ETHER_MAX_LEN</dt>
+<dd>The maximum length of an Ethernet frame in bytes. The value is <code class="docutils literal"><span class="pre">1518</span></code> bytes of <code class="docutils literal"><span class="pre">ETHER_HDR_LEN</span></code> + <code class="docutils literal"><span class="pre">ETHERMTU</span></code> + <code class="docutils literal"><span class="pre">ETHER_CRC_LEN</span></code>. On <em>Linux</em> and <em>OS X</em>,  this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code>.</dd>
+<dt>ETHER_MIN_LEN</dt>
+<dd>The minimum length of an Ethernet frame in bytes. The value is <code class="docutils literal"><span class="pre">64</span></code> bytes. On <em>Linux</em> and <em>OS X</em> this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code></dd>
+<dt>ETHER_TYPE_LEN</dt>
+<dd>The length of Ethernet type/length,  or ethertype,  field in bytes. The value is <code class="docutils literal"><span class="pre">2</span></code>. On <em>Linux</em> and <em>OS X</em>, it is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code>.</dd>
+<dt>ETHERMTU</dt>
+<dd>The maximum transfer unit (ie; data handling capacity) for an Ethernet frame in bytes. The value is <code class="docutils literal"><span class="pre">1500</span></code> bytes. On <em>Linux</em> and <em>OS X</em>,  this is defined in <code class="file docutils literal"><span class="pre">net/ethernet.h</span></code></dd>
+</dl>
+</div>
+</div>
+<div class="section" id="libpcap-winpcap-and-bpf">
+<span id="software-packet-capture"></span><h2><strong class="program">LibPcap</strong>,  <strong class="program">WinPcap</strong> and <strong class="program">BPF</strong><a class="headerlink" href="#libpcap-winpcap-and-bpf" title="Permalink to this headline">¶</a></h2>
+<p><strong class="program">LibPcap</strong> is an open source Ethernet packet capture library that is widely used. It provides core functionality for the <strong class="program">Wireshark</strong> packet sniffer, formerly known as <strong class="program">Ethereal</strong>. <strong class="program">LibPcap</strong> libraries are available for Linux and OpenBSD. On Linux and OpenBSD you must link applications to  <code class="file docutils literal"><span class="pre">libpcap.a</span></code> and <code class="file docutils literal"><span class="pre">libwpcap.a</span></code>. The toolkit does not use either of these libraries on Linux because they are not needed there.</p>
+<p><strong class="program">WinPcap</strong> is an open source version of <strong class="program">LibPcap</strong> written for Microsoft <em>Windows</em>. The <strong class="program">WinPcap</strong> libraries let Windows applications send and receive raw packets. On <em>Windows</em> you must link applications to <code class="file docutils literal"><span class="pre">Packet.lib</span></code> and <code class="file docutils literal"><span class="pre">wpcap.lib</span></code>.</p>
+<p>In principle, the <strong class="program">LibPcap</strong> and <strong class="program">WinPcap</strong> library implementations should function identically but they do not;  however,  they are similar enough to provide a useful degree of platform independence. Defining preprocessor constants <code class="docutils literal"><span class="pre">LIBPCAP</span></code> or <code class="docutils literal"><span class="pre">WINPCAP</span></code> when compiling the toolkit will enable the corresponding source code. This can be done by adding &#8220;-DLIBPCAP&#8221; or &#8220;-DWINPCAP&#8221; to variable <code class="docutils literal"><span class="pre">LFLAGS</span></code> in file <code class="file docutils literal"><span class="pre">Makefile</span></code> in folders int6k, int6k2, efsu and hpav. Constant <code class="docutils literal"><span class="pre">WINPCAP</span></code> need only be defined this way when compiling the toolkit using <em>cygwin</em> or <em>mingw</em> environments. Do not define both constants <code class="docutils literal"><span class="pre">LIBPCAP</span></code> and <code class="docutils literal"><span class="pre">WINPCAP</span></code> at the same time or compiler errors will occur.</p>
+<p>Berkeley Packet Filters (BPF) is an open source Ethernet packet capture mechanism available on many <em>UNIX</em>-like systems. Native BPF is supported on some systems but must be explicitly compiled into the kernel on other systems. <em>Linux</em> systems normally do not support BPF by default but <em>Mac OS X</em> does and so we automatically use it whenever compiler constant <code class="docutils literal"><span class="pre">__APPLE__</span></code> is defined. In principle, one could compile a custom <em>Linux</em> kernel with BPF enabled.</p>
+</div>
+<div class="section" id="structure-packing">
+<span id="software-struct-packing"></span><h2>Structure Packing<a class="headerlink" href="#structure-packing" title="Permalink to this headline">¶</a></h2>
+<p>Programs in this toolkit make extensive use of packed data structures to simplify source code and guarantee reliability; however, this creates portability issues because different compilers implement structure packing in different ways. Three common structure packing mechanisms are:</p>
+<dl class="docutils">
+<dt>__packed</dt>
+<dd><p class="first">The __packed keyword is not part of any C or C++ standard but it is recognized by some compilers, such as the ARM C/C++ and OpenBSD C compiler. This keyword only affects the data structure that it prefaces and it is an ideal way to selectively pack structures. It can be easily defined and undefined using a preprocessor macro. Atheros has elected to insert this keyword wherever it might be appropriate. The ARM C compilers accept this keyword.</p>
+<div class="last highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">__packed</span> <span class="n">header_eth</span>
+<span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">source</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint8_t</span> <span class="n">target</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint16_t</span> <span class="n">protocol</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">header_eth</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd>
+<dt>__attribute__ ((packed))</dt>
+<dd><p class="first">Attributes are not part of any C or C++ standard but they are recognized by the gcc and Sun Microsystems C compiler. Attributes only affect structures and functions that reference them in their declaration. This is convenient because we can use a preprocessor macro to define the keyword <code class="docutils literal"><span class="pre">__packed</span></code>, mentioned above, to be <code class="docutils literal"><span class="pre">__attribute__</span> <span class="pre">((packed))</span></code>. Atheros includes this definition in <code class="file docutils literal"><span class="pre">tools/types.h</span></code> and OpenBSD does this in their system header files.</p>
+<div class="last highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="nf">__attribute__</span> <span class="p">((</span><span class="n">packed</span><span class="p">))</span> <span class="n">header_eth</span>
+<span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">source</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint8_t</span> <span class="n">target</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint16_t</span> <span class="n">protocol</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">header_eth</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd>
+<dt>#pragrma pack</dt>
+<dd><p class="first">Pragmas are part of most C and C++ language standards but some compilers do not recognize or implement the <code class="docutils literal"><span class="pre">pack</span></code> pragma. In addition, different compilers implement it in different ways. The <code class="docutils literal"><span class="pre">pack</span></code> pragma affects all data structures up the next <code class="docutils literal"><span class="pre">pack</span></code> pragma or end of compile unit. Most pragma implementations accept the push and pop option for pragma nesting. Some pragma pack implementations accept no arguments, most permit either one or two arguments while others allow three arguments. OpenBSD does not recognize this pragma and generates warnings in all cases. Aside from all that, the pack pragma is the most widely supported method for declaring packed structures.</p>
+<div class="last highlight-c"><div class="highlight"><pre><span></span><span class="cp">#pragma pack (push, 1)</span>
+<span class="k">struct</span> <span class="n">header_eth</span>
+<span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">source</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint8_t</span> <span class="n">target</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint16_t</span> <span class="n">protocol</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">header_eth</span><span class="p">;</span>
+<span class="cp">#pragma pack (pop)</span>
+</pre></div>
+</div>
+</dd>
+<dt>The Atheros Way</dt>
+<dd><p class="first">Toolkit programs declares packed structures using all three methods, as shown below.</p>
+<div class="last highlight-c"><div class="highlight"><pre><span></span><span class="cp">#ifndef __packed</span>
+<span class="cp">#ifdef __GNUC__</span>
+<span class="cp">#define __packed __attribute__ ((packed))</span>
+<span class="cp">#else</span>
+<span class="cp">#define __packed</span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef __GNUC__</span>
+<span class="cp">#pragma pack (push, 1)</span>
+<span class="cp">#endif</span>
+
+<span class="k">struct</span> <span class="n">__packed</span> <span class="n">header_eth</span>
+<span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">source</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint8_t</span> <span class="n">target</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">];</span>
+        <span class="kt">uint16_t</span> <span class="n">protocol</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">header_eth</span><span class="p">;</span>
+
+<span class="cp">#ifndef __GNUC__</span>
+<span class="cp">#pragma pack (pop)</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="endian-ness">
+<span id="endianess"></span><h2>Endian-ness<a class="headerlink" href="#endian-ness" title="Permalink to this headline">¶</a></h2>
+<p>Atheros vendor-specific messages contain information in mixed endian format. The Ethernet header portion is sent <em>big endian</em> but the Atheros header and payload are sent in <em>little endian</em>. The traditional endian converstion functions <code class="docutils literal"><span class="pre">htons()</span></code>, <code class="docutils literal"><span class="pre">htonl()</span></code>, <code class="docutils literal"><span class="pre">ntohs()</span></code> and <code class="docutils literal"><span class="pre">ntohl()</span></code> can be used to perform platform independent conversions on the Ethernet header but not the Atheros header payload.</p>
+<p>The Open Powerline Toolkit includes similar macros <code class="docutils literal"><span class="pre">HTOLE16</span></code>, <code class="docutils literal"><span class="pre">HTOLE32</span></code>, <code class="docutils literal"><span class="pre">LE16TOH</span></code> and <code class="docutils literal"><span class="pre">LE32TOH</span></code> in <a class="reference external" href="endian.h.html">endian.h</a> which serve the same function but conform to recommendations for standarized byte order function on Linux, OpenBSD and FreeBSD. Observe that the names are independent of any network implications.</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#if BYTE_ORDER == BIG_ENDIAN</span>
+<span class="cp">#       define LE16TOH(x) __bswap_16(x)</span>
+<span class="cp">#       define LE32TOH(x) __bswap_32(x)</span>
+<span class="cp">#       define LE64TOH(x) __bswap_64(x)</span>
+<span class="cp">#       define HTOLE16(x) __bswap_16(x)</span>
+<span class="cp">#       define HTOLE32(x) __bswap_32(x)</span>
+<span class="cp">#       define HTOLE64(x) __bswap_64(x)</span>
+<span class="cp">#elif BYTE_ORDER == LITTLE_ENDIAN</span>
+<span class="cp">#       define LE16TOH(x) (x)</span>
+<span class="cp">#       define LE32TOH(x) (x)</span>
+<span class="cp">#       define LE64TOH(x) (x)</span>
+<span class="cp">#       define HTOLE16(x) (x)</span>
+<span class="cp">#       define HTOLE32(x) (x)</span>
+<span class="cp">#       define HTOLE64(x) (x)</span>
+<span class="cp">#else</span>
+<span class="cp">#error &quot;Undefined host byte order.&quot;</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>In addition, the Open Powerline Toolkit includes function <a class="reference internal" href="support.html#support-endian"><span class="std std-ref">endian</span></a> that reverses byte order over a variable-length memory region.</p>
+</div>
+<div class="section" id="packet-basics">
+<span id="id3"></span><h2>Packet Basics<a class="headerlink" href="#packet-basics" title="Permalink to this headline">¶</a></h2>
+<p>Local and remote HomePlug AV powerline devices are managed by sending Ethernet frames that contain HomePlug AV formatted management messages. These frames have an 802.3 Ethernet header and a payload that contains the Management Message (MM).</p>
+<p>The Ethernet header must be transmitted in newtwork byte order which is big-endian. The Ethernet payload must be sent in <em>ARM</em> host byte order which is little endian. You should use standard network functions <code class="docutils literal"><span class="pre">htons()</span></code> and <code class="docutils literal"><span class="pre">htonl()</span></code> to write Ethernet headers and <code class="docutils literal"><span class="pre">ntohs()</span></code> and <code class="docutils literal"><span class="pre">ntohl()</span></code> to read them. You should use function <code class="docutils literal"><span class="pre">HTOLE16()</span></code> and <code class="docutils literal"><span class="pre">HTOLE32()</span></code> to write integer payload values and <code class="docutils literal"><span class="pre">LE26TOH()</span></code> and <code class="docutils literal"><span class="pre">LE32TOH()</span></code> to read them.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+</span>
+<span class="o">|</span> <span class="n">Ethernet</span> <span class="n">Header</span>                                       <span class="o">|</span> <span class="n">Ethernet</span> <span class="n">Payload</span>    <span class="o">|</span>
+<span class="o">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+</span>
+</pre></div>
+</div>
+<p>Ethernet headers consist of a destination address (<code class="docutils literal"><span class="pre">ODA</span></code>), a source address (<code class="docutils literal"><span class="pre">OSA</span></code>) and an ethertype (<code class="docutils literal"><span class="pre">MTYPE</span></code>). The ethertype is always 0x88E1 for Homeplug frames of any type. Programmers may use either function <a class="reference external" href="EthernetHeader.c.html">EthernetHeader.c</a> or <a class="reference external" href="EncodeEthernetHeader.c.html">EncodeEthernetHeader</a> to encode a buffer with the ODA and OSA and the HomePlug ethertype. An example appears later on. Structure <code class="docutils literal"><span class="pre">header_eth</span></code> is defined in <a class="reference external" href="ihp.h.html">ihp.h</a> for this purpose.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+</span>
+<span class="o">|</span>          <span class="n">ODA</span>          <span class="o">|</span>          <span class="n">OSA</span>          <span class="o">|</span> <span class="n">MTYPE</span> <span class="o">|</span> <span class="n">Ethernet</span> <span class="n">Payload</span>    <span class="o">|</span>
+<span class="o">+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+</span>
+</pre></div>
+</div>
+<p>Management messages consist of a message header (MMHEADER) and a message entry (MMENTRY). The message header identifies the nature of the message entry that follows it. The acronyms MME and MMENTRY both mean Management Message Entry but they are often used to mean the entire management message or Ethernet frame. This imprecise usage can be confusing at times. Structure <code class="docutils literal"><span class="pre">header_mme</span></code> is defined in <a class="reference external" href="ihp.h.html">ihp.h</a> for this purpose.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+</span>
+<span class="o">|</span>             <span class="o">|</span> <span class="n">MMHEADER</span>              <span class="o">|</span> <span class="n">MMENTRY</span>                                 <span class="o">|</span>
+<span class="o">+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+</span>
+</pre></div>
+</div>
+<p>The message header contains message protocol version (MMV), message type (MMTYPE) and vendor identifier (OUI). The management message entry (MMENTRY) that follows the header contains information unique to a the request (REQ), confirmation (CNF), response (RSP) or indication (IND). Programmers may use the Atheros EncodeAtherosHeader function to encode a buffer with a specific MMTYPE and the Atheros MMV and OUI. AN example appears later on.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+</span>
+<span class="o">|</span>             <span class="o">|</span><span class="n">MMV</span><span class="o">|</span> <span class="n">MMTYPE</span><span class="o">|</span>    <span class="n">OUI</span>    <span class="o">|</span>        <span class="n">MMENTRY</span>                          <span class="o">|</span>
+<span class="o">+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+---+---+---+---+---+---+</span> <span class="o">...</span> <span class="o">+---+---+---+---+---+</span>
+</pre></div>
+</div>
+<p>The MMV value, within MMHEADER, indicates the Homeplug AV Management Message protocol version which determines how the message should be interpreted. The protocol version is defined in the HomePlug AV Specification and may change from time to time. One notable change is the recent insertion of an FMI (Fragment Management Information ) field between MMTYPE and OUI , as shown below.</p>
+<p>In most cases, protocol changes are hidden from the application by the Atheros API functions; however, software developers should set the <code class="docutils literal"><span class="pre">HOMEPLUG_MMV</span></code> constant, defined in <a class="reference external" href="ihp.h.html">ihp.h</a>, to the version appropriate for their firmware or application. The value of this constant enables or disables conditional compilation statements throughout the HomePlug API code base.</p>
+<p>To send an MME, you must encode an Ethernet frame buffer with information and transmit it. To read an MME, you must read an Ethernet frame buffer and decode it. The information necessary to encode or decode Atheros vendor-specific Ethernet frames is covered in the INT6000 Firmware Technical Reference Manual; however, the Atheros HomePlug API includes many buffer encode and decode functions that support basic operational requirements.</p>
+</div>
+<div class="section" id="frame-encoding">
+<span id="id6"></span><h2>Frame Encoding<a class="headerlink" href="#frame-encoding" title="Permalink to this headline">¶</a></h2>
+<p>The following technique illustrates one way to encode a frame buffer with an Ethernet header followed by an Atheros message header. We first declare the frame buffer then a length variable to keep track of how many bytes have actually been encoded. At any time, the value &#8216;buffer + length&#8217; is the address of the next buffer position to encode and the expression &#8216;sizeof (buffer) - length&#8217; is the number of un-encoded bytes remaining in the buffer. Each call to an encoding function will increment the length for the next operation. This technique minimizes the number of intermmediate application variables and makes maximum use of compiler generated constants.</p>
+<div class="section" id="frame-encoding-by-offset">
+<h3>Frame Encoding by Offset<a class="headerlink" href="#frame-encoding-by-offset" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">uint8_t</span> <span class="n">buffer</span> <span class="p">[</span><span class="n">ETHER_MAX_LEN</span><span class="p">];</span>
+<span class="kt">size_t</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">uint8_t</span> <span class="n">OSA</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xB0</span><span class="p">,</span> <span class="mh">0x52</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xD4</span><span class="p">,</span> <span class="mh">0x32</span> <span class="p">};</span>
+<span class="kt">uint8_t</span> <span class="n">ODA</span> <span class="p">[</span><span class="n">ETHER_ADDR_LEN</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xB0</span><span class="p">,</span> <span class="mh">0x52</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="mh">0xF7</span> <span class="p">};</span>
+<span class="kt">uint16_t</span> <span class="n">MMTYPE</span> <span class="o">=</span> <span class="mh">0xA050</span><span class="p">;</span>
+
+<span class="n">length</span> <span class="o">+=</span> <span class="n">EncodeEthernetHeader</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">+</span> <span class="n">length</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">OSA</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">ODA</span><span class="p">);</span>
+<span class="n">length</span> <span class="o">+=</span> <span class="n">EncodeAtherosHeader</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">+</span> <span class="n">length</span><span class="p">,</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">,</span> <span class="n">unit16_t</span> <span class="n">MMTYPE</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">length</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">MME</span><span class="p">))</span>
+<span class="p">{</span>
+        <span class="n">error</span> <span class="p">(...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For those who prefer to use pointers, the following technique accomplishes the same thing because. At any given time, the value bp - buffer is the encoded length.</p>
+</div>
+<div class="section" id="frame-encoding-by-address">
+<h3>Frame Encoding by Address<a class="headerlink" href="#frame-encoding-by-address" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">uint8_t</span> <span class="n">buffer</span> <span class="p">[</span><span class="n">ETHER_MAX_LEN</span><span class="p">];</span>
+<span class="kt">uint8_t</span> <span class="n">bp</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">;</span>
+
+<span class="n">bp</span> <span class="o">+=</span> <span class="n">EncodeEthernetHeader</span> <span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">+</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">-</span> <span class="n">bp</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">OSA</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">ODA</span><span class="p">);</span>
+<span class="n">bp</span> <span class="o">+=</span> <span class="n">EncodeAtherosHeader</span> <span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">+</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">-</span> <span class="n">bp</span><span class="p">,</span> <span class="n">unit16_t</span> <span class="n">MMTYPE</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">bp</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">+</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">MME</span><span class="p">)))</span>
+<span class="p">{</span>
+        <span class="n">error</span> <span class="p">(...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Software</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#security-considerations">Security Considerations</a></li>
+<li><a class="reference internal" href="#platform-options">Platform Options</a><ul>
+<li><a class="reference internal" href="#gnu-linux"><strong class="program">GNU/Linux</strong></a></li>
+<li><a class="reference internal" href="#gnu-linux-with-libpcap">GNU/Linux with Libpcap</a></li>
+<li><a class="reference internal" href="#gnu-linux-with-bpf">GNU/Linux with BPF</a></li>
+<li><a class="reference internal" href="#mac-os-x-with-bpf"><em>Mac OS X</em> with BPF</a></li>
+<li><a class="reference internal" href="#windows-xp-with-winpcap"><em>Windows XP</em> with WinPcap</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gnu-makefiles-on-linux">GNU Makefiles on Linux</a></li>
+<li><a class="reference internal" href="#stand-alone-compiling-on-gnu-linux">Stand-alone Compiling on GNU/Linux</a><ul>
+<li><a class="reference internal" href="#the-makefile-constant">The <code class="docutils literal"><span class="pre">MAKEFILE</span></code> constant</a></li>
+<li><a class="reference internal" href="#id2">Stand-alone Compiling on GNU/Linux</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cross-compiling-on-gnu-linux">Cross-Compiling on GNU/Linux</a><ul>
+<li><a class="reference internal" href="#cross-compiling-with-make-def">Cross-compiling with make.def</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compilation-with-visual-studio-net-2003">Compilation with Visual Studio .NET 2003</a><ul>
+<li><a class="reference internal" href="#microsoft-visual-studio-net-2003">Microsoft Visual Studio .NET 2003</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#microsoft-solution-files">Microsoft Solution Files</a></li>
+<li><a class="reference internal" href="#header-files">Header Files</a></li>
+<li><a class="reference internal" href="#compiler-constants">Compiler Constants</a><ul>
+<li><a class="reference internal" href="#platform-constants">Platform Constants</a></li>
+<li><a class="reference internal" href="#ethernet-constants">Ethernet Constants</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#libpcap-winpcap-and-bpf"><strong class="program">LibPcap</strong>,  <strong class="program">WinPcap</strong> and <strong class="program">BPF</strong></a></li>
+<li><a class="reference internal" href="#structure-packing">Structure Packing</a></li>
+<li><a class="reference internal" href="#endian-ness">Endian-ness</a></li>
+<li><a class="reference internal" href="#packet-basics">Packet Basics</a></li>
+<li><a class="reference internal" href="#frame-encoding">Frame Encoding</a><ul>
+<li><a class="reference internal" href="#frame-encoding-by-offset">Frame Encoding by Offset</a></li>
+<li><a class="reference internal" href="#frame-encoding-by-address">Frame Encoding by Address</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hardware.html"
+                        title="previous chapter">Hardware</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="firmware.html"
+                        title="next chapter">Firmware</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/software.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="firmware.html" title="Firmware"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hardware.html" title="Hardware"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1852 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Hardware" href="hardware.html" />
+    <link rel="prev" title="Qualcomm Atheros Open Powerline Toolkit" href="open-plc-utils.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hardware.html" title="Hardware"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="open-plc-utils.html" title="Qualcomm Atheros Open Powerline Toolkit"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="overview-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The <strong class="program">Open Powerline Toolkit</strong> (vanilla version) may be downloaded from <a class="reference external" href="None">https://github.com/qca/open-plc-utils.git</a> by any interested party. An advanced version (chocolate version) may be downloaded from the Qualcomm Atheros Customer FTP site by parties having permission to do so. The chocolate version includes special programs that perform advanced engineering, production and maintenance tasks. Within this document, we refer to both versions, collectively, as &#8220;the toolkit&#8221;.</p>
+<p>The toolkit contains C Language source code and <em>GNU</em> makefiles to compile many useful programs. It also includes Linux shell scripts that use these programs, in various ways, to interrogate, control and manage Qualcomm Atheros <em>INT6000</em>, <em>INT6300</em>, <em>INT6400</em>, <em>AR7400</em> and later powerline devices. Qualcomm Atheros also provides a similar, but less extensive, toolkit for <em>INT5500</em> powerline devices.</p>
+<p>The toolkit is intended for hardware engineers, verification engineers, field engineers and embedded software developers, consequently, programs are simple and compact. It is not intended for computer novices or retail users. Many customers embed a subset of toolkit programs in products for troubleshooting purposes.</p>
+<p>The toolkit includes extensive HTML documentation and online man pages for users who cannot access installed man pages. HTML documentation starts with file <a class="reference external" href="index.html">docbook/index.html</a>. Online man pages start with file <a class="reference external" href="toolkit.html">docbook/toolkit.html</a>. Qualcomm Atheros recommends that you add these two pages to your browser favorites for later reference.</p>
+<p>All toolkit programs are written in C and have command line intefaces. The source code essentially conforms to <a class="reference external" href="http://www.open-std.org/jtc1/sc22/wg14/www/standards.html#9899">ISO/IEC9899:1999</a>. The source tree cleanly compiles using gcc or pcc on Ubuntu, OpenBSD and MacOSX. It also compiles under Microsoft C with the inclusion of special header files. The command line interface conforms to <a class="reference external" href="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap12.html#tag_12_02">*Section 12.2 Utility Syntax Guidelines*</a> of The Open Group Base Specification Issue 6 (<a class="reference external" href="http://www.opengroup.org/onlinepubs/009695399/mindex.html">*IEEE Std 1003.1, 2004 Edition*</a>).</p>
+<p>The toolkit includes Microsoft Visual Studio .NET project files and solutions files to compile toolkit programs, plus the executable version (<code class="file docutils literal"><span class="pre">.exe</span></code>) of each program and a set of Microsoft installation file (<code class="file docutils literal"><span class="pre">.msi</span></code>) so that the toolkit package comes ready to install and run on any Windows host; however, Qualcomm Atheros does not provide support for Microsoft windows version of this toolkit. Toolkit documentation does provide Windows developers with special guidance on setting up their own Visual Studio projects and solutions, should they want to do that.</p>
+</div>
+<div class="section" id="background">
+<span id="overview-background"></span><h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>HomePlug AV is an industry standard protocol for powerline communications developed by the <a class="reference external" href="http://www.homeplug.org/home">HomePlug Powerline Alliance</a>. Qualcomm Atheros manufactures a family of chipsets that conform to that standard and have MII, UART and SPI host interfaces. The <em>INT6x00</em> and <em>AR7x00</em> series are flagship members of that chipset family. The principle difference between the chipsets is their boot method, cost and speed. The INT6000 requires onboard NVRAM but the <em>INT6300</em>, <em>INT6400</em> and <em>AR7400</em> do not.</p>
+<p>The HomePlug AV protocol is based on IEEE-802.3, has ethertype <code class="docutils literal"><span class="pre">0x88E1</span></code> and uses special message formats. A subset of those message formats is reserved for each chipset vendor to define their own message formats. Qualcomm Atheros uses this vendor-specific subset to communicate between host processors and Qualcomm Atheros devices. This toolkit uses Qualcomm Atheros vendor-specific message formats to communicates with Qualcomm Atheros devices. It also understands Qualcomm Atheros firmware and configuration file formats.</p>
+<p>This toolkit sends and receives Qualcomm Atheros vendor-specific messages but not generic HomePlug AV messages. Qualcomm Atheros vendor-specific management message formats are described in the Qualcomm Atheros <em>HomePlug AV Firmware Technical Reference Manual</em>. If you do not have a copy of this document then you may request one from Qualcomm Atheros.</p>
+</div>
+<div class="section" id="toolkit-distribution">
+<span id="overview-distribution"></span><h2>Toolkit Distribution<a class="headerlink" href="#toolkit-distribution" title="Permalink to this headline">¶</a></h2>
+<p>The Qualcomm Atheros <strong class="program">Open Powerline Toolkit</strong> is distributed using compressed tape archive files named <code class="file docutils literal"><span class="pre">open-plc-utils-x.x.x.tar.gz</span></code> and <code class="file docutils literal"><span class="pre">open-plc-utils-x.x.x.tar.bz2</span></code> and standard compressed archive file named <code class="file docutils literal"><span class="pre">open-plc-utils-x.x.x.zip</span></code>, where <em>x.x.x</em> is the version number. Archive files ending in <code class="file docutils literal"><span class="pre">.gz</span></code> can be decompressed with the Linux <strong class="program">gzip</strong> utility. Archive files ending in <code class="file docutils literal"><span class="pre">.bz2</span></code> can be decompressed with the Linux <strong class="program">bzip2</strong> utility. Archive files ending in <code class="file docutils literal"><span class="pre">.zip</span></code> can be decompressed using the Linux <strong class="program">unzip</strong> utility or the Windows <strong class="program">WinZip</strong> utility. The contents of decompressed archives can be extracted using the Linux <strong class="program">tar</strong> utility. Recent versions of the Linux <strong class="program">tar</strong> utility allow decompression and extraction in one operation. The <strong class="program">WinZip</strong> or <strong class="program">7-zip</strong> program may be used to decompress archives and extract contents on Microsoft Windows platforms.</p>
+<p>Some Windows network administrators enable security software that removes <code class="file docutils literal"><span class="pre">.exe</span></code> and other executable files from <code class="file docutils literal"><span class="pre">.zip</span></code> archives in transit or in-situ. In that case, Windows user may want to download the <code class="file docutils literal"><span class="pre">*.tar.gz</span></code> archive and use a program like <strong class="program">7zip</strong> to unpack the archive file.</p>
+<p>The toolkit includes source code, build scripts, documentation and pre-compiled programs for Microsoft Windows. Some third party libraries may also be included to support Microsoft platforms. Although the Microsoft Windows versions of toolkit programs are pre-compiled and ready-to-run, they are not supported because this package is designed for use on Linux platforms.</p>
+<p>The Windows installer included in this version of the toolkit needs Microsoft .NET 1.1. Windows versions of toolkit programs that communicate with powerline devices need WinPcap 4.1.2 or later. A copy of Microsoft .NET 1.1 and WinPcap 4.1.2 is included in the <code class="file docutils literal"><span class="pre">support</span></code> folder.</p>
+</div>
+<div class="section" id="toolkit-installation-on-linux">
+<span id="install-linux"></span><h2>Toolkit Installation on Linux<a class="headerlink" href="#toolkit-installation-on-linux" title="Permalink to this headline">¶</a></h2>
+<p>The Linux version of the toolkit must be compiled from source code. The only requirement is the standard <strong class="program">GNU/Linux</strong> toolchain consisting of <strong class="program">make</strong>, <strong class="program">gcc</strong> and <strong class="program">ld</strong>. These are included with most <strong class="program">Linux</strong> distributions but may require installation. On <em>Debian</em> based distributions, such as <em>Ubuntu</em>, they may be installed using <strong class="program">apt-get</strong>. On <em>RedHat</em> distributions, such as <em>Fedora</em>, they may be installed using <strong class="program">rpm</strong>. On <em>SuSE</em> based distributions, they may be installed using <strong class="program">YaST2</strong>.</p>
+<div class="section" id="toolkit-installation-on-gnu-linux">
+<h3>Toolkit Installation on GNU/<em>Linux</em><a class="headerlink" href="#toolkit-installation-on-gnu-linux" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h4>Toolkit Installation on GNU/<em>Linux</em><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> cp plc-utils-1.2.1.tar.gz /home/mydir
+<span class="gp">$</span> <span class="nb">cd</span> /home/mydir
+<span class="gp">$</span> tar -vzxf plc-utils-1.2.1.tar.gz
+<span class="gp">$</span> <span class="nb">cd</span> plc-utils-1.2.1
+<span class="gp">$</span> make
+<span class="gp">$</span> sudo make install
+<span class="gp">$</span> make manuals
+</pre></div>
+</div>
+<p>Decompress the archive and extract the contents with the <strong class="program">tar</strong> utility. This will create a folder having the same basename as the archive such that one version will not over-write another. Consult the <strong class="program">tar</strong> man page on your system for detailed instructions. Change directory to the appropriate folder.</p>
+<p>The main package folder contains a recursive <code class="file docutils literal"><span class="pre">Makefile</span></code> that will compile and install all toolkit programs. If you do not want to compile and install all programs then change directory to the appropriate folder and run <strong class="program">make</strong> from there. To compile binary files, type <code class="docutils literal"><span class="pre">make</span></code>. To install binary files, type <code class="docutils literal"><span class="pre">make</span> <span class="pre">install</span></code>. To install man pages, type <code class="docutils literal"><span class="pre">make</span> <span class="pre">manuals</span></code>. The package does not automatically install examples, scripts, applets or man pages.</p>
+<p>We recommend that you <strong class="command">login</strong> as <code class="docutils literal"><span class="pre">root</span></code> user before installing the toolkit; otherwise, you will be prompted for the <code class="docutils literal"><span class="pre">root</span></code> password as each program or component is installed.</p>
+<p>Programs are installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> and man pages are installed in folders <code class="file docutils literal"><span class="pre">/usr/share/man/man1</span></code>. If these folders are not correct for your system, or if you want to install in other folders, then edit the folder names defined in the <a class="reference internal" href="software.html#software-cross-compile"><span class="std std-ref">make.def</span></a> file found in main toolkit folder or over-ride these definitions in subordinate makefiles.</p>
+</div>
+</div>
+<div class="section" id="toolkit-documentation-on-gnu-linux">
+<h3>Toolkit Documentation on GNU/Linux<a class="headerlink" href="#toolkit-documentation-on-gnu-linux" title="Permalink to this headline">¶</a></h3>
+<p>Toolkit web pages are not automatically installed. To access toolkit documentation, point your browser to <a class="reference external" href="index.html">docbook/index.html</a> and add the page to the browser bookmark or favorites list. If you are interested in how the toolkit has been implemented then do the same for page <a class="reference external" href="toolkit.html">docbook/toolkit.html</a>.</p>
+<p>The method described above is only recommended if you do not plan to move or remove toolkit folders. Otherwise, you can merely copy the entire contents of the toolkit <code class="file docutils literal"><span class="pre">docbook</span></code> folder to another folder of your choice and point your browser to the new file locations.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> cp -rv docbook/* /home/mydir/toolkit
+</pre></div>
+</div>
+</div>
+<div class="section" id="toolkit-removal-on-gnu-linux">
+<h3>Toolkit Removal on GNU/<em>Linux</em><a class="headerlink" href="#toolkit-removal-on-gnu-linux" title="Permalink to this headline">¶</a></h3>
+<p>To uninstall installed programs and man pages on Linux, change to the main toolkit folder and type <code class="docutils literal"><span class="pre">make</span> <span class="pre">uninstall</span></code>.</p>
+<div class="section" id="id5">
+<h4>Toolkit Removal on GNU/<em>Linux</em><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> /home/mydir/plc-utils-1.2.1
+<span class="gp">$</span> sudo make uninstall
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="toolkit-installation-on-mac-os-x">
+<span id="install-macosx"></span><h2>Toolkit Installation on Mac OS X<a class="headerlink" href="#toolkit-installation-on-mac-os-x" title="Permalink to this headline">¶</a></h2>
+<p>Toolkit installation on <em>Mac OS X</em> is essentially identical to installation on Linux but special steps are needed before starting.</p>
+<p>First, you must install the toolkit as the <code class="docutils literal"><span class="pre">root</span></code> user or you will be denied permission. The <code class="docutils literal"><span class="pre">root</span></code> user account is disabled by default and so you must enable it in order to login. Follow instructions at <a class="reference external" href="http://support.apple.com/kb/HT1528">Enabling the &#8220;root&#8221; user in Mac OS X</a> to enable the account and login. After installation, toolkit programs should be run from a normal user account.</p>
+<p>Second, <em>Mac OS X</em> does not include C Language development tools by default. You must download and install them in order to build the toolkit. You can download and install them from the Apple website or (if you are ambitious) download, compile and install them from various open source websites. Consider using <a class="reference external" href="https://developer.apple.com/technologies/tools/">Xcode</a> on <strong class="program">Mac OS X Leopard</strong> or <strong class="program">Lion</strong>.</p>
+<p>Login as the root user and download or copy the toolkit archive file to your preferred folder then follow the <a class="reference internal" href="#install-linux"><span class="std std-ref">instructions</span></a> for installing the toolkit on Linux.</p>
+<div class="section" id="setting-the-path-variable-on-os-x">
+<h3>Setting the <code class="docutils literal"><span class="pre">PATH</span></code> variable on <em>OS X</em><a class="headerlink" href="#setting-the-path-variable-on-os-x" title="Permalink to this headline">¶</a></h3>
+<p>While still logged in as the <code class="docutils literal"><span class="pre">root</span></code> user, edit <code class="file docutils literal"><span class="pre">/etc/profile</span></code> and add folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> to the <code class="docutils literal"><span class="pre">PATH</span></code> definition found there. This will ensure that all users can access toolkit programs. The change may not take effect until the next time you login or open a new command shell.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/bin:/sbin:/usr/local/bin&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-the-toolkit-on-mac-os-x">
+<h3>Installing the Toolkit on <em>Mac OS X</em><a class="headerlink" href="#installing-the-toolkit-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
+<p>While still logged in as the <code class="docutils literal"><span class="pre">root</span></code> user, remember to delete the toolkit source folder or, at least change ownership of all files in the toolkit folder, so that you can access and/or remove them later.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> ..
+<span class="gp">$</span> rm -r plc-utils-x.x.x
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="toolkit-installation-on-windows-xp">
+<span id="install-windows-xp"></span><h2>Toolkit Installation on <em>Windows XP</em><a class="headerlink" href="#toolkit-installation-on-windows-xp" title="Permalink to this headline">¶</a></h2>
+<p>The <em>Windows</em> version of the toolkit comes pre-compiled and ready to install and run using the <strong class="program">Windows Installer</strong>. You may copy and distribute installation file <code class="file docutils literal"><span class="pre">plc-utils-x.x.x.msi</span></code>. Users may then click on the installation file to install the package then discard it afterwards. The installation file permits remote installation over the network.</p>
+<p>The version of the Windows Installer used here needs Microsoft <em>.NET Framework 1.1</em> to work correctly. Newer versions of the <em>.NET Framework</em> will not work. The <em>.NET Framework</em> must be installed before the toolkit is installed or the <em>Windows Installer</em> will report dependency errors and refuse to complete installation. Multiple versions of the <em>.NET Framework</em> can coexist under <em>Windows 7</em>. The <em>.NET Framework</em> needed is included in the toolkit <code class="file docutils literal"><span class="pre">support</span></code> folder.</p>
+<p>Windows versions of toolkit programs that communicate with powerline devices all need <em>WinPcap</em> from <a class="reference external" href="http://www.winpcap.org/install/default.htm">winpcap.org</a> to read and write Ethernet frames. <em>WinPcap</em> may be installed before or after toolkit installation but tools that access powerline devices will not run without it. You may want to install <em>WinPcap</em> before starting toolkit installation. If you have <em>Wireshark</em> installed then you probably already have <em>WinPcap</em> installed. A recent copy of <em>WinPcap</em> is included in the toolkit <code class="file docutils literal"><span class="pre">support</span></code> folder.</p>
+<p>Failure to <a class="reference internal" href="#removal-windows-xp"><span class="std std-ref">remove previous toolkit versions</span></a> on some systems may result in the message &#8220;Another version of this product is already installed&#8221; when trying to install a new version. You may want to remove prior version before starting toolkit installation.</p>
+<div class="section" id="obtaining-the-toolkit">
+<h3>Obtaining the Toolkit<a class="headerlink" href="#obtaining-the-toolkit" title="Permalink to this headline">¶</a></h3>
+<p>QCA customers can download the toolkit from the QCA Customer FTP Site.</p>
+<p>QCA employees may be able to download the toolkit from the QCA Application Engineering World FTP site <a class="reference external" href="ftp://appslinux01.qca.qualcomm.com/toolkit/plc-utils/">ftp://appslinux01.qca.qualcomm.com/toolkit/plc-utils/</a>. There are several installers available for Windows. Each installs a subset of the toolkit. Download the desired installer files to your local machine then execute them by right-clicking on them and selecting option &#8220;Run as Administrator&#8221;.</p>
+</div>
+<div class="section" id="installing-the-toolkit">
+<h3>Installing the Toolkit<a class="headerlink" href="#installing-the-toolkit" title="Permalink to this headline">¶</a></h3>
+<p>Use a compression program like <strong class="program">WinZip</strong> to decompress the archive file and extract all files. Use Microsoft <strong class="program">Windows Explorer</strong> to locate file <code class="file docutils literal"><span class="pre">.\VisualStudioNET\plc-utils-x.x.x.msi</span></code> under the main toolkit folder. Click on the file to start the <strong class="program">Windows Installer</strong> then follow the installation instructions.</p>
+<div class="section" id="windows-installer-dialogue">
+<h4>Windows Installer Dialogue<a class="headerlink" href="#windows-installer-dialogue" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/WinXP-WindowsInstaller.png" src="_images/WinXP-WindowsInstaller.png" />
+<p>Older toolkit programs were installed in folder <code class="file docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\Atheros\Toolkit</span></code> but they are now installed in folder <code class="file docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\Qualcomm</span> <span class="pre">Atheros\Open</span> <span class="pre">Powerline</span> <span class="pre">Toolkit</span></code> instead. If you select a different folder, remember it for the next step.</p>
+</div>
+</div>
+<div class="section" id="setting-the-path-variable">
+<h3>Setting the PATH variable<a class="headerlink" href="#setting-the-path-variable" title="Permalink to this headline">¶</a></h3>
+<p><strong class="program">Toolkit</strong> programs have command line interfaces and must be run from an open console window. To simplify program access and minimize the typing required, add the toolkit installation path mentioned above to the <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> environment variable by following steps listed below. If you have <code class="docutils literal"><span class="pre">Administrator</span></code> privileges then we recommend that you edit the system <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> variable; otherwise, you may need to create and/or edit a user <span class="target" id="index-2"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> variable.</p>
+<div class="section" id="control-panel-system-dialogue">
+<h4>Control Panel System Dialogue<a class="headerlink" href="#control-panel-system-dialogue" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/WinXP-PathVariable.png" src="_images/WinXP-PathVariable.png" />
+<ol class="arabic simple">
+<li>On the <strong class="command">Start</strong> menu, select the <strong class="command">Control Panel</strong> option.</li>
+<li>In the <strong class="command">Control Panel</strong> window, select the <strong class="command">System</strong> icon.</li>
+<li>On the <strong class="command">System Properties</strong> dialog box, select the <strong class="command">Advanced</strong> tab.</li>
+<li>On the <strong class="command">Advanced</strong> tab, press the <strong class="command">Environment Variables</strong> button.</li>
+<li>On the <strong class="command">Environment Variables</strong> dialog box, scroll down the <strong class="command">System variables</strong> list and select the <strong class="command">Path</strong> variable then press the <strong class="command">Edit</strong> button.</li>
+<li>On the <strong class="command">Edit System Variable</strong> dialogue box, append the installation path to the <strong class="command">Variable value</strong> field.</li>
+<li>Press the <strong class="command">OK</strong> button.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="removing-the-toolkit">
+<span id="removal-windows-xp"></span><h3>Removing the Toolkit<a class="headerlink" href="#removing-the-toolkit" title="Permalink to this headline">¶</a></h3>
+<p>To remove an existing version of the Qualcomm Atheros <strong class="program">Open Powerline Toolkit</strong> from your system, follow the steps listed below. If the toolkit is not installed on your system then omit these steps. If you are unsure, you can follow them to determine if you have the toolkit installed or you can attempt to install, anyway, and return here if installation is prevented.</p>
+<div class="section" id="control-panel-add-remove-dialogue">
+<h4>Control Panel Add/Remove Dialogue<a class="headerlink" href="#control-panel-add-remove-dialogue" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/WinXP-AddRemoveProgram.png" src="_images/WinXP-AddRemoveProgram.png" />
+<ol class="arabic simple">
+<li>On the <strong class="command">Start</strong> menu, select the <code class="docutils literal"><span class="pre">Control</span> <span class="pre">Panel</span></code> option.</li>
+<li>In the <strong class="command">Control Panel</strong> window, select the <code class="docutils literal"><span class="pre">Add</span> <span class="pre">or</span> <span class="pre">Remove</span> <span class="pre">Programs</span></code> icon.</li>
+<li>On the <strong class="command">Add or Remove Programs</strong> dialog box, scroll down and select the Qualcomm Atheros <code class="docutils literal"><span class="pre">Open</span> <span class="pre">Powerline</span> <span class="pre">Toolkit</span></code> entry then press the <code class="docutils literal"><span class="pre">Remove</span></code> pushbutton.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="section" id="toolkit-installation-on-windows-7">
+<span id="install-windows-7"></span><h2>Toolkit Installation on <em>Windows 7</em><a class="headerlink" href="#toolkit-installation-on-windows-7" title="Permalink to this headline">¶</a></h2>
+<p>The <em>Windows</em> version of the toolkit comes pre-compiled and ready to install and run using the native <strong class="program">Windows Installer</strong>. You may copy and distribute installation file <code class="file docutils literal"><span class="pre">plc-utils-x.x.x.msi</span></code>. Users merely click on the file to install the package and may discard it afterwards. This method of installation permits remote installation over network.</p>
+<p>The version of the Windows Installer used here needs Microsoft <em>.NET Framework 1.1</em> to work correctly. Newer versions of the <em>.NET Framework</em> will not work. The <em>.NET Framework</em> must be installed before the toolkit is installed or the <em>Windows Installer</em> will report dependency errors and refuse to complete installation. Multiple versions of the <em>.NET Framework</em> can coexist under <em>Windows 7</em>. The <em>.NET Framework</em> needed is included in the toolkit <code class="file docutils literal"><span class="pre">support</span></code> folder.</p>
+<p>Failure to <a class="reference internal" href="#removal-windows-7"><span class="std std-ref">remove previous toolkit versions</span></a> on some systems may result in the message &#8220;Another version of this product is already installed&#8221; when trying to install a new version. You may want to remove prior version before starting toolkit installation.</p>
+<p>Windows versions of toolkit programs that communicate with powerline devices all need <em>WinPcap</em> from <a class="reference external" href="http://www.winpcap.org/install/default.htm">winpcap.org</a> to read and write Ethernet frames. <em>WinPcap</em> may be installed before or after toolkit installation but tools that access powerline devices will not run without it. You may want to install <em>WinPcap</em> before starting toolkit installation. If you have <em>Wireshark</em> installed then you probably already have <em>WinPcap</em> installed. A recent copy of <em>WinPcap</em> is included in the toolkit <code class="file docutils literal"><span class="pre">support</span></code> folder.</p>
+<div class="section" id="id7">
+<h3>Obtaining the Toolkit<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>QCA customers can download the toolkit from the QCA Customer FTP Site.</p>
+<p>QCA employees may be able to download the toolkit from the QCA Application Engineering World FTP site <a class="reference external" href="ftp://appslinux01.qca.qualcomm.com/toolkit/plc-utils/">ftp://appslinux01.qca.qualcomm.com/toolkit/plc-utils/</a>. There are several installers available for Windows. Each installs a subset of the toolkit. Download the desired installer files to your local machine then execute them by right-clicking on them and selecting option &#8220;Run as Administrator&#8221;.</p>
+</div>
+<div class="section" id="id8">
+<h3>Installing the Toolkit<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>Older toolkit programs were installed in folder <code class="file docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\Atheros\Toolkit</span></code> by default but now they are installed in <code class="file docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files</span> <span class="pre">(x86)\Qualcomm</span> <span class="pre">Atheros\Open</span> <span class="pre">Powerline</span> <span class="pre">Toolkit</span></code> instead. If you select a different folder during installation then remember it for the next step.</p>
+<div class="section" id="id9">
+<h4>Windows Installer Dialogue<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/Win7-installer-dialogue.png" src="_images/Win7-installer-dialogue.png" />
+<p>Accept install defaults.</p>
+</div>
+</div>
+<div class="section" id="id10">
+<h3>Setting the PATH variable<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p><strong class="program">Toolkit</strong> programs have command line interfaces and must be run from an open console window. To simplify program access and minimize the typing required, add the toolkit installation path mentioned above to the <span class="target" id="index-3"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> environment variable by following steps listed below. If you have <code class="docutils literal"><span class="pre">Administrator</span></code> privileges then we recommend that you edit the system <span class="target" id="index-4"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> variable; otherwise, you may need to create and/or edit a user <span class="target" id="index-5"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code> variable.</p>
+<div class="section" id="id11">
+<h4>Control Panel System Dialogue<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/Win7-system-settings.png" src="_images/Win7-system-settings.png" />
+<ol class="arabic simple">
+<li>On the <strong class="command">Start</strong> menu, select the <strong class="command">Control Panel</strong> option.</li>
+<li>On the <strong class="command">Adjust system settings</strong> page, select the <strong class="command">System</strong> icon.</li>
+<li>On the <strong class="command">View basic information about your computer</strong> page, select the <strong class="command">Advanced system settings</strong> option.</li>
+<li>On the <strong class="command">System Properties</strong> dialog, press the <strong class="command">Environment Variables</strong> button.</li>
+<li>On the <strong class="command">Environment Variables</strong> dialog box, scroll down the <strong class="command">System variables</strong> list and select the <strong class="command">Path</strong> variable then press the <strong class="command">Edit</strong> button.</li>
+<li>On the <strong class="command">Edit System Variable</strong> dialogue box, append the installation path to the <strong class="command">Variable value</strong> field.</li>
+<li>Press the <strong class="command">OK</strong> button.</li>
+</ol>
+<p>Environment variable changes made here do not take effect until a console window is opened. This means that you may need to close and then reopen console windows that depend on the changes. It is a good idea to immediately open a console window and execute a toolkit command in order to confirm that the <code class="docutils literal"><span class="pre">PATH</span></code> variable is properly defined.</p>
+</div>
+</div>
+<div class="section" id="removal-windows-7">
+<span id="id12"></span><h3>Removing the Toolkit<a class="headerlink" href="#removal-windows-7" title="Permalink to this headline">¶</a></h3>
+<p>To remove an existing version of the Qualcomm Atheros <strong class="program">Open Powerline Toolkit</strong> from your system, follow the steps listed below. If the toolkit is not installed on your system then omit these steps. If you are unsure, you can follow them to determine if you have the toolkit installed or you can attempt to install, anyway, and return here if installation is prevented.</p>
+<div class="section" id="id13">
+<h4>Control Panel Add/Remove Dialogue<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<img alt="_images/Win7-remove-program.png" src="_images/Win7-remove-program.png" />
+<ol class="arabic simple">
+<li>On the <strong class="command">Start</strong> menu, select the <code class="docutils literal"><span class="pre">Control</span> <span class="pre">Panel</span></code> option.</li>
+<li>On the <strong class="command">Adjust system settings</strong> page, select the <strong class="command">Programs and Features</strong> icon.</li>
+<li>On the <strong class="command">Uninstall or change a program</strong> page, scroll down and select the appropriate QCA <code class="docutils literal"><span class="pre">Open</span> <span class="pre">Powerline</span> <span class="pre">Toolkit</span></code> entry then press the <code class="docutils literal"><span class="pre">Remove</span></code> pushbutton. There may be several different QCA Open Powerline Toolkit entries so be sure to select the correct one.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="section" id="toolkit-programs">
+<span id="overview-programs"></span><h2>Toolkit Programs<a class="headerlink" href="#toolkit-programs" title="Permalink to this headline">¶</a></h2>
+<p>The Qualcomm Atheros <strong class="program">Open Powerline Toolkit</strong> is a collection of small, command line programs. Each program deals with some aspect of powerline device management. Programs can be combined, in various ways, using shell scripts, to perform sophisticated and complex tasks. With these program, one can identify chipset and firmware version, reset devices, flash devices, identify other powerline network devices, validate <code class="file docutils literal"><span class="pre">*.pib</span></code> and <code class="file docutils literal"><span class="pre">*.nvm</span></code> files, sniff HomePlug AV Ethernet frames, send generic Ethernet frames and so on.</p>
+<p>Program source code is designed to demonstrate device hardware and firmware features and to illustrate techniques for software developers and hardware engineers. The source code may be modified and distributed without obligation to Qualcomm Atheros; however Qualcomm Atheros would appreciate feedback concerning improvements to program useability, reliability or efficiency. Keep in mind that these tools, unlike some other tools, are intended to be simple and compact.</p>
+<p>Most programs in this toolkit start their life on Linux and are eventually ported to other environments. Consequently, not all programs are available in the Windows version of the toolkit but most of them are.</p>
+<p>Program descriptions appear below in alphabetical order. Alternately, you may browse the latest program descriptions and source code <a class="reference external" href="toolkit.html">here</a>.</p>
+<div class="section" id="int6400-device-management">
+<span id="programs-6400-management"></span><h3>INT6400 Device Management<a class="headerlink" href="#int6400-device-management" title="Permalink to this headline">¶</a></h3>
+<p>Programs in this group are older versions that communicate with INT6x00 chipsets. Many still work on AR7x00 chipsets. The main difference is due to the higher PHY data rates on AR7x00 chipsets. The higher data rates must be expressed using 16-bits instead of 8-bits. Consequently, some MME formats have changed.</p>
+<dl class="docutils" id="program-int64host">
+<dt><strong class="program">int64host</strong></dt>
+<dd>A command line utility that waits for and services VS_HST_ACTION messages from a flash-less device <em>INT6300</em> or <em>INT6400</em> device. It is similar to program <a class="reference internal" href="#program-int6khost"><span class="std std-ref">int6khost</span></a> but does not use an SDRAM configuration files. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int64host.7.html">int64host</a> man page for more information.</dd>
+<dt><strong class="program">int6k</strong></dt>
+<dd>A command line utility to inspect and control INT6000 and INT6300 devices connected to the local host. It performs several of the device maintenance functions available in the  Atheros  <strong class="program">Windows Device Manager</strong> but is small enough to run on an embedded system. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">.int6k</span></code>. See the <a class="reference external" href="int6k.7.html">int6k</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-int6k2">
+<dt><strong class="program">int6k2</strong></dt>
+<dd>A command line utility to inspect and control INT6000 and <em>int6300</em> devices connected to the local host. It is similar to <strong class="program">int6k</strong> but calls the  Atheros  <strong class="program">Embedded API</strong>, described in the  Atheros  <em>HomePlug AV API User&#8217;s Guide</em>, to perform device management tasks. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6k2.7.html">int6k2</a> man page for more information.</dd>
+<dt><strong class="program">int6kboot</strong></dt>
+<dd>A command line utility to start and optionally flash INT6300 and INT6400&#8217; devices that have no NVRAM or have a blank or corrupted NVRAM. It communicates with the Atheros  <strong class="program">Bootloader</strong> to configure SDRAM, download runtime firmware and PIB and start firmware execution. Users can optionally request that the same PIB and firmware then be used to flash NVRAM. It is similar to program <a class="reference external" href="int6kf.7.html">int6kf</a> but does not accept an SDRAM configuration file. Instead,  it uses on the <a class="reference external" href="memctl.7a.html">memctl</a> applet. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kboot.7.html">int6kboot</a> man page for more information.</dd>
+<dt><strong class="program">int6kf</strong></dt>
+<dd>A command line utility to start and optionally flash INT6000 and INT6300 devices having no NVRAM or having a blank or corrupted NVRAM. It communicates with the Atheros  <strong class="program">Bootloader</strong> to configure SDRAM, download runtime firmware and PIB and start firmwrae execution. It can also be used to force flash blank or corrupted NVRAM. It is similar to program <a class="reference external" href="int6kboot.7.html">int6kboot</a> but requires an SDRAM parameter file. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kf.7.html">int6kf</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-int6khost">
+<dt><strong class="program">int6khost</strong></dt>
+<dd>A command line utility that waits for and services VS_HST_ACTION messages from a flash-less <em>INT6000</em> or <em>INT6300</em> device. It is similar to program <a class="reference internal" href="#program-int64host"><span class="std std-ref">in64host</span></a> but needs an SDRAM configuration file. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6khost.7.html">int6khost</a> man page for more information.</dd>
+<dt><strong class="program">int6kid</strong></dt>
+<dd>A command line utility that prints the DAK or NMK strings read from one or more devices. It can be used in shell scripts to dynamically obtain device keys and insert them on program command lines as arguments. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kid.7.html">int6kid</a> man page for more information.</dd>
+<dt><strong class="program">int6klist</strong></dt>
+<dd>A command line utility that lists local devices, or remote devices associated with a specific device, on stdout in undecorated format. It can be used in shell scripts to dynamically determine, and then traverse, network topology. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6klist.7.html">int6klist</a> man page for more information.</dd>
+<dt><strong class="program">int6kprobe</strong></dt>
+<dd>A command line utility that probes for neighboring networks. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kprobe.7.html">int6kprobe</a> man page for more information.</dd>
+<dt><strong class="program">int6krule</strong></dt>
+<dd>A command line utility to format and send classification rules to a device. Classification rules are specified using symbolic names for actions, options, conditions and frame fields. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6krule.7.html">int6krule</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-int6ktest">
+<dt><strong class="program">int6ktest</strong></dt>
+<dd>A command line utility that downloads and executes program images stored in an Atheros <code class="file docutils literal"><span class="pre">.nvm</span></code> file. This program can be used to download and execute Atheros hardware diagnostic programs like those in the <code class="file docutils literal"><span class="pre">./applets</span></code> folder. It is not intended to download and start runtime firmware, although it may be used for that. The program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6ktest.7.html">int6ktest</a> man page for more information.</dd>
+<dt><strong class="program">int6kuart</strong></dt>
+<dd>A command line utility used to manage a local powerline device over a host serial line interface. Program command line options are translated to AT-style serial commands and sent to the device. THe primary benefits of using this program, in place of a terminal emulator, is the ability to download parameter blocks and upload paameter blocks and firmware images. The program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./serial</span></code>. See the <a class="reference external" href="int6kuart.7.html">int6kuart</a> man page for more information.</dd>
+<dt><strong class="program">int6kwait</strong></dt>
+<dd>A command line utility that polls the local powerline device and waits for the bootloader or runtime firmware to either stop executing or start executing or wait for a device to associate with another device. It can be used to synchronize scripts with device or network events such as connection make or break, power on or off and firmware stop or start. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kwait.7.html">int6kwait</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="int6400-device-monitoring">
+<span id="programs-6400-monitoring"></span><h3>INT6400 Device Monitoring<a class="headerlink" href="#int6400-device-monitoring" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong class="program">int6klog</strong></dt>
+<dd>A command line utility that exports the runtime watchdog report in binary or XML format. Output is suitable for input to the Atheros Windows Device Manager. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6klog.7.html">int6klog</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-int6krate">
+<dt><strong class="program">int6krate</strong></dt>
+<dd>A command line utility that polls a device and prints the average transmit and receive PHY rates between it and each of it&#8217;s network neighbors. Program output is suitable for loading into a spreadsheet or other program that can process column-oriented information. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6krate.7.html">int6krate</a> man page for more information.
+This program is suitable for use with INT6x00 chipsets but not AR7x00 chipsets due to higher PHY rates. Use program <a class="reference internal" href="#program-amprate"><span class="std std-ref">amprate</span></a> for AR7x00 chipsets and <span class="xref std std-ref">plcrate</span> for mixed chipset environments.</dd>
+<dt><strong class="program">int6kstat</strong></dt>
+<dd>A command line utility that polls a poserline device and prints various network and link statistics in a format suitable for processing by another program. It is a work in progress because we are investigating different ways to present the information. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="int6kstat.7.html">int6kstat</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="ar7400-device-management">
+<span id="programs-7400-management"></span><h3>AR7400 Device Management<a class="headerlink" href="#ar7400-device-management" title="Permalink to this headline">¶</a></h3>
+<p>The programs in this group are essentially identical to those in the INT6x00 group but they support higher PHY data rates offered by the AR7x00 chipsets. Specifically, they handle the new  <code class="docutils literal"><span class="pre">VS_NW_INFO</span></code> and <code class="docutils literal"><span class="pre">VS_LNK_STATS</span></code> message formats.</p>
+<dl class="docutils">
+<dt><strong class="program">ampboot</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampboot.7.html">ampboot</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-amphost">
+<dt><strong class="program">amphost</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amphost.7.html">amphost</a> man page for more information.</dd>
+<dt><strong class="program">ampinit</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampinit.7.html">ampinit</a> man page for more information.</dd>
+<dt><strong class="program">amplist</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amplist.7.html">amplist</a> man page for more information.</dd>
+<dt><strong class="program">amptest</strong></dt>
+<dd>A command line utility that downloads and executes program images stored in an Atheros <code class="file docutils literal"><span class="pre">.nvm</span></code> file. It can be used to download and execute special Atheros hardware diagnostic programs. It is not intended to download and start runtime firmware. The program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amptest.7.html">amptest</a> man page for more information.</dd>
+<dt><strong class="program">amptool</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amptool.7.html">amptool</a> man page for more information.</dd>
+<dt><strong class="program">ampwait</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampwait.7.html">ampwait</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="ar7400-device-monitoring">
+<span id="programs-7400-monitoring"></span><h3>AR7400 Device Monitoring<a class="headerlink" href="#ar7400-device-monitoring" title="Permalink to this headline">¶</a></h3>
+<p>The programs in this group are essentially identical to those in the INT6x00 group but they support higher PHY data rates offered by the AR7x00 chipsets. Specifically, they handle the new  <code class="docutils literal"><span class="pre">VS_NW_INFO</span></code> and <code class="docutils literal"><span class="pre">VS_LNK_STATS</span></code> message formats.</p>
+<dl class="docutils" id="program-amprate">
+<dt><strong class="program">amprate</strong></dt>
+<dd>A command line utility that polls a device and prints the average transmit and receive PHY rates between it and each of it&#8217;s network neighbors. Program output is suitable for loading into a spreadsheet or other program that can process column-oriented information. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amprate.7.html">amprate</a> man page for more information.
+This program is suitable for use with AR7x00 chipsets and later that have higher PHY rates and newer firmware. Use program <a class="reference internal" href="#program-int6krate"><span class="std std-ref">int6krate</span></a> for AR6x00 running earlier runtime firmware that may not recognize newer message formats. Use program <span class="xref std std-ref">plcrate</span> for mixed chipset environments</dd>
+</dl>
+<dl class="docutils" id="program-ampsnif">
+<dt><strong class="program">ampsnif</strong></dt>
+<dd>Enables or disables the powerline sniffer mode on the local powerline device using the VS_SNIFFER message. Use program <a class="reference internal" href="#program-ampsnot"><span class="std std-ref">ampsnot</span></a> to display and/or record sniffer output. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampsnif.7.html">ampsnif</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-ampsnot">
+<dt><strong class="program">ampsnot</strong></dt>
+<dd>Listens for sniffer output from the local powerline device and display results on the console. Use program <a class="reference internal" href="#program-ampsnif"><span class="std std-ref">ampsnif</span></a> to enable or disable sniffer output. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampsnot.7.html">ampsnot</a> man page for more information.</dd>
+<dt><strong class="program">ampstat</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="ampstat.7.html">ampstat</a> man page for more information.</dd>
+<dt><strong class="program">amptone</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="amptone.7.html">amptone</a> man page for more information.</dd>
+<dt><strong class="program">mdustats</strong></dt>
+<dd>A command line utility to collect and display various MDU traffic statistics. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="mdustats.7.html">mdustats</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="ar7420-device-configuration">
+<span id="programs-7420"></span><h3>AR7420 Device Configuration<a class="headerlink" href="#ar7420-device-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Programs in this group understand changes to .nvm file formats and to the device boot and memory flash messages and sequences.</p>
+<dl class="docutils" id="program-plchost">
+<dt><strong class="program">plchost</strong></dt>
+<dd>This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="plchost.7.html">plchost</a> man page for more information.</dd>
+<dt><strong class="program">plctest</strong></dt>
+<dd>A command line utility that downloads and executes small program images stored in older and newer <code class="file docutils literal"><span class="pre">.nvm</span></code> files. It can be used to download and execute small powerline diagnostic programs. It is not intended to download and start runtime firmware. The program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./plc</span></code>. See the <a class="reference external" href="plctest.7.html">plctest</a> man page for more information.
+This program automatically detects the type of .nvm file format and adapts.</dd>
+</dl>
+</div>
+<div class="section" id="parameter-file-management">
+<span id="programs-configure"></span><h3>Parameter File Management<a class="headerlink" href="#parameter-file-management" title="Permalink to this headline">¶</a></h3>
+<p>Programs in this group are used to inspect and change .pib files in various ways. The do not communicate directly with the powerline device. Use program int6k, amptool or plctool to read the PIB from a powerline device or write a PIB to the powerline device.</p>
+<dl class="docutils" id="program-chkpib">
+<dt><strong class="program">chkpib</strong></dt>
+<dd>A command line utility to validate <code class="file docutils literal"><span class="pre">.pib</span></code> files based on their internal checksum, file size and other characteristics. It can also be used to produce a text catalog of <code class="file docutils literal"><span class="pre">.pib</span></code> files. This program is slower than program <a class="reference internal" href="#program-chkpib2"><span class="std std-ref">chkpib2</span></a> but requires less memory to execute. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="chkpib.7.html">chkpib</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-chkpib2">
+<dt><strong class="program">chkpib2</strong></dt>
+<dd>A command line utility to validate <code class="file docutils literal"><span class="pre">.pib</span></code> files based on their internal checksum, file size and other characteristics. It can also be used to produce a text catalog of <code class="file docutils literal"><span class="pre">.pib</span></code> files. This program is faster than program <a class="reference internal" href="#program-chkpib"><span class="std std-ref">chkpib</span></a> but requires more memory to execute. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="chkpib2.7.html">chkpib2</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-getpib">
+<dt><strong class="program">getpib</strong></dt>
+<dd>A free-form means of extracting paremeters from a PIB file when the offset, length and format of the parameter is known. It is a companion to program <a class="reference internal" href="#program-setpib"><span class="std std-ref">setpib</span></a>. The user specifies the filename, a starting offset and a sequence of type/data pairs. Values are echoed in order on the console in the specified format. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="getpib.7.html">getpib</a> man page for more information.</dd>
+<dt><strong class="program">modpib</strong></dt>
+<dd>A command line utility to change the MAC, DAK and/or NMK of an existing PIB file and recompute the checksum. It can also be used to change the manufacturer string, network name and username strings. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="modpib.7.html">modpib</a> man page for more information.</dd>
+<dt><strong class="program">mrgpib</strong></dt>
+<dd>A command line utility that transfers parameters from one PIB file to another. The two files needs not  have the same PIB version. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="mrgpib.7.html">mrgpib</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-pib2xml">
+<dt><strong class="program">pib2xml</strong></dt>
+<dd>An offset-driven XML dump utility for the PIB. It requires an offset description file to be useful. The user specifies an offset description file and a PIB file. The program output an XML description of PIB fields. An example file, <code class="file docutils literal"><span class="pre">piboffset.txt</span></code>,  is included as a basic example. The example offset description file is intentionally incomplete. Complete files are reserved for use by Atheros Field Application Engineers. This program is an alternative to program <a class="reference internal" href="#program-pibdump"><span class="std std-ref">pibdump</span></a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./tools</span></code>. See the <a class="reference external" href="pib2xml.7.html">pib2xml</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-pibcomp">
+<dt><strong class="program">pibcomp</strong></dt>
+<dd>An offset-driven binary file compare utility for the PIB. It requires an offset description file to be useful. The user specifies an offset description file and two binary files. The files are compared,  field by field, and differences are printed on stdout,  field by field. An example file, <code class="file docutils literal"><span class="pre">piboffset.txt</span></code>,  is included as a basic example. The example offset description file is intentionally incomplete. Complete files are reserved for use by Atheros Field Application Engineers. This program is an alternative to program <a class="reference internal" href="#program-pib2xml"><span class="std std-ref">pib2xml</span></a> and a companion to program <a class="reference internal" href="#program-pibdump"><span class="std std-ref">pibdump</span></a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./tools</span></code>. See the <a class="reference external" href="pibcomp.7.html">pibcomp</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-pibdump">
+<dt><strong class="program">pibdump</strong></dt>
+<dd>An offset-driven dump utility for the PIB. It requires an offset description file to be useful. An example file, <code class="file docutils literal"><span class="pre">piboffset.txt</span></code>,  is included as a basic example. The example offset description file is intentionally incomplete. Complete files are reserved for use by Atheros Field Application Engineers. This program is a companion to program <a class="reference internal" href="#program-pibcomp"><span class="std std-ref">pibcomp</span></a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./tools</span></code>. See the <a class="reference external" href="pibdump.7.html">pibdump</a> man page for more information.</dd>
+<dt><strong class="program">pibruin</strong></dt>
+<dd>A command line utility that inserts classifier rules, read from a file, into a PIB file. It is an alternative to program <a class="reference external" href="int6krule.7.html">int6krule</a> and companion to program <a class="reference external" href="pibrump.7.html">pibrump</a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="pibruin.7.html">pibruin</a> man page for more information.
+This program supports INT6300, INT6400 and AR7400 PIBs only and is deprecated.</dd>
+<dt><strong class="program">pibrump</strong></dt>
+<dd>A command line utility that reads classifier rules from a PIB file and prints them on stdout in a format suitable for input to program <a class="reference external" href="pibruin.7.html">pibruin</a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="pibrump.7.html">pibrump</a> man page for more information.</dd>
+<dt><strong class="program">psin</strong></dt>
+<dd>A command line utility to insert an amplitude map into an existing PIB file. The map is read from stdin in text format allowing the output of program <a class="reference external" href="psout.7.html">psout</a> to be piped directly into this program. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="psin.7.html">psin</a> man page for more information.</dd>
+<dt><strong class="program">psout</strong></dt>
+<dd>A command line utility to that exports an amplitude map stored in an existing PIB file. The map is written directly to stdin in text format allowing the output of this program to be piped into the input of program <a class="reference external" href="psin.7.html">psin</a>. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="psout.7.html">psout</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-pxe">
+<dt><strong class="program">pxe</strong></dt>
+<dd>A generic &#8216;Remote PIB Management&#8217; tool. One or more XML files define decimal, hexadecimal and string edits to be applied to a PIB file. The PIB is read, edits are applied, a new checksum is computed and the PIB is saved. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="pxe.7.html">pxe man page</a> for more information.</dd>
+</dl>
+<dl class="docutils" id="program-setpib">
+<dt><strong class="program">setpib</strong></dt>
+<dd>A simple means of setting PIB parameters when the parameter offset, length and format are known. It is an alternative to program <a class="reference internal" href="#program-pxe"><span class="std std-ref">pxe</span></a> and a companion to program <a class="reference internal" href="#program-getpib"><span class="std std-ref">getpib</span></a>. The user specifies the filename, a starting offset and a sequence of type/data pairs. Edits are applied in order and a new checksum is computed. A full or partial dump of the PIB displays the result. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./pib</span></code>. See the <a class="reference external" href="setpib.7.html">setpib</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="firmware-file-management">
+<span id="programs-firmware"></span><h3>Firmware File Management<a class="headerlink" href="#firmware-file-management" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils" id="program-chknvm">
+<dt><strong class="program">chknvm</strong></dt>
+<dd>A command line utility to validate <code class="file docutils literal"><span class="pre">.nvm</span></code> files based on their internal checksum, file size and other characteristics. This program is slower than program <a class="reference internal" href="#program-chknvm2"><span class="std std-ref">chknvm2</span></a> but requires less memory to execute. Optionally, it can be used to display the image headers inside the file. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./nvm</span></code>. See the <a class="reference external" href="chknvm.7.html">chknvm</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-chknvm2">
+<dt><strong class="program">chknvm2</strong></dt>
+<dd>A command line utility to validate <code class="file docutils literal"><span class="pre">.nvm</span></code> files based on their internal checksum, file size and other characteristics. Optionally, it can be used to display the image headers inside the file. This program is faster than program <a class="reference internal" href="#program-chknvm"><span class="std std-ref">chknvm</span></a> but requires more memory to execute. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./nvm</span></code>. See the <a class="reference external" href="chknvm2.7.html">chknvm2</a> man page for more information.</dd>
+<dt><strong class="program">config2cfg</strong></dt>
+<dd>A command line utility to convert an SDRAM configruation file used by the  Atheros  <strong class="program">Windows Device Manager</strong> to the configuration file format used by the Open Powerline Toolkit applications. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./sdram</span></code>. See the <a class="reference external" href="config2cfg.7.html">config2cfg</a> man page for more information.</dd>
+<dt><strong class="program">nvmmerge</strong></dt>
+<dd>A command line utility to combine multiple Atheros image files into one. It is reserved for use by Atheros Field Application Engineers. Use of this probram could void some contractual obligations made by Atheros. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./nvm</span></code>. See the <a class="reference external" href="nvmmerge.7.html">nvmmerge</a> man page for more information.</dd>
+<dt><strong class="program">nvmsplit</strong></dt>
+<dd>A command line utility to extract all constituent images from an Atheros image file. It is reserved for use by Atheros Field Application Engineers. Use of this probram could void some contractual obligations made by Atheros. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./nvm</span></code>. See the <a class="reference external" href="nvmsplit.7.html">nvmsplit</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="ethernet-traffic">
+<span id="programs-ethernet"></span><h3>Ethernet Traffic<a class="headerlink" href="#ethernet-traffic" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong class="program">edru</strong></dt>
+<dd>A command line program that reads one or more Ethernet II (IEEE 802.2) frames and write frame data to stdout as a continuous stream. This program can be used to capture serial data sent from a remote UART-enabled powerline device. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./ether</span></code>. See the <a class="reference external" href="edru.7.html">edru</a> man page for more information.</dd>
+<dt><strong class="program">edsu</strong></dt>
+<dd>A command line program sends one or more files over the network using Ethernet II (IEEE 802.2) Frames. This program can be used to test remote UART-enabled powerline devices. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./ether</span></code>. See the <a class="reference external" href="edsu.7.html">edsu</a> man page for more information.</dd>
+<dt><strong class="program">efsu</strong></dt>
+<dd>A freeform Ethernet frame send utility used to define and send Ethernet packets. Packets are defined in text files containing hexadecimal byte codes plus optional comments and whitespace. Input files are stripped of comments and whitespace then transmitted as Ethernet frames. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./ether</span></code>. See the <a class="reference external" href="efsu.7.html">efsu</a> man page for more information.</dd>
+<dt><strong class="program">hpav</strong></dt>
+<dd>A basic HomePlug AV packet sniffer that displays only HomePlug AV protocol frames on the console as they are sent or arrive on a given interface. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mme</span></code>. See the <a class="reference external" href="hpav.7.html">hpav</a> man page for more information.</dd>
+<dt><strong class="program">pcapdevs</strong></dt>
+<dd>A utility to enumerate <strong class="program">LibPcap</strong> or <strong class="program">WinPcap</strong> devices available on the host. It is compiled but only works if one of these two packages is installed on the host. At present, it is only needed with the Windows version of the Toolkit which is compiled against the <strong class="program">WinPcap</strong> library.  The main source code is located in folder <code class="file docutils literal"><span class="pre">./ether</span></code>. See the <a class="reference external" href="pcapdevs.7.html">pcapdevs</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="passwords-and-keys">
+<span id="programs-passwords"></span><h3>Passwords and Keys<a class="headerlink" href="#passwords-and-keys" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong class="program">hpavkey</strong></dt>
+<dd>A HomePlug AV key generator. Pass phrase arguments are hashed to form the corresponding Device Access Key (DAK), Network Membership Key (NMK) or Network Identifier (NID). This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./crypt</span></code>. See the <a class="reference external" href="hpavkey.7.html">hpavkey</a> man page for more information.</dd>
+<dt><strong class="program">hpavkeys</strong></dt>
+<dd>A HomePlug AV key generator. Pass phrases are read from a file and hashed to form the corresponding Device Access Key (DAK), Network Membership Key (NMK) or Network Identifier (NID). This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./crypt</span></code>. See the <a class="reference external" href="hpavkeys.7.html">hpavkeys</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-mac2pw">
+<dt><strong class="program">mac2pw</strong></dt>
+<dd>A device password generator that prints a range of MAC address and passwords on stdout. It is an alternative to the Atheros Production Test System (PTS) DBBuilder Utility and toolkit program <a class="reference internal" href="#program-mac2pwd"><span class="std std-ref">mac2pwd</span></a>. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./crypt</span></code>. See the <a class="reference external" href="mac2pw.7.html">mac2pw</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-mac2pwd">
+<dt><strong class="program">mac2pwd</strong></dt>
+<dd>A device password generator that reads files containing MAC addresses and prints address/password pairs. It is an alternative to the Atheros Production Test System (PTS) DBBuilder Utility and toolkit program <a class="reference internal" href="#program-mac2pw"><span class="std std-ref">mac2pw</span></a>. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./crypt</span></code>. See the <a class="reference external" href="mac2pwd.7.html">mac2pwd</a> man page for more information.</dd>
+<dt><strong class="program">rkey</strong></dt>
+<dd>A command line utility to dynamically generate distinct HomePlug AV compliant keys from a user created keyfile. It can be used in shell scripts to dynamically insert random and distinct keys on program command lines as arguments. For example, a Linux bash script can reference &#8220;$(rkey -i eth0 -D secret.key)&#8221; inline. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 4555 file permissions. See the discussion on security for more information about file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./crypt</span></code>. See the <a class="reference external" href="rkey.7.html">rkey</a> man page for more information.</dd>
+</dl>
+</div>
+<div class="section" id="mdio-programming">
+<span id="programs-mdio"></span><h3>MDIO Programming<a class="headerlink" href="#mdio-programming" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong class="program">int6kmdio</strong></dt>
+<dd>A command line utility that uses VS_MDIO_COMMAND messages to read and write MDIO registers on a switch chip connected to the local powerline device. MDIO instructions are specified and send as Clause 22 instructions. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code>. See the <a class="reference external" href="int6kmdio.7.html">int6kmdio</a> man page for more information.</dd>
+<dt><strong class="program">int6kmdio2</strong></dt>
+<dd>A command line utility that uses VS_MDIO_COMMAND messages to read and write MDIO registers on a switch chip connected to the local powerline device. Instructions are read as Clause 45 instructions but send as Clause 22 instructions. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code>. See the <a class="reference external" href="int6kmdio2.7.html">int6kmdio2</a> man page for more information.</dd>
+<dt><strong class="program">mdioblock</strong></dt>
+<dd>A command line utility to assemble an Atheros MDIO instruction block from hexadecimal register instructions. MDIO instruction blocks are written to  Atheros powerline devices as modules using the VS_MOD_OP message type. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code>. See the <a class="reference external" href="mdioblock.7.html">mdioblock</a> man page for more information.</dd>
+<dt><strong class="program">mdioblock2</strong></dt>
+<dd>A command line utility to assemble an Atheros MDIO instruction block from hexadecimal register instructions. MDIO instruction blocks are written to  Atheros powerline devices as modules using the VS_MOD_OP message type. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code>. See the <a class="reference external" href="mdioblock2.7.html">mdioblock2</a> man page for more information.</dd>
+<dt><strong class="program">mdiodump</strong></dt>
+<dd>A command line utility to read and display Atheros MDIO custom modules in human readable format. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code>. See the <a class="reference external" href="mdiodump.7.html">mdiodump</a> man page for more information.</dd>
+<dt><strong class="program">mdiogen</strong></dt>
+<dd>A rudimentary command line utility that write a custom MDIO block to a fixed file. The user must edit a data statements, in the main program, to define MDIO command fields. A series of macros then mask, shift and merge the fields to create complete Clause 22 or Clause 45 MDIO commands on output. The program has no dependencies on other toolkit modules and so it will compile anywhere. This program must be manually compiled and it is not automatically installed. The main source code is located in folder <code class="file docutils literal"><span class="pre">./mdio</span></code> and file <a class="reference external" href="mdio.h.html">mdio.h</a> is required for compilation. There are no help files available at this time. If you do not understand how to use it then you may not need it.</dd>
+</dl>
+</div>
+<div class="section" id="serial-programming">
+<span id="programs-serial"></span><h3>Serial Programming<a class="headerlink" href="#serial-programming" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils" id="program-ptsctl">
+<dt><strong class="program">ptsctl</strong></dt>
+<dd>A command line program used to control a bank of three Weeder programmable attenuators. It may be used to construct a Production Test System (PTS) for Qualcomm Atheros <em>SmartLink</em> devices. See program <a class="reference internal" href="#program-weeder"><span class="std std-ref">weeder</span></a> to control a bank of two Weeder programmable attenuators. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./serial</span></code>. See the <a class="reference external" href="ptsctl.7.html">ptsctl</a> man page for more information.</dd>
+<dt><strong class="program">ttycat</strong></dt>
+<dd>A command line program that copies one or more host files to a specific serial port. It can be used to stream serial data to the local UART-enabled powerline device for transmission over powerline. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./serial</span></code>. See the <a class="reference external" href="ttycat.7.html">ttycat</a> man page for more information.</dd>
+</dl>
+<dl class="docutils" id="program-weeder">
+<dt><strong class="program">weeder</strong></dt>
+<dd>A command line program used to control a bank of two Weeder programmable attenuators. It may be used to construct a Production Test System (PTS) for Qualcomm Atheros powerline devices. See program <a class="reference internal" href="#program-ptsctl"><span class="std std-ref">ptsctl</span></a> to control a bank of three Weeder programmable attenuators. This program is installed in folder <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> with 0555 file permissions. The main source code is located in folder <code class="file docutils literal"><span class="pre">./serial</span></code>. See the <a class="reference external" href="weeder.7.html">weeder</a> man page for more information.</dd>
+</dl>
+<p>Atheros  Communications reserves the right to add, remove or rename utility programs or modify their command line options or their functionality in future software releases without any obligation to notify or compensate users of this software.</p>
+</div>
+</div>
+<div class="section" id="toolkit-folders">
+<span id="overview-folders"></span><h2>Toolkit Folders<a class="headerlink" href="#toolkit-folders" title="Permalink to this headline">¶</a></h2>
+<p>The  Atheros  Open Powerline Toolkit package folder has many subfolders. Some contain source code, some contain documentation and others contain shell scripts. Some source folders contain programs that require components in neighboring folders. Consequently, you will see references to relative pathnames like ../folder, throughout source code, makefiles and shell scripts. This notation simplifies development and maintenance and is helpful when locating specific files.</p>
+<p>Folder descriptions appear below in alphabetical order:</p>
+<dl class="docutils">
+<dt>./docbook</dt>
+<dd>HTML pages generated by several methods, but mostly <a class="reference external" href="http://www.docbook.org/">Docbook 4.5</a>. Some pages have been created using special tools that are not provided and will not be made available. The <code class="file docutils literal"><span class="pre">Makefile</span></code> in this folder will compile the core XML source files on GNU/Linux systems that have <strong class="program">Docbook 4.5</strong> installed with extentions by <a class="reference external" href="http://nwalsh.com/">Normal Walsh</a> but it does not install the pages. See <a class="reference internal" href="#install-linux"><span class="std std-ref">Installation on Linux</span></a> for more information.</dd>
+<dt>./ether</dt>
+<dd>Network specific source code that supports raw ethernet packets in a platform independent fashion using plugin modules. The principle feature is the <code class="docutils literal"><span class="pre">channel</span></code> data structure used to read and write raw ethernet packets using network features on GNU/Linux, with or without <strong class="program">libpcap</strong>, and on  <em>Windows</em> with <strong class="program">WinPcap</strong>. The source code in this folder is difficult to port cross-platform due to the way different operating systems implement their system header files and network stacks.</dd>
+<dt>./plc</dt>
+<dd>The main source code for programs that communicate with Qualcomm Atheros powerline devices over Ethernet. The programs in this folder are essential programs for engineers and embedded software developers wanting to explore powerline device behavior. The Makefile in this folder will compile and install programs in <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> on GNU/Linux systems.</dd>
+<dt>./mme</dt>
+<dd>A collection of helper functions dealing with HomePlug and Atheros management messages. They are not needed for proper toolkit operation but they can be useful during development and debugging because they print message content in readable format. Most of these functions require extra memory because they include symbol tables and extra data conversion functions.</dd>
+<dt>./nodes</dt>
+<dd>A collection of functions that comrpise a generic,  light-weight XML parser. Atheros is currently exprimenting with various XML-based applications to support device management on embedded systems. These functions are the core. Currently, they are only used by the <a class="reference internal" href="#program-pxe"><span class="std std-ref">pxe</span></a> and <a class="reference internal" href="#program-int6k2"><span class="std std-ref">int6k2</span></a> programs. See <a class="reference internal" href="support.html#support-xml"><span class="std std-ref">XML Editing Functions</span></a> for more information.</dd>
+<dt>./nvm</dt>
+<dd>Programs,  functions and make files related to Atheros NonVolatile Memory (NVM) files. All programs in this folder either read from or write to NVM files. None communicate with powerline devices. Some of the popular programs are <a class="reference external" href="chknvm.7.html">chknvm</a>, <a class="reference external" href="nvmsplit.7.html">nvmsplit</a> and <a class="reference external" href="nvmmerge.7.html">nvmmerge</a>.</dd>
+<dt>./pib</dt>
+<dd>Programs, functions and make files related to Atheros Parameter Information Block (PIB) files. All programs in this folder either read from or write to PIB files. None communicate with powerline devices. Some of the popular programs are <a class="reference external" href="chkpib.7.html">chkpib</a>, <a class="reference external" href="modpib.7.html">modpib</a>, <a class="reference external" href="getpib.7.html">getpib</a> and <a class="reference external" href="setpib.7.html">setpib</a>.</dd>
+<dt>./serial</dt>
+<dd>Programs, functions and make files related to the Atheros Serial Communication Interface for Powerline devices. All of the programs in this folder communicate using a host serial port. None communicate with powerline devices over Ethernet. The main program of interest is <a class="reference external" href="int6kuart.7.html">int6kuart</a>.</dd>
+<dt>./scripts</dt>
+<dd>Miscellaneous shell scripts that call various programs in this package to perform tasks such as flashing a FW2.0 device. Care must be taken here to ensure that environment variables at the start of each script are appropriate for your system.</dd>
+<dt>./ram</dt>
+<dd>Support modules for reading, printing and checking NVRAM and SDRAM configuration files. The <code class="file docutils literal"><span class="pre">.cfg</span></code> files in this folder have a different format than the <code class="file docutils literal"><span class="pre">.config</span></code> files released with the Atheros Windows <strong class="program">Device Manager</strong>. The files distributed with the Windows <strong class="program">Device Manger</strong> are 64 ASCII character with no checksum. The files in this directory are 32 binary bites with trailing checksum. Users may create new sdram configuration files by compiling <a class="reference external" href="sdram.c.html">sdram.c</a>, using <strong class="command">gcc -o sdram sdram.c</strong> and running it without any command line arguments.</dd>
+<dt>./tools</dt>
+<dd>Source code and header files used by virtually all programs in the toolkit. These files are generic and have application beyond this package. They provide GNU/Linux-style or POSIX-style functionality to programs running in environments that do not have either. They also implement operations like checksum computation and multi-byte hexadecimal encoding and decoding. See <a class="reference internal" href="support.html#support-functions"><span class="std std-ref">Support Function Reference</span></a> for more information.</dd>
+<dt>./VisualStudioNET</dt>
+<dd>Components unique to Microsoft Windows are kept in and under this folder. Specifically, it contains a <em>Visual Studio .NET</em> solution to compile most of the programs in this package using only Microsoft and WinPcap libraries. Compiled .exe files can be run on Windows enabled systems having <strong class="program">WinPcap</strong> installed. Adjustments may be necessary depending on your environment.
+Microsoft does not provide full POSIX support on Windows platforms. Consequently, alternative headers and libraries are included under this folder. For example, an abridged version of <a class="reference external" href="unistd.h.html">unistd.h</a> and an alternative version of <a class="reference external" href="stdint.h.html">stdint.h</a> are included under <code class="file docutils literal"><span class="pre">VisualStudioNET/include</span></code>. Other significant header files included here are <a class="reference external" href="ethernet.h.html">ethernet.h</a>, <a class="reference external" href="if_ether.h.html">if_ether.h</a> and <a class="reference external" href="in.h.html">in.h</a>. Subfolder <code class="file docutils literal"><span class="pre">VisualStudio\Library</span></code> contains <em>WinPcap</em> libraries. These folders are referenced in appropriate compiler and linker options for Microsoft Development environments.</dd>
+</dl>
+</div>
+<div class="section" id="packages">
+<span id="overview-packages"></span><h2>Packages<a class="headerlink" href="#packages" title="Permalink to this headline">¶</a></h2>
+<p>The following table lists programs and the release packages that contains them. Packages contain programs of interest to various customer and engineering groups based on the activities that they normally perform. Some groups may need multiple packages. Some packages are restricted.</p>
+<div class="section" id="program-package-matrix">
+<h3>Program/Package Matrix<a class="headerlink" href="#program-package-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The toolkit is divided into 5 groups loosely based on chipset family, intended audience, network security, intellectual property, code maturity and other criteria. Some individual programs may be hard to classify and so their placement may be subject to some debate.</p>
+<dl class="docutils">
+<dt>amp-utils</dt>
+<dd>Tools developed for <em>INT6000</em>, <em>INT6300</em>, <em>INT6400</em> and <em>AR7400</em> chipsets.
+Some are obsolete but most are still useful.
+This package is a candidate for public distribution under a permissive open source license.</dd>
+<dt>plc-utils</dt>
+<dd>Tools developed for <em>QCA6410</em>, <em>QCA7000</em> and <em>AR7420</em> chipsets.
+These tools handle the newer files formats, hardware boot conventsions and flash memory layouts for chipsets having fixed internal SRAM.
+This package is a candidate for public distribution under a permissive open source license.</dd>
+<dt>nda-utils</dt>
+<dd>Tools designed to manipulate parameter blocks or access reserved or restricted features on powerline devices.
+Most are useful during powerline product development and production but are not needed for proper product operation or maintenance.
+This package is reserved for Qualcomm Atheros customers who sign a non-disclosure agreement covering Qualcomm Atheros intellectual property.
+Parts of this package are candidates for some sort of restrictive license.</dd>
+<dt>key-utils</dt>
+<dd>Tools that generate HomePlug AV compliant keys from device MAC address or user passwords.
+This package is reserved for Qualcomm Atheros customers who sign a non-disclosure agreement related to Qualcomm Atheros powerline intellectual property.
+Parts of this package are candidates for some sort of restrictive license.</dd>
+<dt>qca-utils</dt>
+<dd>Tools that perform restricted or experiemental operations on active powerline devices or parameter information blocks.
+Some of these tools here are one-of-a-kind or could present security risks to active powerline networks.
+This package not not released to customers. It is reserved for Qualcomm Atheros PLC Engineering use.
+Most of this package is a candidate for restrictive license.</dd>
+</dl>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="14%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Program</th>
+<th class="head">amp-utils</th>
+<th class="head">plc-utils</th>
+<th class="head">nda-utils</th>
+<th class="head">key-utils</th>
+<th class="head">qca-utils</th>
+<th class="head">source-only</th>
+<th class="head">deprecated</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CMEncrypt</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>adccap</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>ampagc</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>ampboot</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>amphost</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>ampinit</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>ampID</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>amplist</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>amprate</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>ampsnr</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>ampstat</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>amptest</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>amptone</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>amptool</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>ampwait</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>arpc</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>arpc1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>chknvm</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>chknvm2</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>chkpib</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>chkpib2</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>config2cfg</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>source-only</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>coqos_add</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>coqos_info</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>coqos_man</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>coqos_mod</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>coqos_rel</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>dlinkug</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>edru</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>edsu</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>efbu</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>efeu</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>efru</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>efsu</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>fetchpib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>source-only</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getpib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>grab</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>hpav</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>hpavkey</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>key-utils</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>hpavkeys</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>key-utils</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int64host</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6k</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kbaud</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kboot</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kdetect</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kecho</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6keth</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6khost</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-even"><td>int6kid</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6klist</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6klog</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kmdio</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-even"><td>int6kmdio2</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-odd"><td>int6kmod</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kp</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kpair</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kprobe</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6krate</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6krule</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kstat</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6ktest</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6ktone</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kuart</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>int6kug</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>int6kwait</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>mac2pw</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>key-utils</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>mac2pwd</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>key-utils</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>mdioblock</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>mdioblock2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>mdiodump</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>mdustats</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>mme</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>modpib</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>mrgpib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>netifs</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>nvmmerge</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>nvmsplit</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>odc</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-even"><td>odd</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-odd"><td>odx</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-even"><td>pcapdevs</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>pib2xml</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>pibcomp</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>pibdump</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>pibruin</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>pibrump</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcboot</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcecho</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcfwd</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcget</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plchost</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcId</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcinit</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plclist</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcm</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcmmcinfo</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcmdio16</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcmdio32</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcmod</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcnets</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcrate</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcrule</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcset</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plcstat</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcsnif</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plctest</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plctone</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>plctool</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>plcwait</td>
+<td>&nbsp;</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>po1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>po2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>psgen</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>psin</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>pskey</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>psnotch</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>psout</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>ptsctl</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>pxe</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-even"><td>rkey</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>key-utils</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>sada</td>
+<td>amp-utils</td>
+<td>plc-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>sdram</td>
+<td>amp-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-odd"><td>setpib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>slac</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>deprecated</td>
+</tr>
+<tr class="row-odd"><td>throwpib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>source-only</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>weeder</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>xml2pib</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>nda-utils</td>
+<td>&nbsp;</td>
+<td>qca-utils</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="toolkit-support">
+<span id="overview-toolkit-support"></span><h2>Toolkit Support<a class="headerlink" href="#toolkit-support" title="Permalink to this headline">¶</a></h2>
+<p>Contact the Qualcomm Atheros System Application Engineering Team if you have questions concerning the content, operation, application or direction of this toolkit on GNU/Linux systems. If you are having trouble communicating with Qualcomm Atheros powerline devices using the toolkit, try following the <a class="reference internal" href="procedures.html#procedure-troubleshoot-problems"><span class="std std-ref">troubleshooting</span></a> procedure found later in this document.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#background">Background</a></li>
+<li><a class="reference internal" href="#toolkit-distribution">Toolkit Distribution</a></li>
+<li><a class="reference internal" href="#toolkit-installation-on-linux">Toolkit Installation on Linux</a><ul>
+<li><a class="reference internal" href="#toolkit-installation-on-gnu-linux">Toolkit Installation on GNU/<em>Linux</em></a><ul>
+<li><a class="reference internal" href="#id2">Toolkit Installation on GNU/<em>Linux</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-documentation-on-gnu-linux">Toolkit Documentation on GNU/Linux</a></li>
+<li><a class="reference internal" href="#toolkit-removal-on-gnu-linux">Toolkit Removal on GNU/<em>Linux</em></a><ul>
+<li><a class="reference internal" href="#id5">Toolkit Removal on GNU/<em>Linux</em></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-installation-on-mac-os-x">Toolkit Installation on Mac OS X</a><ul>
+<li><a class="reference internal" href="#setting-the-path-variable-on-os-x">Setting the <code class="docutils literal"><span class="pre">PATH</span></code> variable on <em>OS X</em></a></li>
+<li><a class="reference internal" href="#installing-the-toolkit-on-mac-os-x">Installing the Toolkit on <em>Mac OS X</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-installation-on-windows-xp">Toolkit Installation on <em>Windows XP</em></a><ul>
+<li><a class="reference internal" href="#obtaining-the-toolkit">Obtaining the Toolkit</a></li>
+<li><a class="reference internal" href="#installing-the-toolkit">Installing the Toolkit</a><ul>
+<li><a class="reference internal" href="#windows-installer-dialogue">Windows Installer Dialogue</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-the-path-variable">Setting the PATH variable</a><ul>
+<li><a class="reference internal" href="#control-panel-system-dialogue">Control Panel System Dialogue</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#removing-the-toolkit">Removing the Toolkit</a><ul>
+<li><a class="reference internal" href="#control-panel-add-remove-dialogue">Control Panel Add/Remove Dialogue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-installation-on-windows-7">Toolkit Installation on <em>Windows 7</em></a><ul>
+<li><a class="reference internal" href="#id7">Obtaining the Toolkit</a></li>
+<li><a class="reference internal" href="#id8">Installing the Toolkit</a><ul>
+<li><a class="reference internal" href="#id9">Windows Installer Dialogue</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">Setting the PATH variable</a><ul>
+<li><a class="reference internal" href="#id11">Control Panel System Dialogue</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#removal-windows-7">Removing the Toolkit</a><ul>
+<li><a class="reference internal" href="#id13">Control Panel Add/Remove Dialogue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-programs">Toolkit Programs</a><ul>
+<li><a class="reference internal" href="#int6400-device-management">INT6400 Device Management</a></li>
+<li><a class="reference internal" href="#int6400-device-monitoring">INT6400 Device Monitoring</a></li>
+<li><a class="reference internal" href="#ar7400-device-management">AR7400 Device Management</a></li>
+<li><a class="reference internal" href="#ar7400-device-monitoring">AR7400 Device Monitoring</a></li>
+<li><a class="reference internal" href="#ar7420-device-configuration">AR7420 Device Configuration</a></li>
+<li><a class="reference internal" href="#parameter-file-management">Parameter File Management</a></li>
+<li><a class="reference internal" href="#firmware-file-management">Firmware File Management</a></li>
+<li><a class="reference internal" href="#ethernet-traffic">Ethernet Traffic</a></li>
+<li><a class="reference internal" href="#passwords-and-keys">Passwords and Keys</a></li>
+<li><a class="reference internal" href="#mdio-programming">MDIO Programming</a></li>
+<li><a class="reference internal" href="#serial-programming">Serial Programming</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-folders">Toolkit Folders</a></li>
+<li><a class="reference internal" href="#packages">Packages</a><ul>
+<li><a class="reference internal" href="#program-package-matrix">Program/Package Matrix</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#toolkit-support">Toolkit Support</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="open-plc-utils.html"
+                        title="previous chapter">Qualcomm Atheros Open Powerline Toolkit</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hardware.html"
+                        title="next chapter">Hardware</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/overview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hardware.html" title="Hardware"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="open-plc-utils.html" title="Qualcomm Atheros Open Powerline Toolkit"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

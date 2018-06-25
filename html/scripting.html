@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripting &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Support Function Reference" href="support.html" />
+    <link rel="prev" title="Procedures" href="procedures.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="support.html" title="Support Function Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="procedures.html" title="Procedures"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripting">
+<span id="chapter-scripting"></span><h1>Scripting<a class="headerlink" href="#scripting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="scripting-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The Open Powerline Toolkit comes with a variety of example scripts in the <code class="file docutils literal"><span class="pre">scripts</span></code> folder. They have proven useful to Atheros engineers but may not satisfy your specific needs. This chapter explains how some of these scripts work so that you can modify them to do what you need to do. Most scripts covered in this chapter are intended for a <a class="reference internal" href="hardware.html#hardware-workstation"><span class="std std-ref">Powerline Workstation</span></a>.</p>
+<p>Atheros provides GNU <strong class="program">bash</strong> scripts as examples and does not guarantee that they are suitable in any or all situations. Furthermore,  Atheros may not always update them to reflect changes to toolkit programs. Toolkit command line syntax may change from one release to the next and so Atheros cannot guarantee that older scripts will work with newer programs. The scrips are small,  simple and well organized. Do not run them until you have read them and understand what they do and how they work.</p>
+<p>Sample scripts are available in the <code class="file docutils literal"><span class="pre">scripts</span></code> folder. Some extremely useful ones are <a class="reference external" href="flash.sh.html">flash.sh</a>, <a class="reference external" href="upgrade.sh.html">upgrade.sh</a> and <a class="reference external" href="traffic.sh.html">traffic.sh</a>. They all reference files <a class="reference external" href="hardware.sh.html">hardware.sh</a> and <a class="reference external" href="firmware.sh.html">firmware.sh</a>.</p>
+<p>Although Toolkit programs run under Windows their power is realized through scripts. Scripting requires environmental support for sophisticated symbol substitution and expansion. Most Linux shells are suitable but Microsoft DOS is not. On Windows, consider using installing Cygwin and using their bash shell. Scripting languages <strong class="program">Tcl</strong> and <strong class="program">Python</strong> are suitable alternatives. Another alternative is to write small Windows programs that format and execute the DOS shell commands you want.</p>
+</div>
+<div class="section" id="linux-script-basics">
+<span id="scripting-basics"></span><h2>Linux Script Basics<a class="headerlink" href="#linux-script-basics" title="Permalink to this headline">¶</a></h2>
+<p>We summarize some scripting rules here for those who may not be familiar with Linux scripting. If you do not understand the rules or the syntax or have questions then you should consult Linux documentation available on the internet.</p>
+<p>On Linux, all commands typed in a console window are read and interpreted by a command interpreter called a <strong class="program">shell</strong> program. The are several shell programs available for Linux but we use <strong class="program">bash</strong> exclusively. If you elect to use a different shell program,  like <strong class="program">csh</strong>,  then you will probably need to modify our scripts.</p>
+<p>If you do not set execute permissions you must submit it to the shell for execution. If you set execute permissions on a script file then you can execute it directly by typing the filename. You can set execute permission on Linux with the <strong class="program">chmod</strong> utility as shown in the example below.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> bash script.sh
+<span class="go">...</span>
+<span class="gp">$</span> chmod <span class="m">0755</span> script.sh
+<span class="gp">$</span> script.sh
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>The example above show how to run a script file using <strong class="program">bash</strong> when it does not have execute permissions set. It then shows how to set the execute permissions and run it directly without using <strong class="program">bash</strong>.</p>
+<p>It is good practice to insert a bang-path on the first line of a script to ensure is is executed by the correct shell program, regardless of the shell used to open the script. It is possible to open a script with one shell and have it execute under another shell.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+</pre></div>
+</div>
+<p>The next example shows an example bang-path. The first two characters inform the shell that this file contains scripting commands. The remainder of the bang-path line includes a program path with any options and arguments needed by the program. The shell will invoke that program and pass the rest of the script file to the program as standard input.</p>
+<p>Symbols are defined with the symbol name then an equals sign then the definition text. By convention, symbol names use uppercase letters. The definition consists of all characters from the equals sign to the line end. If a definition contains white space, enclose it in quotes so that it is treated as one string when expanded. Symbol scope ends with the defining file unless it is exported.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">NIC</span><span class="o">=</span>eth0
+<span class="nv">MAC</span><span class="o">=</span>00:B0:52:00:12:34
+<span class="nv">MFG</span><span class="o">=</span><span class="s2">&quot;Intergalactic Software Pirates, Inc.&quot;</span>
+...
+<span class="nb">echo</span> NIC is <span class="si">${</span><span class="nv">NIC</span><span class="si">}</span> MAC is <span class="si">${</span><span class="nv">MAC</span><span class="si">}</span> MFG is <span class="si">${</span><span class="nv">MFG</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>To reference a symbol, precede the variable name with a dollar sign. Atheros scripts go one step further by enclosing the symbol name is braces. This improves readability and simplifies global search-and-replace operations.</p>
+</div>
+<div class="section" id="host-independence">
+<span id="scripting-independence"></span><h2>Host Independence<a class="headerlink" href="#host-independence" title="Permalink to this headline">¶</a></h2>
+<p>Different hosts may use interfaces for different purposes. For example, one host might use <code class="docutils literal"><span class="pre">eth0</span></code> for local network communications and <code class="docutils literal"><span class="pre">eth1</span></code> for powerline communications. Another host might do the opposite. A portability problem is created when scripts use the literal interface names on the command line,  as illustrated below:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+int6k -i eth1 -r
+int6k -i eth2 -r
+</pre></div>
+</div>
+<p>The commands shown above will work on a host where <code class="docutils literal"><span class="pre">eth1</span></code> and <code class="docutils literal"><span class="pre">eth2</span></code> are used for powerline communications but will not work on another host where <code class="docutils literal"><span class="pre">eth1</span></code> or <code class="docutils literal"><span class="pre">eth2</span></code> are configured differently. Editing scripts can become a chore when they contain many interface references. One solution is the consistent use of symbols. For example, the following example provides some degree of portability.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">NIC1</span><span class="o">=</span>eth1
+<span class="nv">NIC2</span><span class="o">=</span>eth2
+
+int6k -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -r
+int6k -i <span class="si">${</span><span class="nv">NIC2</span><span class="si">}</span> -r
+</pre></div>
+</div>
+<p>The commands shown above are an improvment because symbols <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code> can be edited once;  however, if you frequently move many scripts from one host to another then each script must be changed. That can also become a chore. A better solution is to define the symbols <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code> once in a single file and then include the definitions in scripts that need them. For example,  if we created file <code class="file docutils literal"><span class="pre">hardware.sh</span></code> like so ...</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># file: scripts/hardware.sh</span>
+
+<span class="nv">NIC1</span><span class="o">=</span>eth1
+<span class="nv">NIC2</span><span class="o">=</span>eth2
+</pre></div>
+</div>
+<p>... then we could include it in one or more other scripts,  like so ...</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>. ../scripts/hardware.sh
+
+int6k -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -r
+int6k -i <span class="si">${</span><span class="nv">NIC2</span><span class="si">}</span> -r
+</pre></div>
+</div>
+<p>On Linux, the <code class="docutils literal"><span class="pre">.</span></code> command causes the named file to be included in-line as though it were part of the including file. This elminates the need to <code class="docutils literal"><span class="pre">export</span></code> symbol definitions. A full discussion of Linux environment variable scope can be found on the internet. The point is that each host should have it&#8217;s own definitions files stored in a common folder so that other scripts can include them and reference them in a consistent manner.</p>
+<p>Atheros example scripts include two definitions files: <code class="file docutils literal"><span class="pre">hardware.sh</span></code> and <code class="file docutils literal"><span class="pre">firmware.sh</span></code>. File <code class="file docutils literal"><span class="pre">hardware.sh</span></code> defines hardware related symbols as shown below and file <code class="file docutils literal"><span class="pre">firmware.sh</span></code> defines firmware and configuration filenames. They reside in a <code class="file docutils literal"><span class="pre">scripts</span></code> folder and relative path is used to access them. This has proven to work well in most situations.</p>
+<div class="section" id="scripting-hardware-definitions">
+<span id="id1"></span><h3>hardware.sh<a class="headerlink" href="#scripting-hardware-definitions" title="Permalink to this headline">¶</a></h3>
+<p>You should create a <code class="file docutils literal"><span class="pre">hardware.sh</span></code> file in a common folder on each host where you want to execute toolkit scripts. In this way, a script created on one host can be executed on another host without modification.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># file: scripts/hardware.sh</span>
+
+<span class="nv">NIC1</span><span class="o">=</span>eth1
+<span class="nv">NIC2</span><span class="o">=</span>eth2
+<span class="nv">MAC1</span><span class="o">=</span>00:50:04:A5:D9:5A
+<span class="nv">MAC2</span><span class="o">=</span>00:01:03:2B:03:67
+
+<span class="nv">DUT</span><span class="o">=</span>eth1
+</pre></div>
+</div>
+<p>File <code class="file docutils literal"><span class="pre">hardware.sh</span></code> assigns specific values to symbols that are used in many of the scripts found in the <code class="file docutils literal"><span class="pre">scripts</span></code> folder. Some Atheros scripts uses all these symbols and some do not. By convention,  <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code> name the Ethernet interfaces connected to a Golden Node and Device Under Test. <code class="docutils literal"><span class="pre">MAC1</span></code> and <code class="docutils literal"><span class="pre">MAC2</span></code> are the hardware addresses of <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code>,  respectively. These symbols can be referenced in scripts with references like <code class="docutils literal"><span class="pre">${NIC1}</span></code> or <code class="docutils literal"><span class="pre">${MAC1}</span></code>. Of course, you could define other symbols here, as well. See the script under <a class="reference internal" href="procedures.html#procedure-upgrade-device"><span class="std std-ref">Device Upgrade</span></a> as one example of how file <code class="file docutils literal"><span class="pre">hardware.sh</span></code> can be included in another script.</p>
+<p>Some scripts, such as <a class="reference external" href="flash.sh.html">flash.sh</a> and <a class="reference external" href="upgrade.sh.html">upgrade.sh</a>, only operate on one device and do not need to define both <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code>. By convention, these scripts reference interface <code class="docutils literal"><span class="pre">DUT</span></code> only.</p>
+</div>
+<div class="section" id="scripting-firmware-definitions">
+<span id="id4"></span><h3>firmware.sh<a class="headerlink" href="#scripting-firmware-definitions" title="Permalink to this headline">¶</a></h3>
+<p>You should create a <code class="file docutils literal"><span class="pre">firmware.sh</span></code> file in a common folder on each host where you want to execute toolkit scripts. In this way, a script created on one host can be executed on another host without modification.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># file: scripts/firmware.sh</span>
+
+<span class="nv">CFG</span><span class="o">=</span>sdram16mb.cfg
+<span class="nv">CFG</span><span class="o">=</span>sdram64mb.cfg
+
+<span class="nv">PIB</span><span class="o">=</span>v3.3.0.pib
+<span class="nv">NVM</span><span class="o">=</span>v3.3.0-0-5-A-FINAL.nvm
+<span class="nv">NVM</span><span class="o">=</span>v3.3.0-0-5-B-FINAL.nvm
+</pre></div>
+</div>
+<p>File <code class="file docutils literal"><span class="pre">firmware.sh</span></code> assigns specific filenames to symbols that are used in some of the scripts found in the <code class="file docutils literal"><span class="pre">scripts</span></code> folder. Some Atheros scripts use all of these symbols and some do not. By convention,  <code class="docutils literal"><span class="pre">CFG</span></code> defines the SDRAM configuration file used to initialize an <em>INT6000</em> or <em>INT6300</em> device, <code class="docutils literal"><span class="pre">PIB</span></code> defines the Parameter Information Block file to be used and <code class="docutils literal"><span class="pre">NVM</span></code> defines the firmware image file to be used.</p>
+<p>This file is especially useful when working with a specific version of firmware. If there are multiple definitions for a symbol, the last definition is the one that takes effect. At Atheros, this file often contains dozens of definitions and we merely move or copy the ones we want to the end of the file. Our custom scripts then operate on the same configuration, parameter and firmware files until we reorder the definitions in <code class="file docutils literal"><span class="pre">firmware.sh</span></code>.</p>
+</div>
+</div>
+<div class="section" id="checking-device-connection">
+<span id="scripting-a"></span><h2>Checking Device Connection<a class="headerlink" href="#checking-device-connection" title="Permalink to this headline">¶</a></h2>
+<p>You may want to confirm that a device is actually connected to an Etherenet interface before attempting to run a script. Program <a class="reference external" href="int6kwait.7.html">int6kwait</a> can be used for this purpose. We often print a brief message to alert the operator that there is no connection or the device has no power applied.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6kwait -xqsi <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span>
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Device is not connected&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>In the above example,  we invoke <a class="reference external" href="int6kwait.7.html">int6kwait</a> to poll the device connected to a specific Ethernet interface (<code class="docutils literal"><span class="pre">-i</span></code>) until the firmware starts (<code class="docutils literal"><span class="pre">-s</span></code>). The program will return a non-zero return value (<code class="docutils literal"><span class="pre">-x</span></code>) if the device does not start within a given period of time. By default, the timeout period is 60 seconds. On return,  we check the return code then print an error message and exit the script on timeout. Symbol NIC1 must be defined earlier in the script,  possibly in <a class="reference internal" href="#scripting-hardware-definitions"><span class="std std-ref">hardware.sh</span></a>.</p>
+</div>
+<div class="section" id="random-device-identity">
+<span id="scripting-random-identity"></span><h2>Random Device Identity<a class="headerlink" href="#random-device-identity" title="Permalink to this headline">¶</a></h2>
+<p>Some Atheros scripts need random MAC, DAK or NMK strings as arguments to Toolkit programs. Program <a class="reference external" href="rkey.7.html">rkey</a> can be used for this purpose. We demonstrate one way to define symbols here and demonstrate how to use symbols later on.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">DAK</span><span class="o">=</span><span class="k">$(</span>rkey secret.key -D<span class="k">)</span>
+<span class="nv">NMK</span><span class="o">=</span><span class="k">$(</span>rkey secret.key -M<span class="k">)</span>
+</pre></div>
+</div>
+<p>The first statement,  above,  uses program <a class="reference external" href="rkey.7.html">rkey</a> to read file <code class="file docutils literal"><span class="pre">secret.key</span></code> and compute a random DAK (<code class="docutils literal"><span class="pre">-D</span></code>). The ouput string is assigned to symbol DAK. The second statement uses program <a class="reference external" href="rkey.7.html">rkey</a> to read the file <code class="file docutils literal"><span class="pre">secret.key</span></code> and compute a random NMK (<code class="docutils literal"><span class="pre">-M</span></code>). The output is assigned to symbol NMK.</p>
+</div>
+<div class="section" id="actual-device-identity">
+<span id="scripting-actual-identity"></span><h2>Actual Device Identity<a class="headerlink" href="#actual-device-identity" title="Permalink to this headline">¶</a></h2>
+<p>Some scripts need actual MAC, DAK or NMK strings as arguments to Toolkit programs. Program <a class="reference external" href="int6kid.7.html">int6kid</a> can be used for this purpose. We demonstrate one way to define symbols here and demonstrate how to use them later on.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">DAK</span><span class="o">=</span><span class="k">$(</span>int6kid -Di <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span><span class="k">)</span>
+<span class="nv">NMK</span><span class="o">=</span><span class="k">$(</span>int6kid -Mi <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span><span class="k">)</span>
+</pre></div>
+</div>
+<p>The first statement,  above,  uses program <a class="reference external" href="int6kid.7.html">int6kid</a> to echo the DAK (<code class="docutils literal"><span class="pre">-D</span></code>) from the device connected to Ethernet interface <code class="docutils literal"><span class="pre">NIC1</span></code> and assign the output to symbol DAK. The second statement uses program <a class="reference external" href="int6kid.7.html">int6kid</a> to echo the NMK (<code class="docutils literal"><span class="pre">-M</span></code>) of the device connected to Ethernet interface <code class="docutils literal"><span class="pre">NIC1</span></code> and assign the output to symbol NMK.</p>
+</div>
+<div class="section" id="editing-a-pib">
+<span id="scripting-edit-pib"></span><h2>Editing a PIB<a class="headerlink" href="#editing-a-pib" title="Permalink to this headline">¶</a></h2>
+<p>Many scripts place a device in a known state by editing a PIB file and writing it to the device before starting an operation. Program <a class="reference external" href="modpib.7.html">modpib</a> can be used for this purpose. It is safe because only certain values can be changed and, where necessary, certain cross-parameter computations are performed automatically.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>modpib -C <span class="m">0</span> -M next -D <span class="si">${</span><span class="nv">DAK</span><span class="si">}</span> -N <span class="si">${</span><span class="nv">NMK</span><span class="si">}</span> <span class="si">${</span><span class="nv">PIB</span><span class="si">}</span>
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above uses <a class="reference external" href="modpib.7.html">modpib</a> to set the CCo state (<code class="docutils literal"><span class="pre">-C</span></code>), the MAC address (<code class="docutils literal"><span class="pre">-M</span></code>), the DAK (<code class="docutils literal"><span class="pre">-D</span></code>) and the NMK (<code class="docutils literal"><span class="pre">-N</span></code>) in the defined <code class="docutils literal"><span class="pre">PIB</span></code> file. Argument <code class="docutils literal"><span class="pre">0</span></code> means &#8220;CCo Auto&#8221; and  argument <code class="docutils literal"><span class="pre">next</span></code> increments the MAC address. The DAK and NMK were defined earlier in the script. Symbol PIB must be defined earlier in the script,  possibly in <a class="reference internal" href="#scripting-firmware-definitions"><span class="std std-ref">firmware.sh</span></a>.</p>
+<p>Program <a class="reference external" href="modpib.7.html">modpib</a> will print an error message and return a non-zero value on error. We test the return value and exit the script on error to avoid subsequent errors. One could, of course, suppress normal output (<code class="docutils literal"><span class="pre">-q</span></code>) and print your own error message using the Linux <code class="docutils literal"><span class="pre">echo</span></code> utility.</p>
+</div>
+<div class="section" id="initialize-a-device">
+<span id="scripting-initialise-device"></span><h2>Initialize a Device<a class="headerlink" href="#initialize-a-device" title="Permalink to this headline">¶</a></h2>
+<p>Initializing a device involves downloading memory configuration parameters, runtime firmware and runtime parameters into SDRAM and then starting the runtime firmware to make the device fully functional. Program <a class="reference external" href="int6kf.7.html">int6kf</a> can be used for this purpose when the INT6000 <strong class="program">Softloader</strong> or INT6300 <strong class="program">Bootloader</strong> is running. Additionally, program <a class="reference external" href="int6kf.7.html">int6kf</a> can be used to flash blank or corrupted NVRAM once runtime firmware has started.</p>
+<p>Device initialization is only necessary when a device that has no NVRAM or has corrupted NVRAM or has a <strong class="program">Softloader</strong> stored in NVRAM. It is only possible when either the INT6000 <strong class="program">Softloader</strong> or INT6300 <strong class="program">Bootloader</strong> is running. See <a class="reference internal" href="firmware.html#firmware-bootload"><span class="std std-ref">The Boot Process</span></a> for detailed information.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6kf -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -C <span class="si">${</span><span class="nv">CFG</span><span class="si">}</span> -P <span class="si">${</span><span class="nv">PIB</span><span class="si">}</span> -N <span class="si">${</span><span class="nv">NVM</span><span class="si">}</span>
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above uses program <a class="reference external" href="int6kf.7.html">int6kf</a> to download an SDRAM configuration file (<code class="docutils literal"><span class="pre">-C</span></code>), PIB file (<code class="docutils literal"><span class="pre">-P</span></code>) and NVM file (<code class="docutils literal"><span class="pre">-N</span></code>) then start firmware execution. Symbols <code class="docutils literal"><span class="pre">NIC1</span></code>, CFG, PIB and NVM must be defined earlier in the script, perhaps in files <a class="reference internal" href="#scripting-hardware-definitions"><span class="std std-ref">hardware.sh</span></a> and <a class="reference internal" href="#scripting-firmware-definitions"><span class="std std-ref">firmware.sh</span></a>.</p>
+<p>Program <a class="reference external" href="int6kf.7.html">int6kf</a> returns a non-zero value on error. We can check the return code and exit the script on error to avoid subsequent errors. We could, of course, suppress normal output (<code class="docutils literal"><span class="pre">-q</span></code>) and print our own error message using the Linux <code class="docutils literal"><span class="pre">echo</span></code> utility.</p>
+<p>In some cases, we may want to flash a blank or corrupted NVRAM after the runtime firmware has started. We could use program <a class="reference external" href="int6k.7.html">int6k</a> for this purpose but program <a class="reference external" href="int6kf.7.html">int6kf</a> can be used, as well. Essentially, it initializes the device (as above) then downloads the PIB and NVM files again and flashes them into NVRAM.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6kf -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -C <span class="si">${</span><span class="nv">CFG</span><span class="si">}</span> -P <span class="si">${</span><span class="nv">PIB</span><span class="si">}</span> -N <span class="si">${</span><span class="nv">NVM</span><span class="si">}</span> -FF
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above initializes a device with an SDRAM configuration file (<code class="docutils literal"><span class="pre">-C</span></code>),  PIB file (<code class="docutils literal"><span class="pre">-P</span></code>) and NVM file (<code class="docutils literal"><span class="pre">-N</span></code>) as before. Once the runtime firmware has started, the PIB and NVM files are downloaded again and flashed (<code class="docutils literal"><span class="pre">-FF</span></code>) into NVRAM.</p>
+<p>The force-flash option (<code class="docutils literal"><span class="pre">-FF</span></code>) is needed in this case because runtime firmware that has been written directly to SDRAM and started by the local host assumes there is no NVRAM present to flash or there might be <strong class="program">Softloader</strong> firmware stored in NVRAM that must be protected from accidental flashing. Runtime firmware that has been read from NVRAM need not make that assumption.</p>
+</div>
+<div class="section" id="update-a-device">
+<span id="scripting-update-device"></span><h2>Update a Device<a class="headerlink" href="#update-a-device" title="Permalink to this headline">¶</a></h2>
+<p>In some cases we want to replace the runtime firmware or runtime parameters stored in NVRAM. Program <a class="reference external" href="int6k.7.html">int6k</a> can be used for this purpose when runtime firmware is running.</p>
+<p>A device update may be necessary when new runtime firmware or new runtime parameters or both must be programmed into NVRAM. It is only possible when NVRAM is present and the runtime firmware is running.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6k -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -P <span class="si">${</span><span class="nv">PIB</span><span class="si">}</span> -N <span class="si">${</span><span class="nv">NVM</span><span class="si">}</span> -F
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above uses <a class="reference external" href="int6k.7.html">int6k</a> to download a PIB file (<code class="docutils literal"><span class="pre">-P</span></code>) and NVM file (<code class="docutils literal"><span class="pre">-N</span></code>) then flash NVRAM (<code class="docutils literal"><span class="pre">-F</span></code>). Symbol <code class="docutils literal"><span class="pre">NIC1</span></code> must be defined earlier in the script, perhaps in file <a class="reference internal" href="#scripting-hardware-definitions"><span class="std std-ref">hardware.sh</span></a>. Symbols PIB and NVM must also be defined earlier in the script, perhaps in file <a class="reference internal" href="#scripting-firmware-definitions"><span class="std std-ref">firmware.sh</span></a>.</p>
+<p>Program <a class="reference external" href="int6k.7.html">int6k</a> returns a non-zero value on error. We can check the return code and exit the script on error to avoid subsequent errors. We could, of course, suppress normal output (<code class="docutils literal"><span class="pre">-q</span></code>) and print our own error message using the Linux <code class="docutils literal"><span class="pre">echo</span></code> utility.</p>
+<p>In some cases, you may want to preserve the current firmware on a device and update only the PIB. Program <a class="reference external" href="int6k.7.html">int6k</a> can be used for this purpose, as well.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6k -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -P <span class="si">${</span><span class="nv">PIB</span><span class="si">}</span> -C 2
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above downloads a PIB file (<code class="docutils literal"><span class="pre">-P</span></code>) and commits (<code class="docutils literal"><span class="pre">-C</span></code>) the PIB only to NVRAM. There are a variety of device flash scenarios and each requires some varation on one of the examples shown here.</p>
+</div>
+<div class="section" id="generating-powerline-traffic">
+<span id="scripting-traffic"></span><h2>Generating Powerline Traffic<a class="headerlink" href="#generating-powerline-traffic" title="Permalink to this headline">¶</a></h2>
+<p>Once two devices associate, you must send data across the powerline in both direction so that each device can compute a TX and RX PHY rate. One method is to use the efsu program that comes with the Toolkit. The program is designed to send free-form Ethernet frames for test and debug purposes but we can also use it to send lots of junk frames in either direction.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">FRAME</span><span class="o">=</span>frame.hex
+<span class="nv">COUNT</span><span class="o">=</span>1000
+efsu -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -hd <span class="si">${</span><span class="nv">MAC2</span><span class="si">}</span> <span class="si">${</span><span class="nv">FRAME</span><span class="si">}</span> -l <span class="si">${</span><span class="nv">COUNT</span><span class="si">}</span>
+efsu -i <span class="si">${</span><span class="nv">NIC2</span><span class="si">}</span> -hd <span class="si">${</span><span class="nv">MAC1</span><span class="si">}</span> <span class="si">${</span><span class="nv">FRAME</span><span class="si">}</span> -l <span class="si">${</span><span class="nv">COUNT</span><span class="si">}</span>
+efsu -i <span class="si">${</span><span class="nv">NIC1</span><span class="si">}</span> -hd <span class="si">${</span><span class="nv">MAC2</span><span class="si">}</span> <span class="si">${</span><span class="nv">FRAME</span><span class="si">}</span> -l <span class="si">${</span><span class="nv">COUNT</span><span class="si">}</span>
+efsu -i <span class="si">${</span><span class="nv">NIC2</span><span class="si">}</span> -hd <span class="si">${</span><span class="nv">MAC1</span><span class="si">}</span> <span class="si">${</span><span class="nv">FRAME</span><span class="si">}</span> -l <span class="si">${</span><span class="nv">COUNT</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>The example above uses <a class="reference external" href="efsu.7.html">efsu</a> to send the generic Ethernet frame stored in file <code class="file docutils literal"><span class="pre">frame.hex</span></code> between the two Ethernet interfaces <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code> (<code class="docutils literal"><span class="pre">-i</span></code>). In this example, <code class="docutils literal"><span class="pre">NIC1</span></code> and <code class="docutils literal"><span class="pre">NIC2</span></code> are both installed in the host. We have <a class="reference external" href="efsu.7.html">efsu</a> insert the host source address in the OSA field (<code class="docutils literal"><span class="pre">-h</span></code>) and destination address in the ODA field (<code class="docutils literal"><span class="pre">-d</span></code>) of each frame as it is sent. The entire operation sends the same frame <code class="docutils literal"><span class="pre">1000</span></code> times (<code class="docutils literal"><span class="pre">-l</span></code>) in each direction, twice.</p>
+<p>Other methods of generating bi-directional traffic can be used but this method is simple, needs nothing other than the toolkit programs and permits easy synchronization. Program <a class="reference external" href="efsu.7.html">efsu</a> is designed to send custom Etherenet frames, not measure or control data rates,  but the toolkit includes open source program <a class="reference external" href="ttcp.7.html">ttcp</a> which is designed to measure and control data rates.</p>
+</div>
+<div class="section" id="reading-phy-rates">
+<span id="scripting-phy-rates"></span><h2>Reading PHY Rates<a class="headerlink" href="#reading-phy-rates" title="Permalink to this headline">¶</a></h2>
+<p>Atheros powerline devices automatically compute their average PHY rate which can be read and displayed. Average PHY rate is an indication of performance and can be affected by attenuation and ambient powerline noise. Program <a class="reference external" href="int6krate.7.html">int6krate</a> is designed to report the average PHY rate.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>int6krate -xni <span class="si">${</span><span class="nv">NIC2</span><span class="si">}</span>
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="p">?</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Network did not converge&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>The example above uses <a class="reference external" href="int6krate.7.html">int6krate</a> to read and display the average TX and RX PHY rates for the device connected to Ethernet interface <code class="docutils literal"><span class="pre">NIC2</span></code>. Option <code class="docutils literal"><span class="pre">-n</span></code> requests PHY rates. Option <code class="docutils literal"><span class="pre">-x</span></code> exits with a status that can be tested in the subsequent &#8220;if&#8221; statement. Output appears in fix-width columns to facilitate post-processing. Other ways to obtain PHY rates are &#8220;<code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-m</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">int6kstat</span> <span class="pre">-t</span></code>&#8221;.</p>
+</div>
+<div class="section" id="user-interaction">
+<span id="scripting-interaction"></span><h2>User Interaction<a class="headerlink" href="#user-interaction" title="Permalink to this headline">¶</a></h2>
+<p>Scripts should be designed, whenever possible, to perform correctly without user intervention but there are cases where user intervention is appropriate. The following example illustrates one <strong class="program">bash</strong> shell method that only requires user input when default values are wrong.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">MAC</span><span class="o">=</span>00:B0:52:00:BA:BE
+<span class="nb">echo</span> -n <span class="s2">&quot;MAC Address [</span><span class="si">${</span><span class="nv">MAC</span><span class="si">}</span><span class="s2">]: &quot;</span><span class="p">;</span> <span class="nb">read</span>
+<span class="k">if</span> <span class="o">[</span> ! -z <span class="si">${</span><span class="nv">REPLY</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nv">MAC</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">REPLY</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>First, we define symbol MAC with a default value. The Linux <strong class="program">echo</strong> utility prints a prompt on the console that includes the symbol value. The trailing newline is suppressed (<code class="docutils literal"><span class="pre">-n</span></code>) so that text can be typed immediately after the prompt. The <strong class="program">echo</strong> command is terminated with semicolon (<code class="docutils literal"><span class="pre">;</span></code>) so that another command can be included on the same line. The shell <strong class="program">read</strong> statement waits for the user to type something and press the <code class="docutils literal"><span class="pre">enter</span></code> key. The shell will assign the input to shell variable <code class="docutils literal"><span class="pre">REPLY</span></code>. The value of <code class="docutils literal"><span class="pre">REPLY</span></code> is evaluated and used to redefine the symbol only if the input was a non-zero length string.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MAC</span> <span class="n">Address</span> <span class="p">[</span><span class="mi">00</span><span class="p">:</span><span class="n">B0</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="n">BA</span><span class="p">:</span><span class="n">BE</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p>The user will see something like this. If the value is correct the user can press the <code class="docutils literal"><span class="pre">enter</span></code> key to generate a zero length string. Otherwise, the user can type the correct value before pressing the <code class="docutils literal"><span class="pre">enter</span></code> key.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripting</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#linux-script-basics">Linux Script Basics</a></li>
+<li><a class="reference internal" href="#host-independence">Host Independence</a><ul>
+<li><a class="reference internal" href="#scripting-hardware-definitions">hardware.sh</a></li>
+<li><a class="reference internal" href="#scripting-firmware-definitions">firmware.sh</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#checking-device-connection">Checking Device Connection</a></li>
+<li><a class="reference internal" href="#random-device-identity">Random Device Identity</a></li>
+<li><a class="reference internal" href="#actual-device-identity">Actual Device Identity</a></li>
+<li><a class="reference internal" href="#editing-a-pib">Editing a PIB</a></li>
+<li><a class="reference internal" href="#initialize-a-device">Initialize a Device</a></li>
+<li><a class="reference internal" href="#update-a-device">Update a Device</a></li>
+<li><a class="reference internal" href="#generating-powerline-traffic">Generating Powerline Traffic</a></li>
+<li><a class="reference internal" href="#reading-phy-rates">Reading PHY Rates</a></li>
+<li><a class="reference internal" href="#user-interaction">User Interaction</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="procedures.html"
+                        title="previous chapter">Procedures</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="support.html"
+                        title="next chapter">Support Function Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/scripting.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="support.html" title="Support Function Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="procedures.html" title="Procedures"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

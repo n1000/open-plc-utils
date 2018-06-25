@@ -1,0 +1,739 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hardware &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Software" href="software.html" />
+    <link rel="prev" title="Overview" href="overview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="software.html" title="Software"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hardware">
+<span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="hardware-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Atheros Communications, Ocala FL USA designs and manufactures chipsets that permit network communications over powerline. They do no not manufacture powerline communication products for market. Instead, they provide chipsets, reference designs and expertise needed to build powerline communications products. Atheros does manufacture some sample products, in various form factors, for evaluation purposes only.</p>
+</div>
+<div class="section" id="device-form-factors">
+<span id="hardware-form-factors"></span><h2>Device Form Factors<a class="headerlink" href="#device-form-factors" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Wall Adapters</dt>
+<dd>A small unit that plugs into any power outlet and has one RJ45 Ethernet jack. The RJ45 jack can be used to connect the unit to another Ethernet device, such as a hub, switch or computer network interface card using CAT5 Ethernet cable. Two or more such units can be used to connect Ethernet devices over the powerline. For example, a computer on one room can be connected to a network printer in another room. See Atheros Product Brief 27003417 - RD6300-ETH HomePlug AV Wall Adapter Reference Design for more information.</dd>
+<dt>Desktop Adapters</dt>
+<dd>A compact unit having a 6ft power cord, one threaded coax cable F connector and one RJ45 Ethernet jack. Two such units can be used to connect Ethernet devices over either powerline (as above) or coax cable. Use of coax cable improves performance over longer distances and permits network segments to be isolated from each other. See Atheros Product Brief 27002824 - RD6000-ETH HomePlug AV Ethernet Hybrid Adapter Reference Design for more information.</dd>
+<dt>PCI Cards</dt>
+<dd><p class="first">A standard PCI compliant computer card having one DIN powerline connector and one threaded coax cable F connector. The card can be inserted into a PCI bus slot on a computer, or other device. Atheros provides device drivers that make the card behave like an ordinary Ethernet card. Like the desktop unit (above), computers and embedded systems can be connected either over powerline or coax cable. See Atheros Product Brief 27003239 - EK6000-PCI HomePlug AV Card Evaluation Kit for more information.</p>
+<p class="last">PCI cards are no longer available from Atheros but reference designs may be obtained from selected Atheros customers that specialize in PCI designs.</p>
+</dd>
+<dt>Mini-PLC</dt>
+<dd><p class="first">A Mini-PCI form factor card that integrates most components needed to embed HomePlug AV into your product design. Although the card will insert into a Mini-PCI slot, it is not electrically compatible with the Mini-PCI standard. Atheros uses this card in both the RD6000-ETH Desktop Adaptor and the EK6000-PCI Card described above. See Atheros Product Brief <em>27002835 - RD6000-PLC HomePlug AV Mini-PLC Module Reference Design</em> for more information.</p>
+<p>Unlike Wall and Desktop Adapters, the Mini-PLC Cards require a device driver written for the particular operating system used. Atheros provides a device drivers for the Windows XP Operating System and for the Linux 2.4 and Linux 2.6 kernel. These drivers make the PCI card look like an ordinary Ethernet interface card.</p>
+<p class="last">Mini-PLC cards are no longer available from Atheros but cards may be obtained from selected Atheros customers that specialize in PCI designs.</p>
+</dd>
+<dt>Embedded Systems</dt>
+<dd>Atheros offers an expanding family of reference designs for powerline-enabled switches and routers. Most include onboard CPU and enablement software based on Linux, OpenWRT and other suitable operating systems. Atheros will assist customers in adapting the basic hardware and software to suite particular markets.</dd>
+<dt>Chipsets</dt>
+<dd>Atheros offers an expanding family of Powerline enabled chipsets. Several SoC chipsets are also planned to support a variety of communications applications.</dd>
+</dl>
+</div>
+<div class="section" id="device-communications">
+<span id="hardware-device-communications"></span><h2>Device Communications<a class="headerlink" href="#device-communications" title="Permalink to this headline">¶</a></h2>
+<p>Atheros powerline communication chipsets serve as a transparent bridges between an Ethernet network and an active powerline or passive coax cable, effectively extending the Ethernet network. HomePlug AV devices on the powerline, or at either end of a coax cable, will automatically detect each other and establish communications. Normal Ethernet frames that are detected by one HomePlug AV device are passed over powerline or coax to other HomePlug AV devices which then pass the frames on to any Etherenet devices that may be connected to them.</p>
+<p>There are three levels of communication.</p>
+<dl class="docutils">
+<dt>Powerline Communications</dt>
+<dd>HomePlug AV devices use a proprietary protocol defined by the HomePlug Powerline Alliance. In most cases, HomePlug AV communications do not leave the powerline or coax media used to connect devices. Connected devices use this protocol to detect each other, establish connection, encapsulate Ethernet frames and route them between devices. This level of communications is proprietary and hidden. See the HomePlug Powerline Alliance <em>HomePlug AV Specification</em> for more information.</dd>
+<dt>Atheros Device Communications</dt>
+<dd>Atheros devices use a subset of the HomePlug AV protocol, mentioned above, to communicate with a local host processor. The subset is known as
+<code class="docutils literal"><span class="pre">vendor-specific</span> <span class="pre">messages</span></code>
+. Atheros vendor-specific messages are intercepted and processed by Atheros devices. In some cases, they are forwared over powerline or coax to other Atheros devices. Atheros vendor-specific messages are used to interrogate, synchronize, configure and control Atheros devices without affecting HomePlug AV devices from other manufacturers. See the Atheros <em>HomePlug AV Firmware Technical Reference Manual</em> for more information.</dd>
+<dt>Network Traffic</dt>
+<dd>This is the normal network traffic that passes transparently from local Ethernet, over powerline or coax, to remote Ethernet through HomePlug AV devices.</dd>
+</dl>
+</div>
+<div class="section" id="device-configurations">
+<span id="id2"></span><h2>Device Configurations<a class="headerlink" href="#device-configurations" title="Permalink to this headline">¶</a></h2>
+<p>There are several test configurations that can be used to experiment with Atheros powerline communication devices. Configurations vary based on the powerline communications devices you have available to work with. All configurations described here require at least one computer with an Ethernet card and the Open Powerline Toolkit installed. Most configurations require two Atheros powerline devices.</p>
+<p>Open Powerline Toolkit programs let the user specify which Ethernet interface card to use when sending and receiving Ethernet frames. This means that a computer with two interface cards installed can emulate two computers provided there are not internal routing conflicts. To avoid routing conflicts, Atheros recommends that you start with two computers until your are ready for more sophisticated experimentation.</p>
+<p>Open Powerline Toolkit programs default to <code class="docutils literal"><span class="pre">eth0</span></code>     . This allows the computer to be connected to the normal network on <code class="docutils literal"><span class="pre">eth0</span></code> and connected to the powerline network on <code class="docutils literal"><span class="pre">eth1</span></code>. To over-ride the default powerline interfaces, set environment variable <code class="docutils literal"><span class="pre">PLC</span></code> to the desired interface name. All configurations assume that the Ethernet card is installed, the Ethernet driver for that card is loaded and the correct interface is enabled.</p>
+<p>Atheros powerline communication devices radiate across powerline or coax at radio frequencies. If two devices are connected, in any way, without intermmediate filters or isolation, they will attempt to commicate. Additionally, they will attempt to circumvent certain types of powerline noise or competing frequencies which can cause reduce data rates. Atheros recomends that devices under test (DUT) take their power from a shared but isolated power source like an isolation power strip or an uninterruptable power supply.</p>
+<p>( ... explain about powerline isolation ... ) The power strip should have no filtering, surge protectors or electronic cirtuits inside.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">---&gt;</span> <span class="p">[</span><span class="n">ATTENUATOR</span><span class="p">]</span> <span class="o">---&gt;</span> <span class="p">[</span><span class="n">POWER_STRIP</span><span class="p">]</span> <span class="o">---&gt;</span> <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---&gt;</span>
+</pre></div>
+</div>
+<p>Typical configurations can be found in the sections below.</p>
+<div class="section" id="local-host-to-local-device">
+<span id="configuration-1"></span><h3>Local Host to Local Device<a class="headerlink" href="#local-host-to-local-device" title="Permalink to this headline">¶</a></h3>
+<p>This is the simplest configuration. It establishes an Ethernet connection between the host and one powerline device. It can be used to test or program a single powerline device.</p>
+<p>It requires</p>
+<ul class="simple">
+<li>One host computer with an Ethernet interface card</li>
+<li>One CAT-5 Ethernet cable with an RJ-45 connector at either end.</li>
+<li>One Atheros powerline device with RJ-45 connector.</li>
+<li>An isolated power source</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LOCAL_HOST</span><span class="p">]</span> <span class="o">---/</span> <span class="n">ethernet</span> <span class="o">/-----&gt;</span> <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---/</span> <span class="n">powerline</span> <span class="o">/-----&gt;</span>
+</pre></div>
+</div>
+<p>Connect the local host to the powerline device with an ordinary CAT-5 Ethernet cable. Apply power to the powerline device. The local host <em>cannot ping the powerline device</em> because it functions at the data link layer. The local host can interrogate and control the powerline device using
+<a class="reference external" href="int6k.7.html">int6k</a>
+or
+<a class="reference external" href="int6k2.7.html">int6k2</a>
+programs.</p>
+<ul class="simple">
+<li>Type &#8220;int6k -r&#8221; and note the hardware and firmware revision.</li>
+<li>Type &#8220;int6k -I&#8221; and note the device MAC, DAK and NMK.
+.. COMMENT: It must have a unique MAC address and must share the same NMK as the other devices on it&#8217;s logical network.</li>
+<li>Type &#8220;int6k -m&#8221; and confirm that the device detects no other devices indicating proper powerline isolation.</li>
+</ul>
+</div>
+<div class="section" id="local-host-to-remote-device">
+<span id="configuration-2"></span><h3>Local Host to Remote Device<a class="headerlink" href="#local-host-to-remote-device" title="Permalink to this headline">¶</a></h3>
+<p>This configuration is the simplest <em>powerline</em> network configuration. It expands the previous configuration by creating a simple powerline network having two powerline devices. One device, the &#8220;local device&#8221;, is connected to the host via Ethernet. A second device, the &#8220;remote device&#8221;, is connected to the first via powerline.</p>
+<p>It requires</p>
+<ul class="simple">
+<li>One host computer with an Ethernet interface card</li>
+<li>One CAT-5 Ethernet cable with an RJ-45 connector at either end.</li>
+<li>Two Atheros powerline devices, one with RJ-45 connector.</li>
+<li>An isolated power source.</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LOCAL_HOST</span><span class="p">]</span> <span class="o">---/</span> <span class="n">ethernet</span> <span class="o">/-----&gt;</span> <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---/</span> <span class="n">powerline</span> <span class="o">/-----&gt;</span>
+                                   <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---/</span> <span class="n">powerline</span> <span class="o">/-----&gt;</span>
+</pre></div>
+</div>
+<p>Configure the previous network then plug a second powerline device into the same power source as the first powerline device. The local host still cannot ping any Ethernet network devices because there are no remote Ethernet devices to ping but it can interrogate and control both powerline devices.</p>
+</div>
+<div class="section" id="local-host-to-remote-host">
+<span id="configuration-3"></span><h3>Local Host to Remote Host<a class="headerlink" href="#local-host-to-remote-host" title="Permalink to this headline">¶</a></h3>
+<p>This configuration is the simplest <em>Ethernet</em> network configuration. It expands the previous network by connecting the second powerline device to an existing Ethernet network through an Ethernet switch.</p>
+<p>It requires</p>
+<ul class="simple">
+<li>Two host computers, each with an Ethernet interface card</li>
+<li>Two CAT-5 Ethernet cables with RJ-45 connectors at either end.</li>
+<li>Two Atheros powerline devices, each with RJ-45 connector.</li>
+<li>An isolated power source.</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LOCAL_HOST</span><span class="p">]</span>  <span class="o">---/</span> <span class="n">ethernet</span> <span class="o">/-----&gt;</span> <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---/</span> <span class="n">powerline</span> <span class="o">/-----&gt;</span>
+<span class="p">[</span><span class="n">REMOTE_HOST</span><span class="p">]</span> <span class="o">---/</span> <span class="n">ethernet</span> <span class="o">/-----&gt;</span> <span class="p">[</span><span class="n">POWERLINE_DEVICE</span><span class="p">]</span> <span class="o">---/</span> <span class="n">powerline</span> <span class="o">/-----&gt;</span>
+</pre></div>
+</div>
+<p>Configure the previous network then plug the second powerline device into an Ethernet switch connected to an exiting Ethernet network. The local host can now ping other Ethernet network devices on the.</p>
+</div>
+</div>
+<div class="section" id="powerline-workstations">
+<span id="hardware-workstation"></span><h2>Powerline Workstations<a class="headerlink" href="#powerline-workstations" title="Permalink to this headline">¶</a></h2>
+<p>The Open Powerline Toolkit is a collection of independent programs. Individually, they perform basic but useful operations on powerline communication devices and associated support files such as PIB and NVM files. Collectively, they can perform many types of engineering experiments, functional tests and production tasks. Their simplicity and high degree of flexibility lets customers adapt an off-the-shelf linux host to meet a wide range of production requirements. We call this configuration a &#8220;powerline workstation&#8221;.</p>
+<p>This section explains how to configure a powerline workstation and setup the Open Powerline Toolkit on that workstation. It covers some necessary aspects of Linux and the Toolkit but it is not a Linux tutorial or a Open Powerline Toolkit tutorial. Linux essentials are covered on the Internet and Open Powerline Toolkit essentials are covered in other sections of this documentation and on-line man pages. Although some typical configurations are illustrated, many variations are possible and are left to the customer to develop based on our examples. There is no single correct way to do anything.</p>
+<div class="section" id="host-hardware">
+<span id="hardware-host-hardware"></span><h3>Host Hardware<a class="headerlink" href="#host-hardware" title="Permalink to this headline">¶</a></h3>
+<p>A powerline workstation host has no special hardware requirements. Any host capable of running Linux and supporting multiple Ethernet cards will do. For example, a 450mhz CPU having 128mb of memory, one 3gb disk and three 10/100 Ethernet cards is adequate.</p>
+<p>Production tasks such as device initialization or firmware upgrade require one Ethernet card. Experimentation and functional testing typically require two Ethernet cards. Atheros recommends three Ethernet cards so that the host can communicate with other hosts over a local area network while talking to powerline devices. Atheros also recommends that all Ethernet cards installed support at least 100mbps and be of the same type to simplify network configuration.</p>
+</div>
+<div class="section" id="host-software">
+<span id="hardware-host-software"></span><h3>Host Software<a class="headerlink" href="#host-software" title="Permalink to this headline">¶</a></h3>
+<p>Atheros recommends installiing a Debian-based or Ubuntu-based Linux distribution due to the simplicity of network configuration. Redhat-based or SuSE-based distributions are also acceptable. A complete GNU toolchain is required to compile and install the Open Powerline Toolkit. Atheros uses GNU <strong class="program">make</strong> 3.8.0, GNU <strong class="program">gcc</strong> 3.3.5 and GNU <strong class="program">ld</strong> 2.15. If these components are not installed then you must install them. Linux system installation and configuration is beyond the scope of this documentation but there is a wealth of information available on the Internet.</p>
+<p>Of course, the Open Powerline Toolkit needs to be installed and successful installation proves that all required Linux components are installed correctly. See <a class="reference internal" href="overview.html#install-linux"><span class="std std-ref">Installation on Linux</span></a> for more information on how to install the Open Powerline Toolkit.</p>
+</div>
+<div class="section" id="network-configuration">
+<span id="hardware-network"></span><h3>Network Configuration<a class="headerlink" href="#network-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Linux will assign interface names like <code class="docutils literal"><span class="pre">eth0</span></code>, <code class="docutils literal"><span class="pre">eth1</span></code> and <code class="docutils literal"><span class="pre">eth2</span></code> to each installed network card. Atheros recommends that <code class="docutils literal"><span class="pre">eth0</span></code> be connected to your local network so that you can communicate with other hosts on that network. The other two interface cards can then be connected to Atheros devices that are plugged into an isolated power-strip. Of course, one CAT-5 Ethenet cable will be needed for each Ethernet card installed.</p>
+<p>Interfaces <code class="docutils literal"><span class="pre">eth1</span></code> and <code class="docutils literal"><span class="pre">eth2</span></code> should be assigned IP addresses on a separate sub-net so that you can <strong class="program">ping</strong> one card from the other over the powerline without sending traffic over the local network. Remember that powerline devices have MAC addresses but not IP addresses. Also,  Linux <strong class="program">ping</strong> uses the routing table to route messages and so you may need to use the <code class="docutils literal"><span class="pre">-I</span></code> option when pinging over the powerline. Otherwise, ping packets may go out over the local network by default.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ifconfig
+<span class="go">eth0      Link encap:Ethernet  HWaddr 00:50:04:A5:D9:5A</span>
+<span class="go">          inet addr:192.168.99.12  Bcast:192.168.99.255  Mask:255.255.255.0</span>
+<span class="go">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span>
+
+<span class="go">eth1      Link encap:Ethernet  HWaddr 00:01:03:2B:03:67</span>
+<span class="go">          inet addr:192.168.101.10  Bcast:192.168.101.255  Mask:255.255.255.0</span>
+<span class="go">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span>
+
+<span class="go">eth2      Link encap:Ethernet  HWaddr 00:01:03:2B:03:73</span>
+<span class="go">          inet addr:192.168.101.11  Bcast:192.168.101.255  Mask:255.255.255.0</span>
+<span class="go">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span>
+
+<span class="go">lo        Link encap:Local Loopback</span>
+<span class="go">          inet addr:127.0.0.1  Mask:255.0.0.0</span>
+<span class="go">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</span>
+</pre></div>
+</div>
+<p>The abbreviated <strong class="program">ifconfig</strong> console display,  shown above,  illustrates a typical Ethernet configuration using three cards,  as recommended by Atheros. Interface <code class="docutils literal"><span class="pre">eth0</span></code> is on the <code class="docutils literal"><span class="pre">192.168.99.0</span></code> subnet which serves as the local network, in this case. Interfaces <code class="docutils literal"><span class="pre">eth1</span></code> and <code class="docutils literal"><span class="pre">eth2</span></code> are both on the <code class="docutils literal"><span class="pre">192.168.101.0</span></code> subnet which serves as the powerline network, in this case.</p>
+<p>Although not required, installing both <strong class="program">wireshark</strong> and <strong class="program">tshark</strong> is a great idea because they can be used to monitor and log network traffic on any or all of the Ethernet interfaces during various operations.</p>
+</div>
+<div class="section" id="isolated-power-strip">
+<span id="hardware-powerstrip"></span><h3>Isolated Power-strip<a class="headerlink" href="#isolated-power-strip" title="Permalink to this headline">¶</a></h3>
+<p>Atheros devices have a way of finding each other over powerline and sometimes across nearby powerlines. Power-strip isolation prevents cross-talk with other powerline devices that may be plugged into nearby. Proper isolation is not critical when getting started but can be critical in technical evaluation and production environments.</p>
+<p>There are many ways to isolate powerline devices. One way is to plug the powerline workstation and the power-strip into an Uninterruptable Power Supply (UPS). Atheros also provides several reference designs for both expensive and inexpensive hardware that can be used to isolate devices and workstations.</p>
+<p>Atheros powerline devices tend to work best when there is some signal attenuation over powerline or coax connections. Engineering evaluation configurations should insert some type of variable attenuation between powerline devices to measure the performance of their own powerline device designs. Consult with your Atheros Field Application Engineer on this matter.</p>
+</div>
+</div>
+<div class="section" id="send-to-self-patch">
+<span id="hardware-send-to-self"></span><h2>Send-to-self Patch<a class="headerlink" href="#send-to-self-patch" title="Permalink to this headline">¶</a></h2>
+<p>One advantage of <em>Linux</em> powerline workstations is the ability to control the low-level networking environment. ISO Layer 2 traffic can be easily directed from one Ethernet interface to another on the same host but Layer 3 traffic is a different matter because routing software merely routes this type of traffic internally.</p>
+<p>A <em>Linux</em> kernel <a class="reference external" href="http://www.ssi.bg/~ja/#loop">patch</a> is available that will allow ISO Layer 3 traffic to be routed from one Ethernet interface to another on the same host. With this patch, multiple instances of a traffic generator,  like <strong class="program">ttcp</strong> or <strong class="program">iperf</strong>, can be effectively deployed on the same host without modification.</p>
+<p>This patch is useful for testing on a closed network but it could pose a security risk to the local host when connected to a public network. Kernels having this patch installed should have a special designation such as &#8220;linux-2.6.28-send-to-self&#8221; so that users are aware that the patch is installed.</p>
+<div class="section" id="send-to-self-patch-description">
+<h3>&#8220;send-to-self&#8221; Patch Description<a class="headerlink" href="#send-to-self-patch-description" title="Permalink to this headline">¶</a></h3>
+<p>The following is the full, original patch description.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>        <span class="n">Send</span><span class="o">-</span><span class="n">To</span><span class="o">-</span><span class="n">Self</span> <span class="n">interface</span> <span class="n">flag</span>
+        <span class="n">Julian</span> <span class="n">Anastasov</span> <span class="o">&lt;</span><span class="n">ja</span><span class="nd">@ssi</span><span class="o">.</span><span class="n">bg</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">July</span> <span class="mi">2003</span>
+
+        <span class="n">Patches</span> <span class="k">for</span> <span class="n">different</span> <span class="n">kernels</span><span class="p">:</span>
+
+        <span class="n">send</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="bp">self</span><span class="o">-</span><span class="mf">2.4</span><span class="o">.</span><span class="mi">21</span><span class="o">-</span><span class="mf">1.</span><span class="n">diff</span>
+        <span class="n">send</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="bp">self</span><span class="o">-</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">73</span><span class="o">-</span><span class="mf">1.</span><span class="n">diff</span>
+
+        <span class="n">The</span>  <span class="n">presented</span> <span class="n">patch</span> <span class="n">implements</span> <span class="n">routing</span> <span class="n">of</span> <span class="n">traffic</span> <span class="n">between</span> <span class="n">local</span>
+<span class="n">IP</span> <span class="n">addresses</span> <span class="n">externally</span> <span class="n">via</span> <span class="n">ethernet</span> <span class="n">interfaces</span><span class="o">.</span> <span class="n">This</span> <span class="n">patch</span> <span class="ow">is</span> <span class="n">basically</span>
+<span class="n">the</span> <span class="n">Ben</span> <span class="n">Greear</span><span class="s1">&#39;s send-to-self work but reimplemented entirely on routing</span>
+<span class="n">level</span><span class="o">.</span>   <span class="n">The</span> <span class="n">idea</span> <span class="ow">is</span>  <span class="n">to</span> <span class="k">return</span> <span class="n">output</span> <span class="n">route</span>  <span class="n">via</span> <span class="n">external</span> <span class="n">interfaces</span> <span class="k">if</span>
+<span class="n">path</span> <span class="n">between</span> <span class="n">two</span> <span class="n">local</span> <span class="n">IP</span> <span class="n">addresses</span> <span class="ow">is</span> <span class="n">requested</span> <span class="ow">and</span> <span class="n">they</span> <span class="n">are</span> <span class="n">configured</span>
+<span class="n">on</span> <span class="n">different</span> <span class="n">interfaces</span> <span class="k">with</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">DEVNAME</span><span class="o">/</span><span class="n">loop</span> <span class="nb">set</span> <span class="n">to</span>
+<span class="mf">1.</span>    <span class="n">As</span>  <span class="n">result</span><span class="p">,</span>  <span class="n">arp_filter</span>  <span class="p">(</span><span class="k">if</span>  <span class="n">enabled</span>  <span class="o">-</span>  <span class="n">the</span>  <span class="n">recommended</span>  <span class="n">value</span><span class="p">)</span>
+<span class="n">automatically</span>  <span class="n">accepts</span>  <span class="n">the</span> <span class="n">ARP</span>  <span class="n">requests</span>  <span class="n">on</span> <span class="n">the</span>  <span class="n">right</span>  <span class="n">interface</span><span class="o">.</span> <span class="n">The</span>
+<span class="n">rp_filter</span>  <span class="n">check</span> <span class="ow">is</span> <span class="n">modified</span> <span class="n">to</span> <span class="n">accept</span> <span class="n">traffic</span> <span class="kn">from</span> <span class="nn">such</span> <span class="n">interfaces</span> <span class="k">with</span>
+<span class="n">local</span>  <span class="n">IP</span> <span class="k">as</span> <span class="n">sender</span><span class="p">,</span> <span class="n">so</span> <span class="n">using</span> <span class="n">loop</span><span class="o">=</span><span class="mi">1</span> <span class="k">for</span> <span class="n">interfaces</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">insecure</span>
+<span class="n">mediums</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">recommended</span><span class="o">.</span>
+
+<span class="n">Pros</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">it</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="kn">from</span> <span class="nn">all</span> <span class="n">existing</span> <span class="n">applications</span> <span class="n">without</span> <span class="n">change</span>
+<span class="o">-</span> <span class="n">it</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">limited</span> <span class="n">to</span> <span class="mi">2</span> <span class="n">interfaces</span>
+<span class="o">-</span> <span class="n">you</span> <span class="n">can</span> <span class="n">use</span> <span class="n">it</span> <span class="k">with</span> <span class="n">many</span> <span class="n">IP</span> <span class="n">addresses</span>
+<span class="o">-</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">depend</span> <span class="n">on</span> <span class="n">the</span> <span class="n">rp_filter</span> <span class="ow">and</span> <span class="n">arp_filter</span> <span class="n">states</span><span class="p">,</span> <span class="n">they</span>
+<span class="n">can</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">to</span> <span class="mi">1</span>
+<span class="o">-</span> <span class="n">the</span> <span class="n">packets</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">altered</span> <span class="ow">in</span> <span class="nb">any</span> <span class="n">way</span><span class="p">,</span> <span class="n">useful</span> <span class="k">for</span> <span class="n">QoS</span> <span class="n">testings</span>
+<span class="o">-</span> <span class="n">the</span> <span class="n">routing</span> <span class="n">result</span> <span class="ow">is</span> <span class="n">cached</span><span class="p">,</span> <span class="n">the</span> <span class="n">routing</span> <span class="n">checks</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">per</span> <span class="n">packet</span>
+
+<span class="n">Cons</span><span class="p">:</span>
+<span class="o">-</span> <span class="ow">not</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">use</span> <span class="n">it</span> <span class="k">for</span> <span class="n">interfaces</span> <span class="n">attached</span> <span class="n">to</span> <span class="n">insecure</span>
+<span class="n">mediums</span> <span class="p">(</span><span class="n">the</span> <span class="n">rp_filter</span> <span class="n">protection</span> <span class="n">allows</span> <span class="n">saddr</span> <span class="n">to</span> <span class="n">be</span> <span class="n">local</span> <span class="n">IP</span><span class="p">)</span><span class="o">.</span>
+<span class="n">By</span> <span class="n">design</span><span class="o">.</span> <span class="n">Use</span> <span class="n">at</span> <span class="n">your</span> <span class="n">own</span> <span class="n">risk</span><span class="o">.</span>
+
+        <span class="n">The</span> <span class="n">usage</span> <span class="ow">is</span> <span class="n">simple</span><span class="p">:</span>
+
+<span class="c1"># Connect two or more interfaces to same hub or via crossover cable</span>
+
+<span class="c1"># Enable loopback mode for eth0 and eth1. This even can be</span>
+<span class="c1"># default mode without breaking any other talks. By this way</span>
+<span class="c1"># we allow external routing only between local IPs configured</span>
+<span class="c1"># on the specified interfaces.</span>
+
+<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">eth0</span><span class="o">/</span><span class="n">loop</span>
+<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">eth1</span><span class="o">/</span><span class="n">loop</span>
+
+<span class="c1"># Add some IP addresses for testing, eg. client and server IP</span>
+
+<span class="n">ip</span> <span class="n">address</span> <span class="n">add</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span> <span class="n">dev</span> <span class="n">eth0</span>
+<span class="n">ip</span> <span class="n">address</span> <span class="n">add</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span> <span class="n">dev</span> <span class="n">eth1</span>
+
+<span class="c1"># Testing with applications that are aware of this binding.</span>
+<span class="c1"># The main thing the apps need to know is what src and dst IP</span>
+<span class="c1"># addresses to use. The client app needs to bind to the src IP</span>
+<span class="c1"># and by this way to request output route to the dst IP. There</span>
+<span class="c1"># is no specific configuration for the server app listening on</span>
+<span class="c1"># 192.168.2.1</span>
+
+<span class="n">ping</span> <span class="o">-</span><span class="n">I</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span>
+
+<span class="c1"># Note that specifying the output device (SO_BINDTODEVICE is</span>
+<span class="c1"># not recommended)</span>
+
+
+<span class="c1"># Testing with applications that are not aware of this feature:</span>
+<span class="c1"># for 192.168.1.1 client (the same for the server is not needed).</span>
+<span class="c1"># Note that by default, in local routes the kernel uses the local</span>
+<span class="c1"># IPs as preferred source. This is the safe default mode (if loop=1)</span>
+<span class="c1"># for applications that do not care what src IP will be used</span>
+<span class="c1"># for their talks with local IPs. We try to change that and to</span>
+<span class="c1"># use IPs from different interfaces.</span>
+
+<span class="n">ip</span> <span class="n">route</span> <span class="n">replace</span> <span class="n">local</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span> <span class="n">dev</span> <span class="n">eth1</span> <span class="n">scope</span> <span class="n">host</span> <span class="n">src</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span> <span class="n">proto</span> <span class="n">kernel</span>
+
+<span class="c1"># but for any case, here it is and for the &quot;server&quot;:</span>
+
+<span class="n">ip</span> <span class="n">route</span> <span class="n">replace</span> <span class="n">local</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span> <span class="n">dev</span> <span class="n">eth0</span> <span class="n">scope</span> <span class="n">host</span> <span class="n">src</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span> <span class="n">proto</span> <span class="n">kernel</span>
+
+<span class="c1"># Testing it:</span>
+
+<span class="n">ping</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span>
+<span class="n">ping</span> <span class="o">-</span><span class="n">I</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.1</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span>
+<span class="n">telnet</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">2.1</span>
+
+<span class="c1"># Note that by replacing the local route&#39;s preferred source IP address</span>
+<span class="c1"># we help the IP address autoselection to select proper IP to the</span>
+<span class="c1"># target, in our case, route via eth</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="send-to-self-patch-application">
+<h3>&#8220;send-to-self&#8221; Patch Application<a class="headerlink" href="#send-to-self-patch-application" title="Permalink to this headline">¶</a></h3>
+<p>The following example illustrates how to use <strong class="program">iperf</strong> to perform TCP and UDP traffic measurements once this patch is installed. We illustrate the use of <strong class="program">iperf</strong> but do not necessarily endorse it for traffic measurement. We also illustrate the use of two interfaces but the &#8220;send-to-self&#8221; patch will support additional interfaces. We also illustrate the use of environment variables so that procedures can execute on different hosts without modification but these environment variables are not required.</p>
+<p>First, we define environment variables, <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal"><span class="pre">IF1</span></code> and <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal"><span class="pre">IF2</span></code>, for each Ethernet interface and, <span class="target" id="index-2"></span><code class="xref std std-envvar docutils literal"><span class="pre">IP1</span></code> and <span class="target" id="index-3"></span><code class="xref std std-envvar docutils literal"><span class="pre">IP2</span></code>, for their IP addresses. Each interface must be on a separate IP subnet. We export definitions here so that they are accessible to this process and any subprocesses, such as shell scripts. Do whatever is appropriate for your environment.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">export</span> <span class="nv">IF1</span><span class="o">=</span>eth1
+<span class="gp">$</span> <span class="nb">export</span> <span class="nv">IF2</span><span class="o">=</span>eth2
+<span class="gp">$</span> <span class="nb">export</span> <span class="nv">IP1</span><span class="o">=</span>192.168.1.1
+<span class="gp">$</span> <span class="nb">export</span> <span class="nv">IP2</span><span class="o">=</span>192.168.2.2
+</pre></div>
+</div>
+<p>Next, we assign the IP addresses to the interfaces using program <strong class="program">ifconfig</strong>. There are other ways to do this. Observe that we reference our environment variables on the command line.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ifconfig <span class="si">${</span><span class="nv">IF1</span><span class="si">}</span> <span class="si">${</span><span class="nv">IP1</span><span class="si">}</span>
+<span class="gp">$</span> ifconfig <span class="si">${</span><span class="nv">IF2</span><span class="si">}</span> <span class="si">${</span><span class="nv">IP2</span><span class="si">}</span>
+</pre></div>
+</div>
+<p>Next, we suppress internal routing between local interfaces. The <code class="docutils literal"><span class="pre">loop</span></code> propery only exists on kernels that have the &#8220;send-to-self&#8221; patch installed and have the <code class="file docutils literal"><span class="pre">/proc</span></code> filesystem mounted. Some systems may not mount this file system.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="m">1</span> &gt; /proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">IF1</span><span class="si">}</span>/loop
+<span class="gp">$</span> <span class="nb">echo</span> <span class="m">1</span> &gt; /proc/sys/net/ipv4/conf/<span class="si">${</span><span class="nv">IF2</span><span class="si">}</span>/loop
+</pre></div>
+</div>
+<p>Alternately, you could edit file <code class="file docutils literal"><span class="pre">/etc/sysctl.conf</span></code>, as follows, to set the <code class="docutils literal"><span class="pre">loop</span></code> property for each interface during system startup. Again, the <code class="docutils literal"><span class="pre">loop</span></code> propery only exists on kernels that have the &#8220;send-to-self&#8221; patch installed and so errors will occur if you boot another kernel that does not have it installed.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">eth1</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">eth2</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Open a console window and start <strong class="program">iperf</strong> as a server. Option <code class="docutils literal"><span class="pre">-s</span></code> identifies this instance of <strong class="program">iperf</strong> as the server. Option <code class="docutils literal"><span class="pre">-B</span></code> binds this instance to one host  interface by IP address, in this case <code class="docutils literal"><span class="pre">IP1</span></code> defined earlier.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> iperf -B <span class="si">${</span><span class="nv">IP1</span><span class="si">}</span> -s
+<span class="go">------------------------------------------------------------</span>
+<span class="go">Server listening on TCP port 5001</span>
+<span class="go">Binding to local address 192.168.1.1</span>
+<span class="go">TCP window size: 85.3 KByte (default)</span>
+<span class="go">------------------------------------------------------------</span>
+</pre></div>
+</div>
+<p>Open a second console window and start <strong class="program">iperf</strong> as a client. Option <code class="docutils literal"><span class="pre">-c</span></code> identifies this instance of <strong class="program">iperf</strong> as a client. Option <code class="docutils literal"><span class="pre">-B</span></code> binds this instance to the one interface by IP address, in this case <code class="docutils literal"><span class="pre">IP2</span></code> defined earlier. The server address must also be specified, in this case <code class="docutils literal"><span class="pre">IP1</span></code> bound to the server in the last step.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> iperf -B <span class="si">${</span><span class="nv">IP2</span><span class="si">}</span> -c <span class="si">${</span><span class="nv">IP1</span><span class="si">}</span>
+<span class="go">------------------------------------------------------------</span>
+<span class="go">Client connecting to 192.168.1.1, TCP port 5001</span>
+<span class="go">Binding to local address 192.168.2.1</span>
+<span class="go">TCP window size: 16.0 KByte (default)</span>
+<span class="go">------------------------------------------------------------</span>
+<span class="go">[  3] local 192.168.2.1 port 5001 connected with 192.168.1.1 port 5001</span>
+<span class="go">[ ID] Interval       Transfer     Bandwidth</span>
+<span class="go">[  3]  0.0-10.0 sec  31.1 MBytes  26.0 Mbits/sec</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="send-to-self-patch-installation">
+<h3>&#8220;send-to-self&#8221; Patch Installation<a class="headerlink" href="#send-to-self-patch-installation" title="Permalink to this headline">¶</a></h3>
+<p>The &#8220;send-to-self&#8221; patch exists for several recent <em>Linux</em> kernel versions but not all versions. Assuming you have obtained the correct kernel archive and the correct patch version, the following script illustrates the steps needed to apply the patch on <em>Ubuntu 9.04</em> and recompile the kernel. Observe that, in this case, the patch version does not match the kernel version because a patch has not been published for that kernel version.</p>
+<p>The following script can be used on a Ubuntu Linux distribution to download kernel source, the send-to-self patch, apply the patch then compile and install the resulting kernal image. When the <strong class="program">menuconfig</strong> screen appears:</p>
+<ol class="arabic simple">
+<li>Select <code class="docutils literal"><span class="pre">General</span> <span class="pre">Setup</span></code> on the &#8220;Linux Kernel Configuration&#8221; screen.</li>
+<li>Select <code class="docutils literal"><span class="pre">Local</span> <span class="pre">version</span> <span class="pre">-</span> <span class="pre">append</span> <span class="pre">to</span> <span class="pre">kernel</span> <span class="pre">release</span></code> on the &#8220;General Setup&#8221; screen.</li>
+<li>Enter the version suffix &#8220;-send-to-self&#8221;.</li>
+<li>Select <code class="docutils literal"><span class="pre">ok</span></code> to return to the &#8220;General Setup&#8221; screen.</li>
+<li>Select <code class="docutils literal"><span class="pre">Automatically</span> <span class="pre">append</span> <span class="pre">version</span> <span class="pre">information</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">version</span> <span class="pre">string</span></code> on the &#8220;General Setup&#8221; screen.</li>
+<li>Select <code class="docutils literal"><span class="pre">exit</span></code> to return to the &#8220;Linux Kernel Configuration&#8221; screen.</li>
+<li>Select <code class="docutils literal"><span class="pre">exit</span></code> to close the <strong class="program">menuconfig</strong> program.</li>
+<li>Select <code class="docutils literal"><span class="pre">yes</span></code> if prompted to save your new kernel configuration. This message does not appear each time.</li>
+</ol>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># file: patches/send-to-self-2.6.28.sh</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># environment variables;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="nv">VERSION</span><span class="o">=</span>2.6.28
+<span class="nv">CURRENT</span><span class="o">=</span>9
+<span class="nv">VARIANT</span><span class="o">=</span>send-to-self
+<span class="nv">PACKAGE</span><span class="o">=</span>linux-source-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+<span class="nv">ARCHIVE</span><span class="o">=</span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span>.tar.bz2
+<span class="nv">PATCH</span><span class="o">=</span>send-to-self-2.6.26-1.diff
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># extend version string;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -z <span class="si">${</span><span class="nv">CURRENT</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        VERSION+<span class="o">=</span>.<span class="si">${</span><span class="nv">CURRENT</span><span class="si">}</span>
+<span class="k">fi</span>
+<span class="k">if</span> <span class="o">[</span> ! -z <span class="si">${</span><span class="nv">VARIANT</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        VERSION+<span class="o">=</span>-<span class="si">${</span><span class="nv">VARIANT</span><span class="si">}</span>
+<span class="k">fi</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># install required software;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -f <span class="si">${</span><span class="nv">ARCHIVE</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        wget http://www.ssi.bg/~ja/<span class="si">${</span><span class="nv">PATCH</span><span class="si">}</span>
+        apt-get install <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span>
+<span class="c1">#       apt-get install ${PACKAGE} --reinstall</span>
+        apt-get install binutils patch gcc g++
+        apt-get install ncurses-dev
+        mv /usr/src/<span class="si">${</span><span class="nv">ARCHIVE</span><span class="si">}</span> .
+<span class="k">fi</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># confirm archive file exists;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -f <span class="si">${</span><span class="nv">ARCHIVE</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;File </span><span class="si">${</span><span class="nv">ARCHIVE</span><span class="si">}</span><span class="s2"> is missing or misplaced&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># confirm patch file exists;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="o">[</span> ! -f <span class="si">${</span><span class="nv">PATCH</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;File </span><span class="si">${</span><span class="nv">PATCH</span><span class="si">}</span><span class="s2"> is missing or misplaced&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># remove old kernel source if present;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="o">[</span> -d <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Removing old source ...&quot;</span>
+        rm -fr <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span>
+<span class="k">fi</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># extract kernel source;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+tar -vjxf <span class="si">${</span><span class="nv">ARCHIVE</span><span class="si">}</span>
+<span class="k">if</span> <span class="o">[</span> ! -d <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Folder </span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="s2"> does not exist&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+<span class="nb">cd</span> <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># patch kernel source;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+patch -p1 &lt; ../<span class="si">${</span><span class="nv">PATCH</span><span class="si">}</span>
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># compile kernel source;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+make mrproper
+make menuconfig
+make
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># install kernel source;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+make modules_install
+make install
+
+<span class="c1"># ====================================================================</span>
+<span class="c1"># install kernel source;</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+mkinitramfs -o /boot/initrd.img-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span> <span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span>
+ln -fs config-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span> /boot/config
+ln -fs initrd.img-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span> /boot/initrd.img
+ln -fs System.map-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span> /boot/System.map
+ln -fs vmlinuz-<span class="si">${</span><span class="nv">VERSION</span><span class="si">}</span> /boot/vmlinuz
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case you don&#8217;t know ...
+apt-get &#8211;reinstall
+The <strong class="program">apt-get</strong> program is only available on Debian-based distributions. If you do not use a Debian-based system then you must find another way to obtain the necessary packages. Option <code class="docutils literal"><span class="pre">--reinstall</span></code> instructs <strong class="program">apt-get</strong> to download the kernel even though it has been installed before. It is not needed on the first script execution but may be needed on subsequent script executions if you have deleted the kernel archive file.
+mkinitramfs
+This script uses <strong class="program">mkinitramfs</strong> instead of the <strong class="program">mkinitrd</strong>. This may differ on other distributions. The kernel source package used here has <em>Ubuntu</em> modifications that result in a minor version being appended to the kernel version. This may not happen with other distributions or with kernels obtained directly from kernel.org.
+cut-and-paste
+This script, or some like it, are included in the <code class="file docutils literal"><span class="pre">./patches</span></code> folder of the toolkit. You can also copy and paste this script but remember to edit the environment variables at the top, remove all carriage returns and set correct file permissions with <code class="docutils literal"><span class="pre">chmod</span> <span class="pre">0755</span></code> before executing it on your <em>Linux</em> host. Run the script as <code class="docutils literal"><span class="pre">root</span></code> user.
+grub/menu.lst
+If your system uses <strong class="program">grub</strong> then edit file <code class="file docutils literal"><span class="pre">/boot/grub/menu.lst</span></code> and add a new reference to the new <code class="file docutils literal"><span class="pre">initrd.img</span></code>,  <code class="file docutils literal"><span class="pre">System.map</span></code> and <code class="file docutils literal"><span class="pre">vmlinuz</span></code> files installed in folder <code class="file docutils literal"><span class="pre">/boot</span></code> by this script. We recommend adding these references as the last ones in the file so that the new kernel does not start by default. Once you are confident that everything works, you can then move the references to the first entry. We also recommend setting the <code class="docutils literal"><span class="pre">timeout</span></code> value to <code class="docutils literal"><span class="pre">10</span></code> for now.</p>
+</div>
+</div>
+<div class="section" id="send-to-self-patch-listing">
+<h3>&#8220;send-to-self&#8221; Patch Listing<a class="headerlink" href="#send-to-self-patch-listing" title="Permalink to this headline">¶</a></h3>
+<p>The following &#8220;send-to-self&#8221; patch is specifically for <em>Linux</em> kernel 2.6.30 and is provided for information only. For practical purposes, the patch has not changed much from version to version but the line numbers have changed. Some recent &#8220;send-to-self&#8221; patches are included in the toolkit <code class="file docutils literal"><span class="pre">./patches</span></code> folder.</p>
+<div class="highlight-diff"><div class="highlight"><pre><span></span><span class="gh">diff -urp v2.6.30/linux/Documentation/networking/ip-sysctl.txt linux/Documentation/networking/ip-sysctl.txt</span>
+<span class="gd">--- v2.6.30/linux/Documentation/networking/ip-sysctl.txt        2009-06-13 10:53:29.000000000 +0300</span>
+<span class="gi">+++ linux/Documentation/networking/ip-sysctl.txt        2009-06-13 15:54:15.000000000 +0300</span>
+<span class="gu">@@ -637,6 +637,13 @@ accept_redirects - BOOLEAN</span>
+ forwarding - BOOLEAN
+        Enable IP forwarding on this interface.
+
+<span class="gi">+loop - BOOLEAN</span>
+<span class="gi">+       By default (loop=0) the traffic between local IP addresses</span>
+<span class="gi">+       is routed via interface &quot;lo&quot;. Setting this flag for two</span>
+<span class="gi">+       interfaces allows traffic between their IP addresses to</span>
+<span class="gi">+       be looped externally. This is useful for setups where the</span>
+<span class="gi">+       interfaces are attached to same broadcast medium.</span>
+<span class="gi">+</span>
+ mc_forwarding - BOOLEAN
+        Do multicast routing. The kernel needs to be compiled with CONFIG_MROUTE
+        and a multicast routing daemon is required.
+<span class="gh">diff -urp v2.6.30/linux/include/linux/inetdevice.h linux/include/linux/inetdevice.h</span>
+<span class="gd">--- v2.6.30/linux/include/linux/inetdevice.h    2009-06-13 10:53:56.000000000 +0300</span>
+<span class="gi">+++ linux/include/linux/inetdevice.h    2009-06-13 15:54:15.000000000 +0300</span>
+<span class="gu">@@ -106,6 +106,7 @@ static inline void ipv4_devconf_setall(s</span>
+          IN_DEV_ORCONF((in_dev), ACCEPT_REDIRECTS)))
+
+ #define IN_DEV_ARPFILTER(in_dev)       IN_DEV_ORCONF((in_dev), ARPFILTER)
+<span class="gi">+#define IN_DEV_LOOP(in_dev)            IN_DEV_CONF_GET(in_dev, LOOP)</span>
+ #define IN_DEV_ARP_ANNOUNCE(in_dev)    IN_DEV_MAXCONF((in_dev), ARP_ANNOUNCE)
+ #define IN_DEV_ARP_IGNORE(in_dev)      IN_DEV_MAXCONF((in_dev), ARP_IGNORE)
+ #define IN_DEV_ARP_NOTIFY(in_dev)      IN_DEV_MAXCONF((in_dev), ARP_NOTIFY)
+<span class="gh">diff -urp v2.6.30/linux/include/linux/sysctl.h linux/include/linux/sysctl.h</span>
+<span class="gd">--- v2.6.30/linux/include/linux/sysctl.h        2009-06-13 10:53:56.000000000 +0300</span>
+<span class="gi">+++ linux/include/linux/sysctl.h        2009-06-13 15:54:40.000000000 +0300</span>
+<span class="gu">@@ -491,6 +491,7 @@ enum</span>
+        NET_IPV4_CONF_PROMOTE_SECONDARIES=20,
+        NET_IPV4_CONF_ARP_ACCEPT=21,
+        NET_IPV4_CONF_ARP_NOTIFY=22,
+<span class="gi">+       NET_IPV4_CONF_LOOP=23,</span>
+        __NET_IPV4_CONF_MAX
+ };
+
+<span class="gh">diff -urp v2.6.30/linux/kernel/sysctl_check.c linux/kernel/sysctl_check.c</span>
+<span class="gd">--- v2.6.30/linux/kernel/sysctl_check.c 2009-06-13 10:53:57.000000000 +0300</span>
+<span class="gi">+++ linux/kernel/sysctl_check.c 2009-06-13 15:55:00.000000000 +0300</span>
+<span class="gu">@@ -220,6 +220,7 @@ static const struct trans_ctl_table tran</span>
+        { NET_IPV4_CONF_PROMOTE_SECONDARIES,    &quot;promote_secondaries&quot; },
+        { NET_IPV4_CONF_ARP_ACCEPT,             &quot;arp_accept&quot; },
+        { NET_IPV4_CONF_ARP_NOTIFY,             &quot;arp_notify&quot; },
+<span class="gi">+       { NET_IPV4_CONF_LOOP,                   &quot;loop&quot; },</span>
+        {}
+ };
+
+<span class="gh">diff -urp v2.6.30/linux/net/ipv4/devinet.c linux/net/ipv4/devinet.c</span>
+<span class="gd">--- v2.6.30/linux/net/ipv4/devinet.c    2009-06-13 10:53:58.000000000 +0300</span>
+<span class="gi">+++ linux/net/ipv4/devinet.c    2009-06-13 15:55:22.000000000 +0300</span>
+<span class="gu">@@ -1449,6 +1449,7 @@ static struct devinet_sysctl_table {</span>
+                DEVINET_SYSCTL_RW_ENTRY(ARP_IGNORE, &quot;arp_ignore&quot;),
+                DEVINET_SYSCTL_RW_ENTRY(ARP_ACCEPT, &quot;arp_accept&quot;),
+                DEVINET_SYSCTL_RW_ENTRY(ARP_NOTIFY, &quot;arp_notify&quot;),
+<span class="gi">+               DEVINET_SYSCTL_RW_ENTRY(LOOP, &quot;loop&quot;),</span>
+
+                DEVINET_SYSCTL_FLUSHING_ENTRY(NOXFRM, &quot;disable_xfrm&quot;),
+                DEVINET_SYSCTL_FLUSHING_ENTRY(NOPOLICY, &quot;disable_policy&quot;),
+<span class="gh">diff -urp v2.6.30/linux/net/ipv4/fib_frontend.c linux/net/ipv4/fib_frontend.c</span>
+<span class="gd">--- v2.6.30/linux/net/ipv4/fib_frontend.c       2009-06-13 10:53:58.000000000 +0300</span>
+<span class="gi">+++ linux/net/ipv4/fib_frontend.c       2009-06-13 15:54:15.000000000 +0300</span>
+<span class="gu">@@ -239,16 +239,17 @@ int fib_validate_source(__be32 src, __be</span>
+                                        .tos = tos } },
+                            .iif = oif };
+        struct fib_result res;
+<span class="gd">-       int no_addr, rpf;</span>
+<span class="gi">+       int no_addr, rpf, loop;</span>
+        int ret;
+        struct net *net;
+
+<span class="gd">-       no_addr = rpf = 0;</span>
+<span class="gi">+       no_addr = rpf = loop = 0;</span>
+        rcu_read_lock();
+        in_dev = __in_dev_get_rcu(dev);
+        if (in_dev) {
+                no_addr = in_dev-&gt;ifa_list == NULL;
+                rpf = IN_DEV_RPFILTER(in_dev);
+<span class="gi">+               loop = IN_DEV_LOOP(in_dev);</span>
+        }
+        rcu_read_unlock();
+
+<span class="gu">@@ -258,6 +259,11 @@ int fib_validate_source(__be32 src, __be</span>
+        net = dev_net(dev);
+        if (fib_lookup(net, &amp;fl, &amp;res))
+                goto last_resort;
+<span class="gi">+       if (loop &amp;&amp; res.type == RTN_LOCAL) {</span>
+<span class="gi">+               *spec_dst = FIB_RES_PREFSRC(res);</span>
+<span class="gi">+               fib_res_put(&amp;res);</span>
+<span class="gi">+               return 0;</span>
+<span class="gi">+       }</span>
+        if (res.type != RTN_UNICAST)
+                goto e_inval_res;
+        *spec_dst = FIB_RES_PREFSRC(res);
+<span class="gh">diff -urp v2.6.30/linux/net/ipv4/route.c linux/net/ipv4/route.c</span>
+<span class="gd">--- v2.6.30/linux/net/ipv4/route.c      2009-06-13 10:53:58.000000000 +0300</span>
+<span class="gi">+++ linux/net/ipv4/route.c      2009-06-13 15:54:15.000000000 +0300</span>
+<span class="gu">@@ -2521,6 +2521,11 @@ static int ip_route_output_slow(struct n</span>
+                        dev_put(dev_out);
+                        goto out;       /* Wrong error code */
+                }
+<span class="gi">+               err = -ENETDOWN;</span>
+<span class="gi">+               if (!(dev_out-&gt;flags&amp;IFF_UP)) {</span>
+<span class="gi">+                       dev_put(dev_out);</span>
+<span class="gi">+                       goto out;</span>
+<span class="gi">+               }</span>
+
+                if (ipv4_is_local_multicast(oldflp-&gt;fl4_dst) ||
+                    oldflp-&gt;fl4_dst == htonl(0xFFFFFFFF)) {
+<span class="gu">@@ -2588,10 +2593,41 @@ static int ip_route_output_slow(struct n</span>
+        free_res = 1;
+
+        if (res.type == RTN_LOCAL) {
+<span class="gd">-               if (!fl.fl4_src)</span>
+<span class="gd">-                       fl.fl4_src = fl.fl4_dst;</span>
+<span class="gi">+               struct in_device *in_dev;</span>
+<span class="gi">+               __be32 src;</span>
+<span class="gi">+</span>
+                if (dev_out)
+                        dev_put(dev_out);
+<span class="gi">+               dev_out = FIB_RES_DEV(res);</span>
+<span class="gi">+               in_dev = in_dev_get(dev_out);</span>
+<span class="gi">+               src = fl.fl4_src? : FIB_RES_PREFSRC(res);</span>
+<span class="gi">+               if (in_dev &amp;&amp; IN_DEV_LOOP(in_dev) &amp;&amp; src) {</span>
+<span class="gi">+                       struct net_device *dev_src;</span>
+<span class="gi">+</span>
+<span class="gi">+                       in_dev_put(in_dev);</span>
+<span class="gi">+                       in_dev = NULL;</span>
+<span class="gi">+                       dev_src = ip_dev_find(net, src);</span>
+<span class="gi">+                       if (dev_src &amp;&amp; dev_src != dev_out &amp;&amp;</span>
+<span class="gi">+                           (in_dev = in_dev_get(dev_src)) &amp;&amp;</span>
+<span class="gi">+                           IN_DEV_LOOP(in_dev)) {</span>
+<span class="gi">+                               in_dev_put(in_dev);</span>
+<span class="gi">+                               dev_out = dev_src;</span>
+<span class="gi">+                               fl.fl4_src = src;</span>
+<span class="gi">+                               fl.oif = dev_out-&gt;ifindex;</span>
+<span class="gi">+                               res.type = RTN_UNICAST;</span>
+<span class="gi">+                               if (res.fi) {</span>
+<span class="gi">+                                       fib_info_put(res.fi);</span>
+<span class="gi">+                                       res.fi = NULL;</span>
+<span class="gi">+                               }</span>
+<span class="gi">+                               goto make_route;</span>
+<span class="gi">+                       }</span>
+<span class="gi">+                       if (dev_src)</span>
+<span class="gi">+                               dev_put(dev_src);</span>
+<span class="gi">+               }</span>
+<span class="gi">+               if (in_dev)</span>
+<span class="gi">+                       in_dev_put(in_dev);</span>
+<span class="gi">+               if (!fl.fl4_src)</span>
+<span class="gi">+                       fl.fl4_src = fl.fl4_dst;</span>
+                dev_out = net-&gt;loopback_dev;
+                dev_hold(dev_out);
+                fl.oif = dev_out-&gt;ifindex;
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hardware</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#device-form-factors">Device Form Factors</a></li>
+<li><a class="reference internal" href="#device-communications">Device Communications</a></li>
+<li><a class="reference internal" href="#device-configurations">Device Configurations</a><ul>
+<li><a class="reference internal" href="#local-host-to-local-device">Local Host to Local Device</a></li>
+<li><a class="reference internal" href="#local-host-to-remote-device">Local Host to Remote Device</a></li>
+<li><a class="reference internal" href="#local-host-to-remote-host">Local Host to Remote Host</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#powerline-workstations">Powerline Workstations</a><ul>
+<li><a class="reference internal" href="#host-hardware">Host Hardware</a></li>
+<li><a class="reference internal" href="#host-software">Host Software</a></li>
+<li><a class="reference internal" href="#network-configuration">Network Configuration</a></li>
+<li><a class="reference internal" href="#isolated-power-strip">Isolated Power-strip</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#send-to-self-patch">Send-to-self Patch</a><ul>
+<li><a class="reference internal" href="#send-to-self-patch-description">&#8220;send-to-self&#8221; Patch Description</a></li>
+<li><a class="reference internal" href="#send-to-self-patch-application">&#8220;send-to-self&#8221; Patch Application</a></li>
+<li><a class="reference internal" href="#send-to-self-patch-installation">&#8220;send-to-self&#8221; Patch Installation</a></li>
+<li><a class="reference internal" href="#send-to-self-patch-listing">&#8220;send-to-self&#8221; Patch Listing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="software.html"
+                        title="next chapter">Software</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/hardware.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="software.html" title="Software"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

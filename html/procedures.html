@@ -1,0 +1,741 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Procedures &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Scripting" href="scripting.html" />
+    <link rel="prev" title="Firmware" href="firmware.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="scripting.html" title="Scripting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="firmware.html" title="Firmware"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="procedures">
+<span id="id1"></span><h1>Procedures<a class="headerlink" href="#procedures" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="procedure-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The Open Powerline Toolkit can perform all sorts of operations on Atheros powerline devices. Many operations are simple and can be accomplished using one command. Others are more complex and may require several commands. This section demonstrates common console commands that you might want to use when experimenting or working with Atheros powerline devices. Multi-command procedures can be generalized and automated using any programming or scripting language that can execute console commands.</p>
+</div>
+<div class="section" id="select-an-interface-on-linux">
+<span id="procedure-select-interface-linux"></span><h2>Select an Interface on Linux<a class="headerlink" href="#select-an-interface-on-linux" title="Permalink to this headline">¶</a></h2>
+<p><strong class="program">Linux</strong> network interfaces are referenced by name. Use Linux utility <strong class="program">ifconfig</strong> to determine the names of interfaces on your host. By default, Toolkit programs communicate with powerline devices on interface <code class="docutils literal"><span class="pre">eth1</span></code> but another interface can be specified on the command line with the <code class="docutils literal"><span class="pre">-i</span></code> option:</p>
+<div class="section" id="selecting-another-interface-on-linux">
+<h3>Selecting another Interface on Linux<a class="headerlink" href="#selecting-another-interface-on-linux" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -i eth3 ...
+</pre></div>
+</div>
+<p>In the previous example, <strong class="command">int6k</strong> will send and receive frames on interface <code class="docutils literal"><span class="pre">eth3</span></code> instead of the default interface. Having to specify the interface can become become tedious when entering commands manually. An alternative method involves setting environment variable <code class="docutils literal"><span class="pre">PLC</span></code> to your preferred Ethernet interfaces, as follows:</p>
+</div>
+<div class="section" id="changing-the-default-interface-on-linux">
+<h3>Changing the Default Interface on Linux<a class="headerlink" href="#changing-the-default-interface-on-linux" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">export</span> <span class="nv">PLC</span><span class="o">=</span><span class="s2">&quot;eth2&quot;</span>
+</pre></div>
+</div>
+<p>In the previous example, environment variable <code class="docutils literal"><span class="pre">PLC</span></code> is defined and exported, making it available to all programs running under the current console session. This command can be included in <code class="file docutils literal"><span class="pre">~/.profile</span></code> or <code class="file docutils literal"><span class="pre">/etc/profile</span></code> or in <code class="file docutils literal"><span class="pre">/etc/environment</span></code> on <em>Debian</em> and <em>Ubuntu</em> systems.</p>
+</div>
+<div class="section" id="finding-interfaces-on-linux">
+<h3>Finding Interfaces on Linux<a class="headerlink" href="#finding-interfaces-on-linux" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ifconfig
+<span class="go">eth0      Link encap:Ethernet  HWaddr 00:60:97:05:97:0C</span>
+<span class="go">          inet addr:192.168.170.179  Bcast:192.168.170.255  Mask:255.255.255.0</span>
+<span class="go">          inet6 addr: fe80::260:97ff:fe05:970c/64 Scope:Link</span>
+<span class="go">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span>
+<span class="go">          RX packets:52130758 errors:0 dropped:0 overruns:0 frame:0</span>
+<span class="go">          TX packets:59629414 errors:0 dropped:0 overruns:0 carrier:0</span>
+<span class="go">          collisions:0 txqueuelen:1000</span>
+<span class="go">          RX bytes:43781526 (41.7 MiB)  TX bytes:4226651392 (3.9 GiB)</span>
+<span class="go">          Interrupt:209 Base address:0xe000</span>
+
+<span class="go">eth1      Link encap:Ethernet  HWaddr 00:0F:EA:10:D5:1C</span>
+<span class="go">          inet addr:192.168.99.1  Bcast:192.168.99.255  Mask:255.255.255.0</span>
+<span class="go">          inet6 addr: fe80::20f:eaff:fe10:d51c/64 Scope:Link</span>
+<span class="go">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span>
+<span class="go">          RX packets:68711621 errors:0 dropped:0 overruns:0 frame:0</span>
+<span class="go">          TX packets:70059644 errors:0 dropped:0 overruns:0 carrier:0</span>
+<span class="go">          collisions:0 txqueuelen:1000</span>
+<span class="go">          RX bytes:3449044517 (3.2 GiB)  TX bytes:1328494982 (1.2 GiB)</span>
+<span class="go">          Interrupt:217</span>
+
+<span class="go">lo        Link encap:Local Loopback</span>
+<span class="go">          inet addr:127.0.0.1  Mask:255.0.0.0</span>
+<span class="go">          inet6 addr: ::1/128 Scope:Host</span>
+<span class="go">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</span>
+<span class="go">          RX packets:177789 errors:0 dropped:0 overruns:0 frame:0</span>
+<span class="go">          TX packets:177789 errors:0 dropped:0 overruns:0 carrier:0</span>
+<span class="go">          collisions:0 txqueuelen:0</span>
+<span class="go">          RX bytes:599522176 (571.7 MiB)  TX bytes:599522176 (571.7 MiB)</span>
+</pre></div>
+</div>
+<p>The previous example demonstrates the use of Linux <strong class="program">ifconfig</strong> utility to identify available network interfaces by name and MAC address.</p>
+<p>If your computer has multiple Ethernet interface cards installed, you can connect each card to a different Atheros powerline device and communicate with each device, independently, from one console session (window) by specifying the appropriate interface card with each command. It is also possible to open multiple console sessions (windows), each having a unique enviroment, and assign a different value for <code class="docutils literal"><span class="pre">PLC</span></code> in each enviroment.</p>
+</div>
+</div>
+<div class="section" id="select-an-interface-on-windows">
+<span id="procedure-select-interface-windows"></span><h2>Select an Interface on Windows<a class="headerlink" href="#select-an-interface-on-windows" title="Permalink to this headline">¶</a></h2>
+<p><strong class="program">WinPcap</strong> references host network interfaces by number, not name. This means that you must determine the proper interface number for the network adapter that you plan to use. Use Toolkit <a class="reference external" href="pcapdevs.7.html">pcapdevs</a> utility will enumerate available host network adapters by number,  MAC address and description. By default, Toolkit programs communicate with powerline devices on pcap interface <code class="docutils literal"><span class="pre">2</span></code> but another interface can be specified on the command line with the <code class="docutils literal"><span class="pre">-i</span></code> option:</p>
+<div class="section" id="selecting-another-interface-on-windows">
+<h3>Selecting another Interface on Windows<a class="headerlink" href="#selecting-another-interface-on-windows" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -i <span class="m">3</span> ...
+</pre></div>
+</div>
+<p>In the previous example, <strong class="command">int6k</strong> will send and receive frames using host interface <code class="docutils literal"><span class="pre">3</span></code> instead of the default interface. Having to specify the interface can become tedious when entering commands manually. Presently there is no way to specify a default interface on WIndows platforms.</p>
+</div>
+<div class="section" id="finding-interfaces-on-windows">
+<h3>Finding Interfaces on Windows<a class="headerlink" href="#finding-interfaces-on-windows" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> pcapdevs
+<span class="go"> 1 00:00:00:00:00:00 \Device\NPF_GenericDialupAdapter   (Adapter for generic dialup</span>
+<span class="go"> 2 00:0E:2E:03:5F:B8 \Device\NPF_{4CFAABD5-C929-4942-914B-BDFE72B13611} (Realtek R</span>
+<span class="go"> 3 00:C0:49:D5:CB:14 \Device\NPF_{73E0D2EF-6069-4831-B379-507025F2BDCD} (Realtek R</span>
+<span class="go"> 4 00:0C:76:87:3E:3D \Device\NPF_{86B96905-3AA7-46F1-969A-6C23E3BBBA8B} (Broadcom</span>
+</pre></div>
+</div>
+<p>The previous example illustrates the use of Toolkit <a class="reference external" href="pcapdevs.7.html">pcapdevs</a> utility to identify available network interfaces by interface number, MAC address and description. The descriptions have been truncated in this example because they are too long. Devices having MAC address <code class="docutils literal"><span class="pre">00:00:00:00:00:00</span></code> are unavailable.</p>
+</div>
+</div>
+<div class="section" id="procedure-identify-device">
+<span id="identify-a-device"></span><h2>Identify a Device<a class="headerlink" href="#procedure-identify-device" title="Permalink to this headline">¶</a></h2>
+<p>Before you start working with Atheros powerline devices, you should determine the chipset and firmware revision because that will determine the types of operations that can be performed and the order in which some operations should be performed. The following example illustrates how to determine this information.</p>
+<div class="section" id="device-identification">
+<span id="script-example-device-identification"></span><h3>Device Identification<a class="headerlink" href="#device-identification" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -r
+<span class="go">eth1 00:B0:52:00:00:01 Fetch Version Information</span>
+<span class="go">eth1 00:B0:52:DA:DA:23 INT6300A0 INT6000-MAC-3-0-3001-1081-LA-A NOT_UPGRADEABLE</span>
+<span class="go">eth1 00:B0:52:FE:87:2D INT6000A1 INT6000-SL-0-1-0110-200-2006-0415-BETA NOT_UPGRADEABLE</span>
+</pre></div>
+</div>
+<p>This example demonstrates several things.</p>
+<p>First, the <a class="reference external" href="int6k.7.html">int6k</a> <code class="docutils literal"><span class="pre">-r</span></code> option requests hardware and software revision information from a device by sending an Atheros <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> vendor-specific managerment message and waiting for a response. Atheros vendor-specific management messages are described in the <em>Atheros HomePlug AV Firmware Technical Reference Manual</em>. It you do not have access to this document then many toolkit features may be difficult to understand.</p>
+<p>Since we did not specify an Ethernet interface on the command line, the default interface was used. In this case, the default interface was <code class="docutils literal"><span class="pre">eth1</span></code> and so we observe that <code class="docutils literal"><span class="pre">eth1</span></code> was used to both send requests and receive responses.</p>
+<p>Since we did not specify a device address on the command line, the default address was used. Device addresses are also known as MAC, &#8220;Ethernet&#8221; or &#8220;hardware&#8221; addresses. They uniquely identify a device on a network. Unlike Ethernet cards,  powlerlines device do not have IP addresses.</p>
+<p>The default device address for toolkit programs is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code>. This address is the Local Management Address (LMA). All Atheros devices connected to the local host will respond to this address and include their actual address in the response. In the above example, two devices responded. This means that both were connected directly to <code class="docutils literal"><span class="pre">eth1</span></code>, perhaps via a network hub. Observer that device <code class="docutils literal"><span class="pre">00:B0:52:DA:DA:23</span></code> is an INT6300 and device <code class="docutils literal"><span class="pre">00:B0:52:FE:87:2D</span></code> is an INT6000. The first device is running Atheros firmware and the second device is running the Atheros Softloader.</p>
+</div>
+<div class="section" id="inspecting-device-configuration">
+<span id="script-example-device-configuration"></span><h3>Inspecting Device Configuration<a class="headerlink" href="#inspecting-device-configuration" title="Permalink to this headline">¶</a></h3>
+<p>To find out more about device <code class="docutils literal"><span class="pre">00:B0:52:DA:DA:23</span></code> we might issue the following command where option <code class="docutils literal"><span class="pre">-I</span></code> requests identity information stored in the device PIB. In this case, we specified the device by MAC address to prevent other local devices from responding. There is no harm in having both devices respond so we could have specified both hardware addresses.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -I 00:B0:52:DA:DA:23
+<span class="go">eth1 00:B0:52:DA:DA:23 Device Identity</span>
+<span class="go">eth1 00:B0:52:DA:DA:23 -------</span>
+<span class="go">        PIB 3-2 7864 bytes</span>
+<span class="go">        MAC 00:B0:52:DA:DA:23</span>
+<span class="go">        DAK 24:03:D7:84:09:A0:9A:78:8D:F6:82:75:AF:0D:0F:D8</span>
+<span class="go">        NMK 50:D3:E4:93:3F:85:5B:70:40:78:4D:F8:15:AA:8D:B7 (HomePlugAV)</span>
+<span class="go">        NID B0:F2:E6:95:66:6B:03</span>
+<span class="go">        NET Jupiter-23</span>
+<span class="go">        MFG Intergalactic Death Rays Inc.</span>
+<span class="go">        USR Rattin Tordo</span>
+<span class="go">        CCo Auto</span>
+</pre></div>
+</div>
+<p>Pay special attention to the MAC address after flashing NVRAM. Hardware address <code class="docutils literal"><span class="pre">00:B0:52:00:00:03</span></code> indicates the Default PIB used when no other PIB is available. The Default PIB disables communication over powerline.</p>
+<p>Pay special attention to the NMK when devices cannot communicate. Devices having different NMK values will not form a network. Conversely, all devices having the same NMK will form a network. This becomes important when programming large numbers of devices. You must have an out-of-the-box networking strategy that balances user convenience and network security.</p>
+<p>The string next to the NMK indicates that password &#8220;HomePlugAV&#8221; was used to generate that key. This is one of two default passwords and keys used by Atheros. In some cases, it may be another clue that the device is using the default PIB.</p>
+</div>
+</div>
+<div class="section" id="browse-the-network">
+<span id="procedure-inspect-network"></span><h2>Browse the Network<a class="headerlink" href="#browse-the-network" title="Permalink to this headline">¶</a></h2>
+<p>A powerline network consists of one or more powerline devices that share a common NMK. One device on the network is in charge of the network and known as the Central Coordinator (CCo). All other devices on that network are known as stations (STA). Each device maintains internal information about the network to which it belongs. You can view that information at any time.</p>
+<div class="section" id="display-network-information">
+<h3>Display Network Information<a class="headerlink" href="#display-network-information" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k  -mieth3
+<span class="go">eth3 00:B0:52:00:00:01 Fetch Network Information</span>
+<span class="go">eth3 00:B0:52:00:00:BB Found 1 Network(s)</span>
+
+<span class="go">        network-&gt;NID = 77:23:0D:91:06:6E</span>
+<span class="go">        network-&gt;SNID = 6</span>
+<span class="go">        network-&gt;TEI = 1</span>
+<span class="go">        network-&gt;ROLE = 0x02 (CCO)</span>
+<span class="go">        network-&gt;CCO_DA = 00:B0:52:00:00:BB</span>
+<span class="go">        network-&gt;CCO_TEI = 1</span>
+<span class="go">        network-&gt;STATIONS = 1</span>
+
+<span class="go">                station-&gt;DA = 00:B0:52:00:00:AA</span>
+<span class="go">                station-&gt;TEI = 2</span>
+<span class="go">                station-&gt;BDA = FF:FF:FF:FF:FF:FF</span>
+<span class="go">                station-&gt;AvgPHYDR_TX = 0 mbps</span>
+<span class="go">                station-&gt;AvgPHYDR_RX = 0 mbps</span>
+</pre></div>
+</div>
+<p>The example above prompts the local device on interface <code class="docutils literal"><span class="pre">eth3</span></code> for network membership (<code class="docutils literal"><span class="pre">-m</span></code>) information. Device <code class="docutils literal"><span class="pre">00:B0:52:00:00:BB</span></code> responded and reported that it belongs to one powerline network. The first block of information identifies the network CCo. The second block of information identifies a network STA. This second block will repeat when multiple stations are present. Each device on the network has a unique Terminal Equipment Identifier (TEI) within the network. The average PHY rates show the data rates between the reporting device and each STA. In this cases there has been no traffic.</p>
+</div>
+</div>
+<div class="section" id="forming-a-network">
+<span id="procedure-change-network"></span><h2>Forming a Network<a class="headerlink" href="#forming-a-network" title="Permalink to this headline">¶</a></h2>
+<p>A powerline network is formed when two or more devices share a common Network Membership Key (NMK). An NMK is always 16 bytes (32 hexadecimal digits) in length and can have any value,  including all zeros. Devices programmed with the same NMK value can communicate while those programmed with different NMK values cannot. Program <a class="reference external" href="int6k.7.html">int6k</a> can be used to program a local or remote device with a specific NMK value.</p>
+<div class="section" id="setting-the-network-membership-key">
+<h3>Setting the Network Membership Key<a class="headerlink" href="#setting-the-network-membership-key" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -M
+<span class="go">eth1 00:B0:52:00:00:01 Set Local Network Membership Key</span>
+<span class="go">eth1 00:B0:52:BA:BA:56 Setting ...</span>
+</pre></div>
+</div>
+<p>This example programs the local device with the default NMK. Option <code class="docutils literal"><span class="pre">-M</span></code> sets the network membership key with the default key value. The default key is used because we omitted option <code class="docutils literal"><span class="pre">-K</span></code> and the local device is programmed because we omitted the device MAC address.</p>
+<p>One can quickly and easily create a default network by connecting each device,  in turn, to the local host and executing this command shown above. The devices will then form a network when connected via the powerline. Although fast and simple, this method is not very secure because the default NMK is used by many Atheros tools and is well known.</p>
+<p>There are cases where one wants to create separate, independent networks on the powerline. This is accomplished by programming some devices with one NMK and other devices with another NMK. In such cases we need to specify an NMK value.</p>
+</div>
+<div class="section" id="forming-a-custom-network">
+<h3>Forming a Custom Network<a class="headerlink" href="#forming-a-custom-network" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -M -K 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF
+<span class="go">eth1 00:B0:52:00:00:01 Set Local Network Membership Key</span>
+<span class="go">eth1 00:B0:52:BA:BA:56 Setting ...</span>
+</pre></div>
+</div>
+<p>This example programs the local device NMK with the value <code class="docutils literal"><span class="pre">00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF</span></code>. Option <code class="docutils literal"><span class="pre">-K</span></code> sets the default key value used by option <code class="docutils literal"><span class="pre">-M</span></code>. The default device is programmed because we omitted a target MAC address from the command line but we could have specified the local device using the actual device MAC address or the Local Management Address (LMA) of <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> or the keyword <code class="docutils literal"><span class="pre">local</span></code>,  like so ...</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -M -K 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF
+<span class="gp">$</span> int6k -M -K 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF 00:B0:52:BA:BE:56
+<span class="gp">$</span> int6k -M -K 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF <span class="nb">local</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="remote-network-configuration">
+<h3>Remote Network Configuration<a class="headerlink" href="#remote-network-configuration" title="Permalink to this headline">¶</a></h3>
+<p>Once a network has been established, one can change the NMK of remote devices over the powerline but once the NMK on the remote device has changed, it is no longer part of original network and can no longer be returned to the network in the same way. Additionally, one cannot change the NMK on a remote device without specifying the DAK of the device to be changed.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -M -K 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF <span class="se">\</span>
+<span class="go">        -J 00:B0:52:BA:BE:57 \</span>
+<span class="go">        -D A7:8E:11:FB:6A:90:2C:CB:A7:8E:11:FB:6A:90:2C:CB</span>
+<span class="go">eth1 00:B0:52:00:00:01 Set Remote Network Membership Key</span>
+<span class="go">eth1 00:B0:52:BA:BA:56 Setting ...</span>
+</pre></div>
+</div>
+<p>This example sets the NMK on remote device via the local device. Option <code class="docutils literal"><span class="pre">-J</span></code> specified the MAC address of the remote device. Option <code class="docutils literal"><span class="pre">-D</span></code> specified the DAK of the remote device. The request is sent to the local device, because we omitted the target MAC address, and the local device forwards our request to the remote device. The request will fail if the remote device is not accessible or the remote device DAK is incorrect.</p>
+<p>This command is one of the more complicated <a class="reference external" href="int6k.7.html">int6k</a> commands,  requires lots of typing and is consequently prone to typing errors. The order of command line options is not important.</p>
+</div>
+</div>
+<div class="section" id="configuring-a-device">
+<span id="procedure-configure-device"></span><h2>Configuring a Device<a class="headerlink" href="#configuring-a-device" title="Permalink to this headline">¶</a></h2>
+<p>Device identity, capability and behavior are controlled by runtime parameters stored in the device PIB. To change device identity,  capability or behavior you must alter a template PIB file, download it to the device and flash it into NVRAM. A template PIB can come from several sources but an excellent souce is the device, itself. Configuration changes then become a simple read, modify and write back operation.</p>
+<div class="section" id="read-a-pib-file">
+<h3>Read a PIB File<a class="headerlink" href="#read-a-pib-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -i eth2 -p old.pib <span class="nb">local</span>
+<span class="go">eth2 00:B0:52:00:00:01 Read Parameters from Device</span>
+<span class="go">eth2 00:B0:52:00:00:BE Read.</span>
+</pre></div>
+</div>
+<p>This example reads the PIB from the local device and writes it to a file. The toolkit has a growing number of programs designed to inspect and change pibfiles in various ways. Program <a class="reference external" href="modpib.7.html">modpib</a> is one program that can be used for this purpose.</p>
+</div>
+<div class="section" id="modify-a-pib-file">
+<h3>Modify a PIB File<a class="headerlink" href="#modify-a-pib-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> modpib old.pib -M 00:B0:52:00:BA:BE <span class="se">\</span>
+<span class="go">                 -N 00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF \</span>
+<span class="go">                 -D FF:EE:DD:CC:BB:AA:99:88:77:66:55:44:33:22:11:00 \</span>
+<span class="go">                 -S &quot;Intergalactic Death Rays, Inc.&quot; \</span>
+<span class="go">                 -T &quot;Global Spy Network&quot; \</span>
+<span class="go">                 -U &quot;Bedroom&quot;</span>
+</pre></div>
+</div>
+<p>The example above edits identity parameters in PIB file,  <code class="file docutils literal"><span class="pre">old.pib</span></code>, recomputes the internal checksum and re-writes the file. The network identity parameters are MAC (<code class="docutils literal"><span class="pre">-M</span></code>), NMK (<code class="docutils literal"><span class="pre">-N</span></code>) and DAK (<code class="docutils literal"><span class="pre">-D</span></code>). The user identity parameters are MFG_HFID (<code class="docutils literal"><span class="pre">-S</span></code>),  NET_HFID (<code class="docutils literal"><span class="pre">-T</span></code>) and USR_HFID (<code class="docutils literal"><span class="pre">-U</span></code>). The PIB file is ready for download and flash.</p>
+<p>Program <a class="reference external" href="modpib.7.html">modpib</a> is a safe way to edit a PIB file because it only change selected parameters. Use program <a class="reference external" href="setpib.7.html">setpib</a> to edit other parameters if required.</p>
+</div>
+<div class="section" id="save-a-pib-file">
+<h3>Save a PIB File<a class="headerlink" href="#save-a-pib-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -i eth2 -P old.pib -C pib
+<span class="go">eth2 00:B0:52:00:00:01 Write Parameters to Device</span>
+<span class="go">eth2 00:B0:52:00:00:BE Written.</span>
+</pre></div>
+</div>
+<p>This example writes the modified PIB file, <code class="file docutils literal"><span class="pre">old.pib</span></code>, to the local device and commits it to NVRAM. Option <code class="docutils literal"><span class="pre">-P</span></code> writes the PIB file to the device instead of reading it from the device. Option <code class="docutils literal"><span class="pre">-C</span></code> with argument <code class="docutils literal"><span class="pre">pib</span></code> commits only the PIB, and not firmware, to NVRAM.</p>
+</div>
+</div>
+<div class="section" id="upgrading-firmware-and-pib">
+<span id="procedure-upgrade-device"></span><h2>Upgrading Firmware and PIB<a class="headerlink" href="#upgrading-firmware-and-pib" title="Permalink to this headline">¶</a></h2>
+<p>Eventually,  you may want to upgrade (or downgrade) the runtime firmware stored in NVRAM. To do this, you must locate a copy of the new <code class="file docutils literal"><span class="pre">.nvm</span></code> file on the Atheros FTP site and download it to your host. You must then download the file to the device and ask the runtime firmware on the device to write the file to NVRAM. Writing firmware to NVRAM is also called &#8220;flashing the device&#8221;. Program <a class="reference external" href="int6k.7.html">int6k</a> can be used for this purpose when runtime firmware is executing on the device.</p>
+<p>Program <strong class="program">int6k</strong> instructs runtime firmware to write to NVRAM but the firmware will behave differently depending on how it was loaded and started. The first time NVRAM is written by runtime firmware, the Factory PIB is created in NVRAM. The second time, the User PIB is created. Thereafter, the User PIB will be re-written each time. This preserves original factory settings and permits their restoration regardless of intervening parameter changes. This means that you should make an effort to get things right the first time.</p>
+<div class="section" id="upgrade-firmware-and-pib">
+<h3>Upgrade Firmware and PIB<a class="headerlink" href="#upgrade-firmware-and-pib" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6k -i eth2 -P ../firmware/new.pib -N ../firmware/new.nvm -F
+<span class="go">eth2 00:B0:52:00:00:01 Write Firmware to Device</span>
+<span class="go">eth2 00:B0:52:00:00:BE Wrote ../firmware/new.nvm</span>
+<span class="go">eth2 00:B0:52:00:00:01 Write Parameters to Device</span>
+<span class="go">eth2 00:B0:52:00:00:BE Wrote ../firmware/new.pib</span>
+<span class="go">eth2 00:B0:52:00:00:01 Flash NVRAM</span>
+<span class="go">eth2 00:B0:52:00:00:BE Flashing ...</span>
+<span class="go">eth2 00:B0:52:00:00:BE Started INT6000-MAC-3-3-3325-00-2443-20080414-FINAL-B</span>
+</pre></div>
+</div>
+<p>This example downloads a PIB file (<code class="docutils literal"><span class="pre">-P</span></code>) and an NVM file (<code class="docutils literal"><span class="pre">-N</span></code>) to the device then instructs the runtime firmware to write (or flash) (<code class="docutils literal"><span class="pre">-F</span></code>) both of them to NVRAM. Option <code class="docutils literal"><span class="pre">-F</span></code> always writes both to NVRAM but option <code class="docutils literal"><span class="pre">-C</span></code> can be used to write only one or the other or both.</p>
+<p>Observe that options <code class="docutils literal"><span class="pre">-P</span></code>, <code class="docutils literal"><span class="pre">-N</span></code> and <code class="docutils literal"><span class="pre">-F</span></code> are all in uppercase. As a rule, uppercase options modify the device and lowercase options do not. One notable exception to this rule is <code class="docutils literal"><span class="pre">-I</span></code> which merely displays device identity.</p>
+</div>
+</div>
+<div class="section" id="upgrading-pib-only">
+<span id="procedure-upgrade-pib"></span><h2>Upgrading PIB Only<a class="headerlink" href="#upgrading-pib-only" title="Permalink to this headline">¶</a></h2>
+<p>When flashing a PIB to the local device, the PIB DAK must match that of the local device or you will get a &#8220;DAK Not Zero&#8221; error message. This message is incorrect and should probably read &#8220;DAK Mismatch&#8221;. The following two toolkit commands should prevent this error from occuring on Linux. The first command reads the actual MAC (<code class="docutils literal"><span class="pre">-A</span></code>) and DAK (<code class="docutils literal"><span class="pre">-D</span></code>) from the device using program <a class="reference external" href="int6kid.7.html">int6kid</a> and inserts them on the command lise as <a class="reference external" href="modpib.7.html">modpib</a> arguments using options <code class="docutils literal"><span class="pre">-M</span></code> and <code class="docutils literal"><span class="pre">-D</span></code>. We need not include the station MAC address on the <a class="reference external" href="int6k.7.html">int6k</a> command line because the device is local, but we could include it.</p>
+<div class="section" id="upgrade-local-device-pib">
+<h3>Upgrade local device PIB<a class="headerlink" href="#upgrade-local-device-pib" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> modpib abc.pib -ieth1 -M <span class="k">$(</span>int6kid -ieth1 -A<span class="k">)</span> -D <span class="k">$(</span>int6kid -ieth1 -D<span class="k">)</span>
+<span class="gp">$</span> int6k -P abc.pib -C pib
+</pre></div>
+</div>
+<p>When flashing a PIB to a remote device, the PIB DAK must be all zeros or you will get a &#8220;DAK Not Zero&#8221; error message. This message occurs because the <em>HomePlug</em> AV Specification does not permit a DAK to be transmitted over powerline in any form. The following two toolkit commands should prevent this error on Linux. We must include the device MAC on the command line when invoking each program because the device is remote. Notice that symbol <code class="docutils literal"><span class="pre">none</span></code> can be used as shorthand <code class="docutils literal"><span class="pre">00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00</span></code> when specifying the DAK.</p>
+</div>
+<div class="section" id="upgrade-remote-pib">
+<h3>Upgrade remote PIB<a class="headerlink" href="#upgrade-remote-pib" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> modpib abc.pib -ieth1 -M <span class="k">$(</span>int6kid -ieth1 -A 00B052BEEF03<span class="k">)</span> -D none
+<span class="gp">$</span> int6k -P abc.pib -C2 00B052BEEF03
+</pre></div>
+</div>
+<p>The MAC address stored in the PIB can have any value but it is good practice to preserve the original value. This avoids the common mistake of flashing multiple network stations with the same MAC address because the PIB was not updated.</p>
+</div>
+</div>
+<div class="section" id="starting-a-device">
+<span id="procedure-initialize-device"></span><h2>Starting a Device<a class="headerlink" href="#starting-a-device" title="Permalink to this headline">¶</a></h2>
+<p>Some device configurations have no flash memory to store runtime parameters and firmware so the local host must store them until needed then write them into device SDRAM and start execution. This is also needed when the flash memory is blank or corrupted because the runtime firmware is the only way to write flash memory. Programs <a class="reference external" href="int6kf.7.html">int6kf</a>,  <a class="reference external" href="int6kboot.7.html">int6kboot</a>, <a class="reference external" href="ampboot.7.html">ampboot</a> and <a class="reference external" href="plcboot.7.html">plcboot</a> are used to configure a blank device then download runtime parameters and firmware and start execution. They all perform the same basic function but in different ways.</p>
+<div class="section" id="start-firmware-on-int6000">
+<h3>Start Firmware on <em>INT6000</em><a class="headerlink" href="#start-firmware-on-int6000" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6kf -C abc.cfg -N abc.nvm -P abc.pib
+</pre></div>
+</div>
+<p>Program <a class="reference external" href="int6kf.7.html">int6kf</a> can be used to download runtime firmware and parameters and start execution on and <em>INT6000</em> chipset. The process involves downloading a <code class="file docutils literal"><span class="pre">.cfg</span></code> file using <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code>, downloading a <code class="file docutils literal"><span class="pre">.nvm</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, downloading a <code class="file docutils literal"><span class="pre">.pib</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> then starting firmware execution using <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>. See the <a class="reference external" href="int6kf.7.html">int6kf</a> man page for an explanation of the command line options and arguments used here.</p>
+</div>
+<div class="section" id="start-firmware-on-int6300-and-int6400">
+<h3>Start Firmware on <em>INT6300</em> and <em>INT6400</em><a class="headerlink" href="#start-firmware-on-int6300-and-int6400" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6kboot -N abc.nvm -P abc.pib
+</pre></div>
+</div>
+<p>Program <a class="reference external" href="int6kboot.7.html">int6kboot</a> can be used to download runtime firmware and parameters and start execution on an <em>INT6300</em> or <em>INT6400</em> chipset. The process involves downloading a <code class="file docutils literal"><span class="pre">.nvm</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, downloading a <code class="file docutils literal"><span class="pre">.pib</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> then starting firmware execution using <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>. No <code class="file docutils literal"><span class="pre">.cfg</span></code> file is needed or permitted with this application.</p>
+</div>
+<div class="section" id="start-firmware-on-ar7400">
+<h3>Start Firmware on <em>AR7400</em><a class="headerlink" href="#start-firmware-on-ar7400" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ampboot -N abc.nvm -P abc.pib
+</pre></div>
+</div>
+<p>Program <a class="reference external" href="ampboot.7.html">ampboot</a> can be used to download runtime firmware and parameters and start execution of runtime firmware on an <em>INT6300</em>, <em>INT6400</em> or <em>AR7400</em> chipset. The process involves downloading a <code class="file docutils literal"><span class="pre">.pib</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, downloading a <code class="file docutils literal"><span class="pre">.nvm</span></code> file using <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> then starting firmware execution using <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>. A general purpose applet, stored in the <code class="file docutils literal"><span class="pre">.nvm</span></code> file, configures SDRAM. No <code class="file docutils literal"><span class="pre">.cfg</span></code> file is needed or permitted with this application.</p>
+</div>
+<div class="section" id="start-firmware-on-ar7420">
+<h3>Start Firmware on <em>AR7420</em><a class="headerlink" href="#start-firmware-on-ar7420" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> plcboot -N abc.nvm -P abc.pib
+</pre></div>
+</div>
+<p>Program <a class="reference external" href="plcboot.7.html">plcboot</a> can be used to download runtime firmware and parameters and start execution an <em>INT6300</em>, <em>INT6400</em>, <em>AR7400</em> or <em>AR7420</em> chipset. This program detects the type of chipset and the image file format. The boot process varies depending on the chipset that is detected and the image file format. For the <em>AR7420</em> chipset, this process involves downloading a <code class="file docutils literal"><span class="pre">.pib</span></code> and <code class="file docutils literal"><span class="pre">.nvm</span></code> file using only <code class="docutils literal"><span class="pre">VS_WRITE_EXECUTE</span></code> messages. For earlier chipsets, the process is as described above.</p>
+</div>
+</div>
+<div class="section" id="testing-a-device">
+<span id="procedure-testing-device"></span><h2>Testing a Device<a class="headerlink" href="#testing-a-device" title="Permalink to this headline">¶</a></h2>
+<p>When the <strong class="program">Bootloader</strong> is running, it is possible to perform systematic diagnostic testing by downloading and executing a variety of small programs, called &#8220;applets&#8221;. A collection of applets can be found in the toolkit <code class="file docutils literal"><span class="pre">Applets</span></code> folder. Applet <a class="reference external" href="toolkit.html#applet-files">manpages</a> describe the purpose of each one. Some applets are more useful than others. Start by reading the <a class="reference external" href="applets.7a.html">applets</a> manpage.</p>
+<p>Program <a class="reference external" href="int6ktest.7.html">int6ktest</a> can be used to sequentially download and execute a series of applets. Applets have evolved over time and some are more useful or informative than others. Newer applets report progress and errors on the console. Older applets report progress or errors by flashing the onboard LEDs. This means of testing cannot be used after the flash memory has been programmed unless you erase, corrupt or remove the flash.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6ktest -i eth4 connection.nvm memctl.nvm marchloop.nvm
+<span class="go">eth4 00:B0:52:00:00:01 Write Memory (00000000:32)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Wrote connection.nvm</span>
+<span class="go">eth4 00:B0:52:00:00:01 Start connection.nvm (0)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Write Memory (00001000:664)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Wrote connection.nvm</span>
+<span class="go">eth4 00:B0:52:00:00:01 Start connection.nvm (1)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Write Memory (00000040:6076)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Wrote memctl.nvm</span>
+<span class="go">eth4 00:B0:52:00:00:01 Start memctl.nvm (0)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Write Memory (00001000:2212)</span>
+<span class="go">eth4 00:B0:52:00:00:01 Wrote marchloop.nvm</span>
+<span class="go">eth4 00:B0:52:00:00:01 Start marchloop.nvm (0)</span>
+<span class="go">eth4 00:B0:52:00:00:01 0x00 March2 test - Pass</span>
+</pre></div>
+</div>
+<p>This example uses program <a class="reference external" href="int6ktest.7.html">int6ktest</a> to download and execute applets <a class="reference external" href="connection.7a.html">connection.nvm</a>, <a class="reference external" href="memctl.7a.html">memctl.nvm</a> and <a class="reference external" href="marchloop.7a.html">marchloop.nvm</a> to the powerline device on host interface &#8220;eth4&#8221;. The first applet checks circuit board connections to memory and reports progress and errors by flashing onboard LEDs. The second configures the SDRAM controller and exits without any indication. The third performs a systematic test of SDRAM and reports progress and errors on the console. In this case the test passed.</p>
+<p>See programs <a class="reference external" href="amptest.7.html">amptest</a> and <a class="reference external" href="plctest.7.html">plctest</a> for updated versions of this program for use with <em>AR7400</em> and <em>QCA7420</em> chipsets.</p>
+</div>
+<div class="section" id="programming-nvram">
+<span id="procedure-inialize-nvram"></span><h2>Programming NVRAM<a class="headerlink" href="#programming-nvram" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <em>INT6300</em> and <em>INT6400</em> do not require a special SDRAM configuration file and so program <a class="reference external" href="int6kboot.7.html">int6kboot</a> may be used in place of <a class="reference external" href="int6kf.7.html">int6kf</a> which is described here. The only real difference between the two programs is the presence or absence of option <strong class="command">-C</strong> on the command line.</p>
+</div>
+<p>The <a class="reference external" href="int6kf.7.html">int6kf</a> program can program a blank or corrupted NVRAM on the INT6300. The process involves starting the runtime firmware as shown in the previous example then downloading a .nvm file using a <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code> message, downloading a .pib file using another WR_WR_MOD message then writing both to NVRAM using a <code class="docutils literal"><span class="pre">VS_MOD_NVM</span></code> message. An example <a class="reference external" href="int6kf.7.html">int6kf</a> command line is shown below. It is identical to the one shown above except for the addition of the flash option at the end.</p>
+<div class="section" id="flash-nvram-with-int6kf">
+<h3>Flash NVRAM with int6kf<a class="headerlink" href="#flash-nvram-with-int6kf" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6kf -C abc.cfg -N abc.nvm -P abc.pib -F
+</pre></div>
+</div>
+<p>The example above starts the firmware then uses it to program the NVRAM. This was done in one step rather than two seperate steps as shown in the examples before it. The only difference is that <strong class="command">int6k</strong> needs to use the &#8216;force flash&#8217; option when using downloaded firmware to write NVRAM. The following example accomplishes the same thing as the previous example but uses <strong class="command">int6k</strong> to program NVRAM. See the <a class="reference external" href="int6k.7.html">int6k</a> man page for an explanation of the command line options and arguments used here.</p>
+<p>The <a class="reference external" href="int6kf.7.html">int6kf</a> program cannot program blank or corrupted NVRAM on the INT6000 unless the <strong class="program">Softloader</strong> is running. Since the <strong class="program">Softloader</strong> resides in NVRAM, the NVRAM must be either pre-programmed before use or removed and externally re-programmed if it corrupts.</p>
+</div>
+<div class="section" id="flash-nvram-with-int6k">
+<h3>Flash NVRAM with int6k<a class="headerlink" href="#flash-nvram-with-int6k" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> int6kf -C abc.cfg -N abc.nvm -P abc.pib
+<span class="gp">$</span> int6k -N abc.nvm -P abc.pib -FF
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pairing-uart-devices-post-pts">
+<span id="procedure-uart-pairing"></span><h2>Pairing UART Devices post PTS<a class="headerlink" href="#pairing-uart-devices-post-pts" title="Permalink to this headline">¶</a></h2>
+<p>This procedure describes how to pair two UART-enabled powerline adapters once they have been programmed,  personalized and tested. This example assumes you are using a Windows host and two powerline adapters having MAC addresses <code class="docutils literal"><span class="pre">00:B0:52:00:05:F9</span></code> and <code class="docutils literal"><span class="pre">00:B0:52:00:05:FA</span></code>.</p>
+<p>Start with the first device, <code class="docutils literal"><span class="pre">00:B0:52)(00:05:F9</span></code>. Plug the host serial cable into the RJ45 port on the device and plug the device into an AC power source.</p>
+<p>Change to transparent mode using program int6kuart. Option -v displays outgoing command and incoming serial responses. The &#8220;+++&#8221; is the serial data sent to the device and the &#8220;OK&#8221; is the device response.
+.. code-block:: console</p>
+<blockquote>
+<div>$ int6kuart -s com3 -wv
++++
+OK</div></blockquote>
+<p>Read the adapter PIB into a temporary file using program  <a class="reference external" href="int6kuart.7.html">int6kuart</a>. The following command reads the PIB from serial device <code class="file docutils literal"><span class="pre">com3</span></code> and saves it to file <code class="file docutils literal"><span class="pre">temp.pib</span></code> on the host. You will see a series of dots appear on the console as the PIB is read from the device. The filename used is not important.
+.. code-block:: console</p>
+<blockquote>
+<div>$ int6kuart -s com3 -p temp.pib
+....................</div></blockquote>
+<p>Program the PIB file with the default destination address using program <a class="reference external" href="setpib.7.html">setpib</a>. The following command inserts the MAC address of the second device, <code class="docutils literal"><span class="pre">00B0520005FA</span></code>, at fixed offset <code class="docutils literal"><span class="pre">0x2C8A</span></code> in file <code class="file docutils literal"><span class="pre">temp.pib</span></code> downloaded in the previous step.
+.. code-block:: console</p>
+<blockquote>
+<div>$ setpib temp.pib 2C8A data 00B0520005FA</div></blockquote>
+<p>Write the modified PIB file back to the adapter and commit it to flash memory using program <a class="reference external" href="int6kuart.7.html">int6kuart</a>. The following command write file <code class="file docutils literal"><span class="pre">temp.pib</span></code> to serial device <code class="file docutils literal"><span class="pre">com3</span></code> then commits the PIB to flash memory. You will see a series of dots appear on the console as the PIB is written to the device. The device will reboot.
+.. code-block:: console</p>
+<blockquote>
+<div>$ int6kuart -s com3 -P temp.pib -C2
+....................</div></blockquote>
+<p>Change the device to Transparent Mode using program <a class="reference external" href="int6kuart.7.html">int6kuart</a> once the device resets.
+.. code-block:: console</p>
+<blockquote>
+<div>$ inc6kuart -s com3 -wv
++++
+OK</div></blockquote>
+<p>Verify that the destination MAC address is correct using program <a class="reference external" href="int6kuart.7.html">int6kuart</a>.
+.. code-block:: console</p>
+<blockquote>
+<div>$ int6kuart -s com3 -d
+00B0520005FA</div></blockquote>
+<p>Repeat this process on the second adapter, <code class="docutils literal"><span class="pre">00:B0:52:00:05:FA</span></code>, using the MAC address of the first device, <code class="docutils literal"><span class="pre">00:B0:52:00:05:F9</span></code>, as the destination address.</p>
+</div>
+<div class="section" id="trouble-shooting-problems">
+<span id="procedure-troubleshoot-problems"></span><h2>Trouble-shooting Problems<a class="headerlink" href="#trouble-shooting-problems" title="Permalink to this headline">¶</a></h2>
+<p>The following steps may help determine why two devices cannot communicate via ethernet over the powerline.  They assume that you have successfully installed the Powerline Toolkit but are having trouble forming a powerline network.</p>
+<ol class="arabic" id="trouble-shoot-1">
+<li><p class="first">On <strong class="program">Linux</strong>, run program <strong class="program">ifconfig</strong> to determine available interface names as described <a class="reference internal" href="#procedure-select-interface-linux"><span class="std std-ref">earlier</span></a>. The default interface name is <code class="docutils literal"><span class="pre">eth1</span></code> on Linux. You must use interface names, not numbers, on the Linux command line.</p>
+<p>On <strong class="program">Windows</strong>, run program <a class="reference external" href="pcapdevs.7.html">pcapdevs</a> to determine available interface numbers as described <a class="reference internal" href="#procedure-select-interface-windows"><span class="std std-ref">earlier</span></a>. The default interface number is <code class="docutils literal"><span class="pre">2</span></code> on Windows. You must use interface numbers,  not names,  on Windows command lines, even under Cygwin.</p>
+<p>In either case, <strong class="program">Linux</strong> or <strong class="program">Windows</strong>, if a powerline device is connected to any interface other than the default interface then you must specify the name or number on the command line each time you run <a class="reference external" href="int6k.7.html">int6k</a>. In the following examples, we will use device numbers <code class="docutils literal"><span class="pre">3</span></code> and <code class="docutils literal"><span class="pre">4</span></code> to indicate two different interfaces on the same host.</p>
+</li>
+</ol>
+<ol class="arabic" id="trouble-shoot-2" start="2">
+<li><p class="first">Make sure both devices respond to <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-ri3</span></code> and <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-ri4</span></code> as described <a class="reference internal" href="#script-example-device-identification"><span class="std std-ref">earlier</span></a>. They should each display the software revision information. If you get no response then check your connections and network configuration. If you see &#8220;Bootloader&#8221; then the connection is good but the firmware is not running. If the firmware versions are different then make them the same.</p>
+<p>You must have running firmware to continue and the firmware revisions should be the same.</p>
+</li>
+</ol>
+<ol class="arabic" id="trouble-shoot-3" start="3">
+<li><p class="first">Make sure both devices respond to <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-Ii3</span></code> then <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-Ii4</span></code> as described <a class="reference internal" href="#script-example-device-configuration"><span class="std std-ref">earlier</span></a>. They should display about 10 lines of information showing their MAC, DAK and NMK.</p>
+<p>If the MAC is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> then either the default Atheros PIB was stored in NVRAM or you downloaded and flashed the generic Atheros PIB without changing the MAC address beforehand.</p>
+<p>If the MAC is <code class="docutils literal"><span class="pre">00:B0:52:00:00:03</span></code> then either no PIB was stored in NVRAM or you downloaded and attempted to flashed an invalid PIB. The firmware will disable powerline communications in this case.</p>
+</li>
+</ol>
+<ol class="arabic" id="trouble-shoot-4" start="4">
+<li><p class="first">If the devices have different NMKs they will not form a network.</p>
+<p>One way to form a network is to manually set the NMK on each device to a known value with <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-Mi3</span></code> then <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-Mi4</span></code>. Each device will reset afterwards and may reset again when the other device is changed. Repeat <a class="reference internal" href="#trouble-shoot-3"><span class="std std-ref">Step 3</span></a> and confirm that both devices have the same NMK and that &#8220;(HomePlugAV)&#8221; appears next to the NMK.</p>
+<p>Another way to form a network is to physically press the push-button on each device for 2 to 3 seconds or simulate a push-button press on each device with <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-B1</span> <span class="pre">-i3</span></code> then <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-B1</span> <span class="pre">-i4</span></code>. The devices should reset several times and then form a network.</p>
+</li>
+</ol>
+<ol class="arabic simple" id="trouble-shoot-5" start="5">
+<li>Make sure each device knows the other one is present on the network with <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-mi3</span></code> then <code class="docutils literal"><span class="pre">int6k</span> <span class="pre">-Mi4</span></code>. Each device should show that a network exists and identify the other device as a station on that network. It may take up to 120 seconds for one device to find another and up to 5 minutes to recognise that the other device has left the network.</li>
+</ol>
+<ol class="arabic simple" id="trouble-shoot-6" start="6">
+<li><a class="reference internal" href="#trouble-shoot-5"><span class="std std-ref">Step 5</span></a> should also show the TX and RX PHY rates for each device. <strong class="program">Ping</strong> each host Interface from the other several times to generate traffic. The PHY Rates should then be non-zero. We use <a class="reference external" href="efsu.7.html">efsu</a> to generate <a class="reference internal" href="scripting.html#scripting-traffic"><span class="std std-ref">traffic</span></a> inside our own scripts. You may elect to use another method.</li>
+</ol>
+<ol class="arabic simple" id="trouble-shoot-7" start="7">
+<li>Power down both devices then power them up. Wait about 20 seconds and confirm that you can <strong class="program">ping</strong> in either direction.</li>
+</ol>
+</div>
+<div class="section" id="slac-configuration">
+<span id="slac-config"></span><h2>SLAC Configuration<a class="headerlink" href="#slac-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Avitar can be used to configure a PLC device as either a normal PLC station or a SLAC PEV-PLC or SLAC EVSE-PLC station. In doing so, <strong class="program">Avitar</strong> changes several PIB values at the same time. This section illustrates how to configurat a PIB the same way using the toolkit.</p>
+<p>The HomePlug Green PHY Specification refers to the <code class="docutils literal"><span class="pre">APCM_SET_CCO.REQ</span></code> and <code class="docutils literal"><span class="pre">APCM_CONF_SLAC</span></code> primatives in the SLAC protocol description. These are virtual operations to be implemented by the user. In both cases, one must read the PIB from the PLC device, edit the PIB, recompute PIB checksums and write the PIB back to the PLC device. This can be done manually, using <strong class="program">Avitar</strong>, or in a script, using the Powerline Toolkit as shown below, or programatically, using custom software.</p>
+<div class="section" id="pev-plc-pib-settings">
+<h3>PEV-PLC PIB Settings<a class="headerlink" href="#pev-plc-pib-settings" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="11%" />
+<col width="27%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">OFFSET</th>
+<th class="head">LENGTH</th>
+<th class="head">SYMBOL</th>
+<th class="head">DESCRIPTION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0000F4</td>
+<td>1</td>
+<td>CCoSelection</td>
+<td>1: This sets CCo Selection to Never</td>
+</tr>
+<tr class="row-odd"><td>001653</td>
+<td>1</td>
+<td>SLAC_EnableMode</td>
+<td>1: This sets SLAC Selection to PEV</td>
+</tr>
+<tr class="row-even"><td>001C98</td>
+<td>4</td>
+<td>LowLinkSpeed_kbps</td>
+<td>10240</td>
+</tr>
+<tr class="row-odd"><td>001C9C</td>
+<td>4</td>
+<td>HighLinkSpeed_kbps</td>
+<td>102400</td>
+</tr>
+</tbody>
+</table>
+<p>The following shell script converts a factory PIB to a SLAC PEV by setting the CCO Mode to Never and the SLAC Mode to PEV. The User HFID is set to &#8220;PEV&#8221; for role identification, optionally. This PIB must be written into PEV-PLC flash memory for proper operation.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="c1"># file: pev.sh</span>
+<span class="c1"># ========================================================================</span>
+<span class="c1"># convert a factory PIB to a SLAC PEV PIB by changing these PIB settings;</span>
+<span class="c1"># ------------------------------------------------------------------------</span>
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> <span class="m">74</span> hfid <span class="s2">&quot;PEV&quot;</span>
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> F4 byte 1
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> <span class="m">1653</span> byte 1
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> 1C98 long <span class="m">10240</span> long 102400
+</pre></div>
+</div>
+</div>
+<div class="section" id="pev-evse-pib-settings">
+<h3>PEV-EVSE PIB Settings<a class="headerlink" href="#pev-evse-pib-settings" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="11%" />
+<col width="27%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">OFFSET</th>
+<th class="head">LENGTH</th>
+<th class="head">SYMBOL</th>
+<th class="head">DESCRIPTION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0000F4</td>
+<td>1</td>
+<td>CCoSelection</td>
+<td>2: This sets CCo Selection to Always</td>
+</tr>
+<tr class="row-odd"><td>001653</td>
+<td>1</td>
+<td>SLAC_EnableMode</td>
+<td>2: This sets SLAC Selection to EVSE</td>
+</tr>
+<tr class="row-even"><td>001C98</td>
+<td>4</td>
+<td>LowLinkSpeed_kbps</td>
+<td>10240</td>
+</tr>
+<tr class="row-odd"><td>001C9C</td>
+<td>4</td>
+<td>HighLinkSpeed_kbps</td>
+<td>102400</td>
+</tr>
+</tbody>
+</table>
+<p>The following shell script converts a factory PIB to a SLAC EVSE by setting the CCO Mode to Always and the SLAC Mode to EVSE. The User HFID is set to &#8220;EVSE&#8221; for role identification, optionally. This PIB must be written into EVSE-PLC flash memory for proper operation.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="c1"># file: evse.sh</span>
+<span class="c1"># ========================================================================</span>
+<span class="c1"># convert a factory PIB to a SLAC EVSE PIB by changing these PIB settings;</span>
+<span class="c1"># ------------------------------------------------------------------------</span>
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> <span class="m">74</span> hfid <span class="s2">&quot;EVSE&quot;</span>
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> F4 byte 2
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> <span class="m">1653</span> byte 2
+setpib <span class="si">${</span><span class="nv">1</span><span class="si">}</span> 1C98 long <span class="m">10240</span> long 102400
+</pre></div>
+</div>
+</div>
+<div class="section" id="apcm-set-cco-primative">
+<span id="slac-apcm-set-cco"></span><h3>APCM_SET_CCO Primative<a class="headerlink" href="#apcm-set-cco-primative" title="Permalink to this headline">¶</a></h3>
+<p>This primative configures a PLC state by reading PIB from PLC, changing CCoSelection, computing new PIB checksum then writing the PIB back to PLC. It can be performed manually using Avitar, in a script using the Powerline Toolkit or programatically using custom software.</p>
+</div>
+<div class="section" id="apcm-config-slac-primative">
+<span id="slac-apcm-config-slac"></span><h3>APCM_CONFIG_SLAC Primative<a class="headerlink" href="#apcm-config-slac-primative" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="slac-demonstration">
+<span id="procedure-slac-demonstration"></span><h2>SLAC Demonstration<a class="headerlink" href="#slac-demonstration" title="Permalink to this headline">¶</a></h2>
+<p>This page explains how to install and use two Qualcomm Atheros Powerline Toolkit programs, <a class="reference external" href="pev.7.html">pev</a> and <a class="reference external" href="evse.7.html">evse</a>, to demonstrate the HomePlug AV Signal Level Attenuation Characterization (SLAC) protocol.</p>
+<p>On Microsoft Windows, the two programs are distributed in a seperate Microsoft installation file <code class="file docutils literal"><span class="pre">slac-utils-x.x.x.msi</span></code>. To install them on Microsoft Windows, double-click on the installation file. The programs will be installed in folder <code class="file docutils literal"><span class="pre">c:\Program</span> <span class="pre">Files</span> <span class="pre">(x86)\Qualcomm</span> <span class="pre">Atheros\Powerline</span> <span class="pre">Toolkit</span></code> unless the user overrides the default settings durin installation. New users should add this folder to the <code class="docutils literal"><span class="pre">PATH</span></code> environment variable and define environment variable <code class="docutils literal"><span class="pre">PLC</span></code> to reference the Ethernet interface connected to their PLC device.</p>
+<p>On Linux, the two programs are distibuted inside the full toolkit tarball <code class="file docutils literal"><span class="pre">plc-utils-x.x.x</span></code>. To install them on Linux, unpack the tarball and change directory to the package folder. Type &#8220;<strong class="command">sudo make install</strong>&#8221; to compile and install the toolkit. Type type &#8220;<strong class="command">sudo make manuals</strong>&#8221; to install man pages. New users should define environment variable <code class="docutils literal"><span class="pre">PLC</span></code> to reference the inteface connected to their PLC device.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In some cases QCA will distribute two Windows <code class="file docutils literal"><span class="pre">.exe</span></code> files and two monolithic <code class="file docutils literal"><span class="pre">.c</span></code> files. On Windows, copy the executable files to folder <code class="file docutils literal"><span class="pre">c:\Program</span> <span class="pre">Files</span> <span class="pre">(x86)\Qualcomm</span> <span class="pre">Atheros\Powerline</span> <span class="pre">Toolkit</span></code> and update the system <code class="docutils literal"><span class="pre">PATH</span></code> and <code class="docutils literal"><span class="pre">PLC</span></code> environment variables. On Linux, compile the two source files using &#8220;<strong class="command">gcc -o pev pev.c</strong>&#8221; and &#8220;<strong class="command">gcc -o evse evse.c</strong>&#8221; and copy the two binary files to <code class="file docutils literal"><span class="pre">/usr/local/bin</span></code> then update the system <code class="docutils literal"><span class="pre">PLC</span></code> environment variable. You will need root priviledge to copy the binary files to the system folder and you must change the binary file permissions to <code class="docutils literal"><span class="pre">4555</span></code> in order to execute them as a non-root user.</p>
+</div>
+<p>Each program reads an optional configuration file on start-up. Program <a class="reference external" href="pev.7.html">pev</a> reads <code class="file docutils literal"><span class="pre">pev.ini</span></code> and program <a class="reference external" href="evse.7.html">evse</a> reads <code class="file docutils literal"><span class="pre">evse.ini</span></code>. Qualcomm Atheros does not provide these files but option <code class="docutils literal"><span class="pre">-c</span></code>, on each program, can be used to print a template configuration file on stdout. Once a user settles on a convenient working folder, they should run command &#8220;<strong class="command">pev -c &gt; pev.ini</strong>&#8221; to create the configuration file for program <strong class="program">pev</strong> and &#8220;<strong class="command">evse -c &gt; evse.ini</strong>&#8221; to create the configuration file for program <strong class="program">evse</strong>.</p>
+<p>A SLAC demonstration can be setup using two Qualcomm Atheros PL16 boards, two personal computers, a power strip and a powerline impairment of some kind. One PL16 board must be configured as a PEV and the other must be configured as an EVSE. Plug both PL16 boards into the powerstrip and connect each board to a different computer via Ethernet. Run program <a class="reference external" href="pev.7.html">pev</a> on the computer connected to the PEV configured board. Run program <a class="reference external" href="evse.7.html">evse</a> on the computer connected to the EVSE configured board. Program <a class="reference external" href="evse.7.html">evse</a> runs continuously waiting to service <a class="reference external" href="pev.7.html">pev</a> programs running on other computers. Program <a class="reference external" href="pev.7.html">pev</a> runs until charging occurs then exits.</p>
+<p>On the EVSE host, start program <a class="reference external" href="evse.7.html">evse</a> as shown below. It will run until cancelled.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> evse
+<span class="go">evse: UnoccupiedState: Listening ...</span>
+</pre></div>
+</div>
+<p>Messages will appear on the console as events occur. The first field is the program name, in this case &#8220;evse&#8221;. The second field is the function name, in this case &#8220;UnoccupiedState&#8221;. In this case, program <strong class="program">evse</strong> does nothing until some PEV trys to associate.</p>
+<p>On the EVSE host, run program <a class="reference external" href="evse.7.html">evse</a> as shown below. It will run until it detects and connects to an available EVSE-HLE. Use option <strong class="command">-w</strong> to vary probe timeouts.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> pev
+<span class="go">pev: DisconnectedState: Probing ...</span>
+<span class="go">pev: pev_cm_slac_param: --&gt; CM_SLAC_PARAM.REQ</span>
+<span class="go">pev: pev_cm_slac_param: &lt;-- CM_SLAC_PARAM.CNF</span>
+</pre></div>
+</div>
+<p>Messages will appear on the console as events occur. The first field is the program name, in this case &#8220;pev&#8221;. The second field is the function name, in this case <code class="docutils literal"><span class="pre">DisconnectedState</span></code> and <code class="docutils literal"><span class="pre">pev_cm_slac_param</span></code>. The right arrow indicates that function <code class="docutils literal"><span class="pre">pev_cm_slac_param</span></code> is sending a <code class="docutils literal"><span class="pre">CM_SLAC_PARAM.REQ</span></code> message. If things work properly, you will see a another message indicating that function <code class="docutils literal"><span class="pre">pev_cm_slac_param</span></code> is receiving a <code class="docutils literal"><span class="pre">CM_SLAC_PARAM.CNF</span></code> message.</p>
+<img alt="IMG_20130227_145749.jpg" src="IMG_20130227_145749.jpg" />
+<img alt="IMG_20130227_151458.jpg" src="IMG_20130227_151458.jpg" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Procedures</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#select-an-interface-on-linux">Select an Interface on Linux</a><ul>
+<li><a class="reference internal" href="#selecting-another-interface-on-linux">Selecting another Interface on Linux</a></li>
+<li><a class="reference internal" href="#changing-the-default-interface-on-linux">Changing the Default Interface on Linux</a></li>
+<li><a class="reference internal" href="#finding-interfaces-on-linux">Finding Interfaces on Linux</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#select-an-interface-on-windows">Select an Interface on Windows</a><ul>
+<li><a class="reference internal" href="#selecting-another-interface-on-windows">Selecting another Interface on Windows</a></li>
+<li><a class="reference internal" href="#finding-interfaces-on-windows">Finding Interfaces on Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#procedure-identify-device">Identify a Device</a><ul>
+<li><a class="reference internal" href="#device-identification">Device Identification</a></li>
+<li><a class="reference internal" href="#inspecting-device-configuration">Inspecting Device Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#browse-the-network">Browse the Network</a><ul>
+<li><a class="reference internal" href="#display-network-information">Display Network Information</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#forming-a-network">Forming a Network</a><ul>
+<li><a class="reference internal" href="#setting-the-network-membership-key">Setting the Network Membership Key</a></li>
+<li><a class="reference internal" href="#forming-a-custom-network">Forming a Custom Network</a></li>
+<li><a class="reference internal" href="#remote-network-configuration">Remote Network Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-a-device">Configuring a Device</a><ul>
+<li><a class="reference internal" href="#read-a-pib-file">Read a PIB File</a></li>
+<li><a class="reference internal" href="#modify-a-pib-file">Modify a PIB File</a></li>
+<li><a class="reference internal" href="#save-a-pib-file">Save a PIB File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrading-firmware-and-pib">Upgrading Firmware and PIB</a><ul>
+<li><a class="reference internal" href="#upgrade-firmware-and-pib">Upgrade Firmware and PIB</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrading-pib-only">Upgrading PIB Only</a><ul>
+<li><a class="reference internal" href="#upgrade-local-device-pib">Upgrade local device PIB</a></li>
+<li><a class="reference internal" href="#upgrade-remote-pib">Upgrade remote PIB</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#starting-a-device">Starting a Device</a><ul>
+<li><a class="reference internal" href="#start-firmware-on-int6000">Start Firmware on <em>INT6000</em></a></li>
+<li><a class="reference internal" href="#start-firmware-on-int6300-and-int6400">Start Firmware on <em>INT6300</em> and <em>INT6400</em></a></li>
+<li><a class="reference internal" href="#start-firmware-on-ar7400">Start Firmware on <em>AR7400</em></a></li>
+<li><a class="reference internal" href="#start-firmware-on-ar7420">Start Firmware on <em>AR7420</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-a-device">Testing a Device</a></li>
+<li><a class="reference internal" href="#programming-nvram">Programming NVRAM</a><ul>
+<li><a class="reference internal" href="#flash-nvram-with-int6kf">Flash NVRAM with int6kf</a></li>
+<li><a class="reference internal" href="#flash-nvram-with-int6k">Flash NVRAM with int6k</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pairing-uart-devices-post-pts">Pairing UART Devices post PTS</a></li>
+<li><a class="reference internal" href="#trouble-shooting-problems">Trouble-shooting Problems</a></li>
+<li><a class="reference internal" href="#slac-configuration">SLAC Configuration</a><ul>
+<li><a class="reference internal" href="#pev-plc-pib-settings">PEV-PLC PIB Settings</a></li>
+<li><a class="reference internal" href="#pev-evse-pib-settings">PEV-EVSE PIB Settings</a></li>
+<li><a class="reference internal" href="#apcm-set-cco-primative">APCM_SET_CCO Primative</a></li>
+<li><a class="reference internal" href="#apcm-config-slac-primative">APCM_CONFIG_SLAC Primative</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#slac-demonstration">SLAC Demonstration</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="firmware.html"
+                        title="previous chapter">Firmware</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scripting.html"
+                        title="next chapter">Scripting</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/procedures.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="scripting.html" title="Scripting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="firmware.html" title="Firmware"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

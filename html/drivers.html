@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Serial Drivers &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="prev" title="Support Function Reference" href="support.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="support.html" title="Support Function Reference"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="serial-drivers">
+<span id="driver-spi"></span><h1>Serial Drivers<a class="headerlink" href="#serial-drivers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="driver-spi-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Most Qualcomm Atheros PLC chipsets are Ethernet-to-Powerline bridges but the QCA7000 is a Serial-to-Powerline bridge, ... with a big difference. The QCA7000 expects the host serial stream to be segmented into Ethernet frames where each frame is encapsulated by a distinct serial header and trailer. This means the host can format and transmit, or receive and decode, standard Ethernet 802.3 frames over an ordinary SPI or UART interface thereby enabling full Ethernet or Internet protocol communications over powerline at low cost and low speed. The enabling component here is an Ethernet-to-Serial driver that supports the SPI or UART interface connected to the QCA7000. This section covers such a driver.</p>
+<p>The example driver described here was written for the Freescale iMX28 board support package running a custom Freescale Linux distribution. As such, we believe that this driver is suitable for the iMX28 processor out of the box but it could be adapted to other processors.</p>
+</div>
+<div class="section" id="principles-of-operation">
+<span id="driver-spi-principles"></span><h2>Principles of Operation<a class="headerlink" href="#principles-of-operation" title="Permalink to this headline">¶</a></h2>
+<p>The basic unit of data transfer over MII and powerline is the IEEE 802.3 Ethernet frame. On output, the host must encapsulate each Ethernet frame as shown below before serial transmission to the QCA7000. The QCA7000 strips off the serial header and footer and forwards the frame over powerline.</p>
+<div class="section" id="spi-transmit-frame">
+<h3>SPI Transmit Frame<a class="headerlink" href="#spi-transmit-frame" title="Permalink to this headline">¶</a></h3>
+<p>Allocate a 1528-byte buffer to accommodate the largest outgoing serial packet and pad with <code class="docutils literal"><span class="pre">NUL</span></code> bytes. Write <code class="docutils literal"><span class="pre">SOF</span></code>, compute and write <code class="docutils literal"><span class="pre">FL</span></code>, copy the outgoing frame then write <code class="docutils literal"><span class="pre">EOF</span></code>. Serially transmit <code class="docutils literal"><span class="pre">FL</span></code> + <code class="docutils literal"><span class="pre">12</span></code> buffer bytes to the QCA7000.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="11%" />
+<col width="11%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Offset</th>
+<th class="head">Length</th>
+<th class="head">Symbol</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0x0000</td>
+<td>4</td>
+<td>SOF</td>
+<td>Start Of Frame. Must be <code class="docutils literal"><span class="pre">0xAAAAAAAA</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>0x0004</td>
+<td>2</td>
+<td>FL</td>
+<td>The Ethernet frame length in little endian format. The frame starts
+at offset <code class="docutils literal"><span class="pre">0x0008</span></code> here and includes all fields up to but excluding
+<code class="docutils literal"><span class="pre">EOF</span></code>. The minimum is <code class="docutils literal"><span class="pre">60</span></code>. The maximum is <code class="docutils literal"><span class="pre">1518</span></code> if <code class="docutils literal"><span class="pre">VLAN</span></code>
+is omitted and <code class="docutils literal"><span class="pre">1522</span></code> if not.</td>
+</tr>
+<tr class="row-even"><td>0x0006</td>
+<td>2</td>
+<td>RSVD</td>
+<td>Must be <code class="docutils literal"><span class="pre">0x0000</span></code>. Reserved to ensure 4-byte frame alignment.</td>
+</tr>
+<tr class="row-odd"><td>0x0008</td>
+<td>6</td>
+<td>DA</td>
+<td>Destination Address</td>
+</tr>
+<tr class="row-even"><td>0x000E</td>
+<td>6</td>
+<td>SA</td>
+<td>Source Address. This must not be the MAC address of the powerline
+device. This must be the MAC address of the local host serial
+interface as assigned by the SPI or UART driver. The PLC device
+and the associated host interface must have different MAC addresses.</td>
+</tr>
+<tr class="row-odd"><td>0x0014</td>
+<td>4</td>
+<td>VLAN</td>
+<td>Virtual LAN tag. This field may be omitted.</td>
+</tr>
+<tr class="row-even"><td>0x0018</td>
+<td>2</td>
+<td>ET</td>
+<td>Ethertype. This field starts at offset <code class="docutils literal"><span class="pre">0x0014</span></code> if <code class="docutils literal"><span class="pre">VLAN</span></code> is
+omitted.</td>
+</tr>
+<tr class="row-odd"><td>0x001A</td>
+<td>42 to 1500</td>
+<td>BODY</td>
+<td>Frame body. This field starts at offset <code class="docutils literal"><span class="pre">0x0016</span></code> and ranges from
+<code class="docutils literal"><span class="pre">46</span></code> to <code class="docutils literal"><span class="pre">1500</span></code> bytes if <code class="docutils literal"><span class="pre">VLAN</span></code> is omitted.</td>
+</tr>
+<tr class="row-even"><td>0x004A to 0x005F8</td>
+<td>4</td>
+<td>EOF</td>
+<td>End Of Frame. Must be <code class="docutils literal"><span class="pre">0x5555</span></code>. This field starts at offset
+<code class="docutils literal"><span class="pre">0x0008</span></code> plus <code class="docutils literal"><span class="pre">FL</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="spi-receive-frame">
+<h3>SPI Receive Frame<a class="headerlink" href="#spi-receive-frame" title="Permalink to this headline">¶</a></h3>
+<p>The SPI read frame occurs in response to a read interrupt generated by the QCA7000. The host must acknowledge a read interrupt and service it by reading and acting on QCA7000 SPI register values. For incoming frames, the host reads the 32-bit overall packet length reported by the QCA7000 then read that many bytes, stripping off the serial header and footer and forwarding the Ethernet frame to the host.</p>
+<p>Allocate a 1532-byte buffer to accomodate the largest incoming serial packet. Read <code class="docutils literal"><span class="pre">LEN</span></code> to determine the size of the incoming serial packet. Read <code class="docutils literal"><span class="pre">LEN</span></code> bytes into the buffer. Beware that <code class="docutils literal"><span class="pre">LEN</span></code> is a multiple of 4-bytes so there may be a few trailing <code class="docutils literal"><span class="pre">NUL</span></code> bytes in buffer.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="11%" />
+<col width="11%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Offset</th>
+<th class="head">Length</th>
+<th class="head">Symbol</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0x0000</td>
+<td>4</td>
+<td>LEN</td>
+<td>Hardware generated packet length. This field is only generated for
+SPI packets, not the UART packets.</td>
+</tr>
+<tr class="row-odd"><td>0x0004</td>
+<td>4</td>
+<td>SOF</td>
+<td>Start Of Frame. Must be <code class="docutils literal"><span class="pre">0xAAAAAAAA</span></code>.</td>
+</tr>
+<tr class="row-even"><td>0x0008</td>
+<td>2</td>
+<td>FL</td>
+<td>The Ethernet frame length in little endian format. The frame starts
+at offset <code class="docutils literal"><span class="pre">0x000C</span></code> here and includes all fields up to but excluding
+<code class="docutils literal"><span class="pre">EOF</span></code>. The minimum is <code class="docutils literal"><span class="pre">60</span></code>. The maximum is <code class="docutils literal"><span class="pre">1518</span></code> if <code class="docutils literal"><span class="pre">VLAN</span></code>
+is omitted and <code class="docutils literal"><span class="pre">1522</span></code> if not.</td>
+</tr>
+<tr class="row-odd"><td>0x000A</td>
+<td>2</td>
+<td>RSVD</td>
+<td>Must be <code class="docutils literal"><span class="pre">0x0000</span></code>. Reserved to ensure 4-byte frame alignment.</td>
+</tr>
+<tr class="row-even"><td>0x000C</td>
+<td>6</td>
+<td>DA</td>
+<td>Destination Address</td>
+</tr>
+<tr class="row-odd"><td>0x0012</td>
+<td>6</td>
+<td>SA</td>
+<td>Source Address. This must not be the MAC address of the powerline
+device. This must be the MAC address of the local host serial
+interface as assigned by the SPI or UART driver. The PLC device
+and the associated host interface must have different MAC addresses.</td>
+</tr>
+<tr class="row-even"><td>0x0018</td>
+<td>4</td>
+<td>VLAN</td>
+<td>Virtual LAN tag. This field may be omitted.</td>
+</tr>
+<tr class="row-odd"><td>0x001C</td>
+<td>2</td>
+<td>ET</td>
+<td>Ethertype. This field starts at offset <code class="docutils literal"><span class="pre">0x0018</span></code> if <code class="docutils literal"><span class="pre">VLAN</span></code> is
+omitted.</td>
+</tr>
+<tr class="row-even"><td>0x001E</td>
+<td>42 to 1500</td>
+<td>BODY</td>
+<td>Frame body. This field starts at offset <code class="docutils literal"><span class="pre">0x001A</span></code> and ranges from
+<code class="docutils literal"><span class="pre">46</span></code> to <code class="docutils literal"><span class="pre">1500</span></code> bytes if <code class="docutils literal"><span class="pre">VLAN</span></code> is omitted.</td>
+</tr>
+<tr class="row-odd"><td>0x004A to 0x005F8</td>
+<td>4</td>
+<td>EOF</td>
+<td>End Of Frame. Must be <code class="docutils literal"><span class="pre">0x5555</span></code>. This field starts at offset
+<code class="docutils literal"><span class="pre">0x000C</span></code> plus <code class="docutils literal"><span class="pre">FL</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="spi-serial-driver">
+<span id="qcaspi1"></span><h2>SPI Serial Driver<a class="headerlink" href="#spi-serial-driver" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-spi-thread">
+<h3>qcaspi_spi_thread<a class="headerlink" href="#qcaspi-spi-thread" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_spi_thread">
+static int <code class="descname">qcaspi_spi_thread</code><span class="sig-paren">(</span>char void<em>&nbsp;*data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_spi_thread" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Manages synchronization with the exteranl QCA7000.
+Handles interrupts fomr the external QCA7000.
+Transmits frames for the transmit queue to the QCA7000.</p>
+</div>
+<div class="section" id="qcaspi-qca7k-sync">
+<span id="id1"></span><h3>qcaspi_qca7k_sync<a class="headerlink" href="#qcaspi-qca7k-sync" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qca_qca7k_sync">
+void <code class="descname">qca_qca7k_sync</code><span class="sig-paren">(</span>char struct qcaspi<em>&nbsp;*qca</em>, int<em>&nbsp;event</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qca_qca7k_sync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Keeps track of the current synchonization state.</p>
+</div>
+</div>
+<div class="section" id="register-functions">
+<span id="qcaspi2"></span><h2>Register Functions<a class="headerlink" href="#register-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-read-register">
+<h3>qcaspi_read_register<a class="headerlink" href="#qcaspi-read-register" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_read_register">
+uint16_t <code class="descname">qcaspi_read_register</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint16_t<em>&nbsp;reg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_read_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Reads a QCA7000 register and returns register content.</p>
+</div>
+<div class="section" id="qcaspi-write-register">
+<h3>qcaspi_write_register<a class="headerlink" href="#qcaspi-write-register" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_write_register">
+void <code class="descname">qcaspi_write_register</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint16_t<em>&nbsp;reg</em>, uint16_t<em>&nbsp;value</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_write_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Write a value into a QCA7000 register.</p>
+</div>
+<div class="section" id="qcaspi-tx-cmd">
+<h3>qcaspi_tx_cmd<a class="headerlink" href="#qcaspi-tx-cmd" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_tx_cmd">
+int <code class="descname">qcaspi_tx_cmd</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint16_t<em>&nbsp;cmd</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_tx_cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Transmit a 16-bit command to the QCA7000. This is currently used when performing a legacy DMA read or write.</p>
+</div>
+</div>
+<div class="section" id="interrupt-functions">
+<span id="qcaspi3"></span><h2>Interrupt Functions<a class="headerlink" href="#interrupt-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="disable-spi-interrupts">
+<h3>disable_spi_interrupts<a class="headerlink" href="#disable-spi-interrupts" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.disable_spi_interrupts">
+uint32_t <code class="descname">disable_spi_interrupts</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_spi_interrupts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Disables interrupts by writing <code class="docutils literal"><span class="pre">0</span></code> to the QCA7000 <code class="docutils literal"><span class="pre">INTR_ENABLE</span></code> register.</p>
+</div>
+<div class="section" id="enable-spi-interrupts">
+<h3>enable_spi_interrupts<a class="headerlink" href="#enable-spi-interrupts" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.enable_spi_interrupts">
+uint32_t <code class="descname">enable_spi_interrupts</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint32_t<em>&nbsp;intr_enable</em><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_spi_interrupts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Enables interrupts specified by writing to the QCA7000 <code class="docutils literal"><span class="pre">INTR_ENABLE</span></code> register and returns the previous register value.</p>
+</div>
+<div class="section" id="qcaspi-intr-handler">
+<h3>qcaspi_intr_handler<a class="headerlink" href="#qcaspi-intr-handler" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_intr_handler">
+static irqreturn_t <code class="descname">qcaspi_intr_handler</code><span class="sig-paren">(</span>int<em>&nbsp;irq</em>, void<em>&nbsp;*data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_intr_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called to service interrupts on rising edge of the QCA7000 interrupt line.</p>
+</div>
+</div>
+<div class="section" id="transmit-functions">
+<span id="qcaspi4"></span><h2>Transmit Functions<a class="headerlink" href="#transmit-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-transmit">
+<h3>qcaspi_transmit<a class="headerlink" href="#qcaspi-transmit" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_transmit">
+int <code class="descname">qcaspi_transmit</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_transmit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Transmit as many frames as possible from the transmit queue.</p>
+</div>
+<div class="section" id="qcaspi-tx-frame">
+<h3>qcaspi_tx_frame<a class="headerlink" href="#qcaspi-tx-frame" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_tx_frame">
+int <code class="descname">qcaspi_tx_frame</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, struct sk_buff<em>&nbsp;*skb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_tx_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Transmit a single socket buffer over the SPI interface.</p>
+</div>
+<div class="section" id="qcaspi-flush-txq">
+<h3>qcaspi_flush_txq<a class="headerlink" href="#qcaspi-flush-txq" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_flush_txq">
+void <code class="descname">qcaspi_flush_txq</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_flush_txq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Flush the transmit queue. Typically called when a synchronization issue is detected between the SPI master (host) and SPI slave (QCA7000).</p>
+</div>
+</div>
+<div class="section" id="receive-functions">
+<span id="qcaspi5"></span><h2>Receive Functions<a class="headerlink" href="#receive-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-receive">
+<h3>qcaspi_receive<a class="headerlink" href="#qcaspi-receive" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_receive">
+int <code class="descname">qcaspi_receive</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_receive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Reads the QCA7000 read buffer bytes register and reads all available data from the QCA7000. Calls function to parse out the individual Ethernet frames and passes them to the Linux kernel protocol stack.</p>
+</div>
+</div>
+<div class="section" id="dma-functions">
+<span id="qcaspi6"></span><h2>DMA Functions<a class="headerlink" href="#dma-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-dma-read-burst">
+<h3>qcaspi_dma_read_burst<a class="headerlink" href="#qcaspi-dma-read-burst" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_dma_read_burst">
+uint32_t <code class="descname">qcaspi_dma_read_burst</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint8_t<em>&nbsp;*buffer</em>, uint32_t<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_dma_read_burst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Performs QCA7000 DMA burst read.</p>
+</div>
+<div class="section" id="qcaspi-dma-read-legacy">
+<h3>qcaspi_dma_read_legacy<a class="headerlink" href="#qcaspi-dma-read-legacy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_dma_read_legacy">
+uint32_t <code class="descname">qcaspi_dma_read_legacy</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint8_t<em>&nbsp;*buffer</em>, uint32_t<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_dma_read_legacy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Performs QCA7000 DMA legacy read.</p>
+</div>
+<div class="section" id="qcaspi-dma-write-burst">
+<h3>qcaspi_dma_write_burst<a class="headerlink" href="#qcaspi-dma-write-burst" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_dma_write_burst">
+uint32_t <code class="descname">qcaspi_dma_write_burst</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint8_t<em>&nbsp;*buffer</em>, uint32_t<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_dma_write_burst" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by <code class="docutils literal"><span class="pre">qcaspi_tx_frame</span></code> to peform a DMA burst write instead of a legacy write.</p>
+</div>
+<div class="section" id="qcaspi-dma-write-legacy">
+<h3>qcaspi_dma_write_legacy<a class="headerlink" href="#qcaspi-dma-write-legacy" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_dma_write_legacy">
+uint32_t <code class="descname">qcaspi_dma_write_legacy</code><span class="sig-paren">(</span>struct qcaspi<em>&nbsp;*qca</em>, uint8_t<em>&nbsp;*buffer</em>, uint32_t<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_dma_write_legacy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by <code class="docutils literal"><span class="pre">qcaspi_tx_frame</span></code> to peform a DMA legacy write instead of a burst write.</p>
+</div>
+</div>
+<div class="section" id="support-functions">
+<span id="qcaspi7"></span><h2>Support Functions<a class="headerlink" href="#support-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcafrmcreateheader">
+<span id="id2"></span><h3>QcaFrmCreateHeader<a class="headerlink" href="#qcafrmcreateheader" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.QcaFrmCreateHeader">
+uint32_t <code class="descname">QcaFrmCreateHeader</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;*buffer</em>, uint16_t<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.QcaFrmCreateHeader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Encode buffer with the required SPI header and overall frame length.</p>
+</div>
+<div class="section" id="qcafrmcreatefooter">
+<span id="id3"></span><h3>QcaFrmCreateFooter<a class="headerlink" href="#qcafrmcreatefooter" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.QcaFrmCreateFooter">
+uint32_t <code class="descname">QcaFrmCreateFooter</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;*buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#c.QcaFrmCreateFooter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Encode buffer with the required SPI footer.</p>
+</div>
+<div class="section" id="qcafrmfsminit">
+<span id="id4"></span><h3>QcaFrmFsmInit<a class="headerlink" href="#qcafrmfsminit" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.QcaFrmFsmInit">
+void <code class="descname">QcaFrmFsmInit</code><span class="sig-paren">(</span>QcaFrmHdl<em>&nbsp;*frmHdl</em><span class="sig-paren">)</span><a class="headerlink" href="#c.QcaFrmFsmInit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Initialize the state machine used to decode the incoming QCA7000 byte stream.</p>
+</div>
+<div class="section" id="qcafrmfsmdecode">
+<span id="id5"></span><h3>QcaFrmFsmDecode<a class="headerlink" href="#qcafrmfsmdecode" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.QcaFrmFsmDecode">
+uint32_t <code class="descname">QcaFrmFsmDecode</code><span class="sig-paren">(</span>QcaFrmHdl<em>&nbsp;*frmHdl</em>, uint8_t<em>&nbsp;*buffer</em>, uint16_t<em>&nbsp;length</em>, uint8_t<em>&nbsp;bytevalue</em><span class="sig-paren">)</span><a class="headerlink" href="#c.QcaFrmFsmDecode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Feeds incoming bytes into the state machine and breaks the stream into individual frames. Frames are passed to the Linux kernel.</p>
+</div>
+</div>
+<div class="section" id="kernel-functions">
+<span id="qcaspi"></span><h2>Kernel Functions<a class="headerlink" href="#kernel-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qcaspi-netdev-xmit">
+<h3>qcaspi_netdev_xmit<a class="headerlink" href="#qcaspi-netdev-xmit" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_xmit">
+int <code class="descname">qcaspi_netdev_xmit</code><span class="sig-paren">(</span>struct sk_buff<em>&nbsp;*skb</em>, struct net_device<em>&nbsp;*device</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_xmit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by the Linux kernel append outgoing frames to the transmit queue.</p>
+</div>
+<div class="section" id="qcaspi-netdev-tx-timeout">
+<h3>qcaspi_netdev_tx_timeout<a class="headerlink" href="#qcaspi-netdev-tx-timeout" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_tx_timeout">
+void <code class="descname">qcaspi_netdev_tx_timeout</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_tx_timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by the Linux kernel after the transmit queue has been stopped for an extended period of time.</p>
+</div>
+<div class="section" id="qcaspi-netdev-uninit">
+<h3>qcaspi_netdev_uninit<a class="headerlink" href="#qcaspi-netdev-uninit" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_uninit">
+static void <code class="descname">qcaspi_netdev_uninit</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_uninit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called when function <code class="docutils literal"><span class="pre">unregister_netdev</span></code> is called. For the QCA7000 driver, function <code class="docutils literal"><span class="pre">qcaspi_mod_exit</span></code> calls function <code class="docutils literal"><span class="pre">unregister_netdev</span></code>.</p>
+</div>
+<div class="section" id="qcaspi-netdev-get-stats">
+<h3>qcaspi_netdev_get_stats<a class="headerlink" href="#qcaspi-netdev-get-stats" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_get_stats">
+struct net_device_stats *<code class="descname">qcaspi_netdev_get_stats</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_get_stats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Returns transmit, receive and error statistics associated with the net device. These are the statistics displayed by <strong class="program">ifconfig</strong>.</p>
+</div>
+<div class="section" id="qcaspi-netdev-change-mtu">
+<h3>qcaspi_netdev_change_mtu<a class="headerlink" href="#qcaspi-netdev-change-mtu" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_change_mtu">
+int <code class="descname">qcaspi_netdev_change_mtu</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em>, int<em>&nbsp;new_mtu</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_change_mtu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes the serial interface MTU size.</p>
+</div>
+<div class="section" id="qcaspi-netdev-set-mac-address">
+<h3>qcaspi_netdev_set_mac_address<a class="headerlink" href="#qcaspi-netdev-set-mac-address" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_set_mac_address">
+static int <code class="descname">qcaspi_netdev_set_mac_address</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em>, void<em>&nbsp;*memory</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_set_mac_address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Sets the serial interface MAC address. Called by <strong class="program">ifconfig</strong> whenever user types <strong class="command">ifconfig qca0 hw ether xx:xx:xx:xx:xx:xx</strong>.</p>
+</div>
+<div class="section" id="qcaspi-netdev-close">
+<h3>qcaspi_netdev_close<a class="headerlink" href="#qcaspi-netdev-close" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_netdev_close">
+int <code class="descname">qcaspi_netdev_close</code><span class="sig-paren">(</span>struct net_device<em>&nbsp;*device</em><span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_netdev_close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by <strong class="program">ifconfig</strong> to disable the network interface.</p>
+</div>
+<div class="section" id="qcaspi-mod-exit">
+<h3>qcaspi_mod_exit<a class="headerlink" href="#qcaspi-mod-exit" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="c.qcaspi_mod_exit">
+static void <code class="descname">qcaspi_mod_exit</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.qcaspi_mod_exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Called by the kernel to shutdown the driver module.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Serial Drivers</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#principles-of-operation">Principles of Operation</a><ul>
+<li><a class="reference internal" href="#spi-transmit-frame">SPI Transmit Frame</a></li>
+<li><a class="reference internal" href="#spi-receive-frame">SPI Receive Frame</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#spi-serial-driver">SPI Serial Driver</a><ul>
+<li><a class="reference internal" href="#qcaspi-spi-thread">qcaspi_spi_thread</a></li>
+<li><a class="reference internal" href="#qcaspi-qca7k-sync">qcaspi_qca7k_sync</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#register-functions">Register Functions</a><ul>
+<li><a class="reference internal" href="#qcaspi-read-register">qcaspi_read_register</a></li>
+<li><a class="reference internal" href="#qcaspi-write-register">qcaspi_write_register</a></li>
+<li><a class="reference internal" href="#qcaspi-tx-cmd">qcaspi_tx_cmd</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interrupt-functions">Interrupt Functions</a><ul>
+<li><a class="reference internal" href="#disable-spi-interrupts">disable_spi_interrupts</a></li>
+<li><a class="reference internal" href="#enable-spi-interrupts">enable_spi_interrupts</a></li>
+<li><a class="reference internal" href="#qcaspi-intr-handler">qcaspi_intr_handler</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#transmit-functions">Transmit Functions</a><ul>
+<li><a class="reference internal" href="#qcaspi-transmit">qcaspi_transmit</a></li>
+<li><a class="reference internal" href="#qcaspi-tx-frame">qcaspi_tx_frame</a></li>
+<li><a class="reference internal" href="#qcaspi-flush-txq">qcaspi_flush_txq</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#receive-functions">Receive Functions</a><ul>
+<li><a class="reference internal" href="#qcaspi-receive">qcaspi_receive</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dma-functions">DMA Functions</a><ul>
+<li><a class="reference internal" href="#qcaspi-dma-read-burst">qcaspi_dma_read_burst</a></li>
+<li><a class="reference internal" href="#qcaspi-dma-read-legacy">qcaspi_dma_read_legacy</a></li>
+<li><a class="reference internal" href="#qcaspi-dma-write-burst">qcaspi_dma_write_burst</a></li>
+<li><a class="reference internal" href="#qcaspi-dma-write-legacy">qcaspi_dma_write_legacy</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#support-functions">Support Functions</a><ul>
+<li><a class="reference internal" href="#qcafrmcreateheader">QcaFrmCreateHeader</a></li>
+<li><a class="reference internal" href="#qcafrmcreatefooter">QcaFrmCreateFooter</a></li>
+<li><a class="reference internal" href="#qcafrmfsminit">QcaFrmFsmInit</a></li>
+<li><a class="reference internal" href="#qcafrmfsmdecode">QcaFrmFsmDecode</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kernel-functions">Kernel Functions</a><ul>
+<li><a class="reference internal" href="#qcaspi-netdev-xmit">qcaspi_netdev_xmit</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-tx-timeout">qcaspi_netdev_tx_timeout</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-uninit">qcaspi_netdev_uninit</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-get-stats">qcaspi_netdev_get_stats</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-change-mtu">qcaspi_netdev_change_mtu</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-set-mac-address">qcaspi_netdev_set_mac_address</a></li>
+<li><a class="reference internal" href="#qcaspi-netdev-close">qcaspi_netdev_close</a></li>
+<li><a class="reference internal" href="#qcaspi-mod-exit">qcaspi_mod_exit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="support.html"
+                        title="previous chapter">Support Function Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/drivers.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="support.html" title="Support Function Reference"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>

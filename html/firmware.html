@@ -1,0 +1,949 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Firmware &#8212; open-plc-utils 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="open-plc-utils 0.0.4 documentation" href="open-plc-utils.html" />
+    <link rel="next" title="Procedures" href="procedures.html" />
+    <link rel="prev" title="Software" href="software.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="procedures.html" title="Procedures"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="software.html" title="Software"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="firmware">
+<span id="id1"></span><h1>Firmware<a class="headerlink" href="#firmware" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="firmware-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>An Atheros chipset consists of an integral CPU, ROM and proprietary circuitry. The CPU requires a minimum amount of external SDRAM to execute runtime software and store runtime configuration parameters. The <em>INT6000</em> chipset also requires a minimum amount of external flash memory in order to start. The <em>INT6300</em> can use external flash memory in the same way as the <em>INT6000</em> or it can use a local host processor as surrogate flash memory.</p>
+<p>On startup, the SDRAM memory controller must be configured before runtime firmware and parameters are loaded. On the <em>INT6000</em>, runtime firmware and configuration parameters must be loaded from external flash memory. On the <em>INT6300</em>, it may be loaded from external flash memory or from a external host processor. Runtime firmware determines device capability. Runtime configuration parameters determine device network identity and personality.</p>
+<p>The following sections identify and describe firmware related components and discuss some of the routine actions required to manage them. Consult the Atheros <em>HomePlug AV Hardware Technical Reference Manual</em> and <em>HomePlug AV Firmware Technical Reference Manual</em> for more information.</p>
+</div>
+<div class="section" id="firmware-components">
+<span id="id2"></span><h2>Firmware Components<a class="headerlink" href="#firmware-components" title="Permalink to this headline">¶</a></h2>
+<p>Device initialization involves the following components. They are described here and then referenced throughout the toolkit documentation. You may want to read and re-read this page.</p>
+<div class="section" id="bootloader">
+<span id="firmware-bootloader"></span><h3>Bootloader<a class="headerlink" href="#bootloader" title="Permalink to this headline">¶</a></h3>
+<p>The <strong class="program">Bootloader</strong> is permanent software burned into the chipset. The <em>INT6000</em> and <em>INT6300</em> both have a <strong class="program">Bootloader</strong> program but they behave differently because the <em>INT6000</em> needs flash memory and the <em>INT6300</em> does not. Neither the <em>INT6000</em> <strong class="program">Bootloader</strong> nor the <em>INT6300</em> <strong class="program">Bootloader</strong> can write to flash memory.</p>
+<p>On startup,  the <em>INT6000</em> <strong class="program">Bootloader</strong> attempts to load runtime firmware from flash memory into SDRAM. If flash memory is not available,  or the runtime firmware stored there cannot be loaded,  then the <em>INT6000</em> <strong class="program">Bootloader</strong> cannot continue so the device cannot function.</p>
+<p>On startup,  the <em>INT6300</em> <strong class="program">Bootloader</strong> attempts to load runtime firmware from flash memory into SDRAM. If flash memory is not available,  or the runtime firmware stored there cannot be loaded,  then <strong class="program">Bootloader</strong> will request runtime firmware from the local host processor.</p>
+</div>
+<div class="section" id="softloader">
+<span id="firmware-softloader"></span><h3>Softloader<a class="headerlink" href="#softloader" title="Permalink to this headline">¶</a></h3>
+<p>An optional program stored in flash memory in place of runtime firmware. This program is used on the <em>INT6000</em> to support the Boot From Host operation, if needed. It is not used on the <em>INT6300</em> because the <em>INT6300</em> <strong class="program">Bootloader</strong> now performs similar functions. The Softloader cannot write to flash memory.</p>
+<p>On startup,  the <em>INT6000</em> <strong class="program">Bootloader</strong> loads the <strong class="program">Softloader</strong> from flash memory into SDRAM,  as it would do with runtime firmware. The <strong class="program">Softloader</strong> then requests the actual runtime firmware from local host.</p>
+</div>
+<div class="section" id="memory-configuration-parameters">
+<span id="firmware-memory-configuration"></span><h3>Memory Configuration Parameters<a class="headerlink" href="#memory-configuration-parameters" title="Permalink to this headline">¶</a></h3>
+<p>A small block of information that describes the type, size and characteristics of the SDRAM available for the benefit of the Bootloader. On the INT6000, SDRAM configuration must be stored in flash memory. On the INT6300, it may be stored in flash memory or on the local host. The <em>INT6300</em> <strong class="program">Bootloader</strong> attempts to read configuration information from flash memory when it is present; otherwise, it requests that information from the local host using a VS_HST_ACTION message and so the host must store this information until it is requested.</p>
+<p>There are two SDRAM configuration file formats. The first format is used by the <strong class="program">Windows Device Manager</strong> and the <strong class="program">int6k2</strong> program and typically has a <code class="file docutils literal"><span class="pre">.config</span></code> file extension. The second format is used by the <strong class="program">int6k</strong> program and <strong class="program">int6kf</strong> program and typically has a <code class="file docutils literal"><span class="pre">.cfg</span></code> file extension. The latter format is more robust and should eventually replace the format.</p>
+<p>The Windows Device Manager form consists of 64 hexadecimal ASCII characters. Files are at least 64 bytes but only the first 64 bytes are used. Files can be modified using a text editor. ASCII hex to binary conversion and checksum computation is needed on input. The <strong class="program">config2cfg</strong> program can be used to convert this format to Open Powerline Toolkit format.</p>
+<p>The Open Powerline Toolkit format consists of 32 binary bytes plus a 4 byte checksum. The file size is exactly 36 bytes. No conversion or checksum computation is needed on input. The <strong class="program">chkcfg</strong> program can be used the validate this file format because it contains a checksum.</p>
+<p>The <em>INT6400</em> chipset does not need a memory configuration parameter file because it has a different memory controller than earlier chipsets. SDRAM is now configured dynamically by an applets stored in the <code class="file docutils literal"><span class="pre">.nvm</span></code> file.</p>
+</div>
+<div class="section" id="runtime-firmware-mac-software">
+<span id="firmware-runtime"></span><h3>Runtime Firmware (MAC Software)<a class="headerlink" href="#runtime-firmware-mac-software" title="Permalink to this headline">¶</a></h3>
+<p>The executable image that determines <em>INT6000</em> or <em>INT6300</em> capability and functionality. Runtime firmware refers to any executable image except the <a class="reference internal" href="#firmware-bootloader"><span class="std std-ref">Bootloader</span></a> which is considered to be boot firmware. Firmware files have a .nvm extension and can contain multiple firmware images. One of these images could be the parameter information block but Atheros currently distributes that as a separate file. The <a class="reference external" href="chknvm.7.html">chknvm</a> program can be used to detect obsolete or corrupt .nvm files. Runtime firmware can write to flash memory and must be running in order to re-program the chipset.</p>
+</div>
+<div class="section" id="parameter-information-block-pib">
+<span id="firmware-configuration"></span><h3>Parameter Information Block (PIB)<a class="headerlink" href="#parameter-information-block-pib" title="Permalink to this headline">¶</a></h3>
+<p>The configuration image that determines device network identity, functional capability and operational mode. The PIB structure often changes from one major firmware release to the next and often is not portable across major releases. Parameter information files have a <code class="file docutils literal"><span class="pre">.pib</span></code> extension by convention and contain one parameter set. The <a class="reference external" href="chkpib.7.html">chkpib</a> program can be used to detect obsolete or corrupt PIB files.</p>
+<p>Recent firmware releases support two PIB images in flash memory: the Factory PIB and the User PIB. The Factory PIB is the first PIB image written to flash memory. Once written, the Factory PIB cannot be changed without special software. The User PIB is created and over-written whenever the device needs to save new PIB parameters. Factory default values are restored by erasing the User PIB and rebooting the device. When a device reboots, it attempts to load the User PIB from flash memory. Failing that, it attempts to load the Factory PIB from flash memory. Failing that, it loads a Default PIB having minimum functionality. The loaded PIB becomes the Working PIB and determines runtime device identity and behavior.</p>
+</div>
+</div>
+<div class="section" id="architecture-overview">
+<span id="firmware-architecture"></span><h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline">¶</a></h2>
+<p>The following figure illustrates a hypothetical powerline network consisting of two devices. Each device has an <em>INT6300</em> with optional dedicated flash memory and an onboard processor with associated storage. The processor in each device is the local host for that device and the remote host for the other device. The processor storage is unspecified but it must be persistent. The two devices are connected via coax or powerline. The flash memory is optional in this design because it uses the <em>INT6300</em> chipset.</p>
+<div class="section" id="simple-network">
+<h3>Simple Network<a class="headerlink" href="#simple-network" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/SimpleNetwork.png" src="_images/SimpleNetwork.png" />
+<p>The Boot Loader is permanent program that executes on startup. It detects the presence of flash memory and attempts to read SDRAM configuration from flash memory then load and runtime the firmware image and PIB from flash memory. On success, the Boot runtime firmware starts and the device assumes HomePlug AV compliant behavior. On failure, the Boot Loader requests SDRAM configuration, runtime firmware image and PIB from the local host. The local host must be prepared to respond to these requests.</p>
+<p>On a system having no flash memory, the Boot Loader will request SDRAM configuration information from the local host. Once that is received, the Boot Loader will request a firmware image and PIB from the local host. The local host determines which firmware image and PIB to download, manages the download sequence and starts firmware execution.</p>
+<p>Atheros software, such as the Windows Device Manager, Linux Flash Utility and Embedded API all support the <em>Boot from Host</em> configuration.</p>
+<p>Once the firmware is running on the <em>INT6300</em> , a remote host can forward runtime firmware and PIB to the local host via the <em>INT6300</em> firmware. The remote host might reside on another*INT6300* device, as shown in the previous figure, or be located anywhere on the <em>HomePlug</em> AV network. In either case, the operations described are the same.</p>
+</div>
+</div>
+<div class="section" id="firmware-boot-process">
+<span id="firmware-bootload"></span><h2>Firmware Boot Process<a class="headerlink" href="#firmware-boot-process" title="Permalink to this headline">¶</a></h2>
+<p>The <em>INT6300</em> can boot HomePlug AV firmware from either dedicated flash memory or a local host processor. This means that dedicated flash memory in not necessary when an onboard processor having persistent storage is available. The absence of dedicated flash memory and availability of an onboard host processor is called a <em>Boot from Host</em> configuration.</p>
+<p>The Boot from Host configuration is of interest to customers who are committed to using a host processor in their <em>INT6300</em> based product and want to use it to eliminate the additional cost of dedicated flash memory to store HomePlug AV firmware for <em>INT6300</em> devices.</p>
+<p>The Boot from Host configuration supports three operations: <a class="reference internal" href="#firmware-6000-flash"><span class="std std-ref">Upgrade Device</span></a>, <a class="reference internal" href="#firmware-6000-upload"><span class="std std-ref">Update Local Host</span></a> and <a class="reference internal" href="#firmware-6000-boot"><span class="std std-ref">Boot from Host</span></a>. Product designers must write host software to support all three operations as described later in this document. Atheros provides an Embedded Application Program Interface to assist product designers with this effort. Obtain a copy of the <em>HomePlug AV Application Programming Interface User&#8217;s Guide</em> from Atheros Communications,  Ocala FL USA for more information.</p>
+<p>Readers should not confuse a Boot from Host configuration with the <a class="reference internal" href="#firmware-6000-boot"><span class="std std-ref">Boot from Host</span></a> operation. The former is a hardware configuration having an <em>INT6300</em> with no dedicated flash memory available. The latter is the process of downloading configuration information, firmware and PIB from the local host to the device and starting firmware execution on startup.</p>
+<p>This discussion assumes that the reader is familiar with the following:</p>
+<ol class="arabic simple">
+<li>The distinction between a local and remote host</li>
+<li>The relationship between the powerline device H1, M1 and PHY interfaces.</li>
+<li>The structure of the following Atheros Management Message types: <code class="docutils literal"><span class="pre">VS_HST_ACTION</span></code>,  <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code>, <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> and <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE</span></code>. Be aware that message types <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code> and <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> are deprecated and will no longer be supported by the newest firmware.</li>
+<li>Hardware architecture covered in the <em>QCA Powerline Hardware Technical Reference Manual</em> and the management message formats covered in the <em>QCA Powerline Firmware Technical Reference Manual</em>.</li>
+</ol>
+</div>
+<div class="section" id="boot-from-host-configuration">
+<span id="firmware-boot-from-host"></span><h2>Boot from Host Configuration<a class="headerlink" href="#boot-from-host-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The Boot from Host configuration requires a permanent connection between the powerline device and a local host having some type of persistent storage. In most cases, the powerline device and local host are co-located, possibly on the same board or same chip, and act together as an integral unit. Essentially, the local host provides persistent memory for the device.</p>
+<p>The Boot from Host configuration lets the local host decide which runtime parameters and firmware to download on startup. This offers a considerable degree of product adaptability, allowing different parameter and firmware combinations to be downloaded based on external factors.</p>
+<p>In a Boot from Host configuration, the processor must act as local host while the device is booting but it can also act as remote host when upgrading other devices. The former is a design requirement and latter is a design option.</p>
+</div>
+<div class="section" id="things-to-remember">
+<span id="bootload-rules"></span><h2>Things to Remember<a class="headerlink" href="#things-to-remember" title="Permalink to this headline">¶</a></h2>
+<p>The Boot from Host configuration offers design flexibility but also increases the possibilities. Remember that the processes described here are based on simple rules that ultimately dictate why each process step is needed. Readers may find it helpful to review these rules.</p>
+<ol class="arabic simple">
+<li><em>The softloader and bootloader programs have limited vocabulary.</em>
+The <em>INT6000</em> softloader recognizes only the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code>, <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code> requests. It does not recognize <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>.
+The <em>INT6300</em> bootloader recognizes only the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code> and <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code> requests. It does not recognize <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code>.
+The <em>INT6400</em> bootloader recognizes only the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code> requests. It recognizes <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code> and responds to it but ignores it. It does not recognize <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code>.
+The <em>AR7400</em> bootloader recognizes only <code class="docutils literal"><span class="pre">VS_SW_VER</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code> requests. It recognizes <code class="docutils literal"><span class="pre">VS_SET_SDRAM</span></code> and responds to it but ignores it. It does not recognize <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code>.
+The <em>AR7420</em> bootloader recognizes only <code class="docutils literal"><span class="pre">VS_SW_VER</span></code>, <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code>, <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE</span></code> and <code class="docutils literal"><span class="pre">VS_RAND_MAC_ADDRESS</span></code> requests. Early versions recognize <code class="docutils literal"><span class="pre">VS_WRITE_MEM</span></code> and <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> requests but they must not be used.
+Softloader/Bootloader MMEs
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+MME
+NAME
+INT6000 Softloader
+INT6300 Bootloader
+INT6400 Bootloader
+AR7400 Bootloader
+AR7420 Bootloader
+0xA000
+VS_SW_VER
+Yes
+Yes
+Yes
+Yes
+Yes
+0xA008
+VS_WR_MEM
+No
+Yes
+Yes
+Yes
+Deprecated
+0xA00C
+VS_ST_MAC
+Yes
+Yes
+Yes
+Yes
+Deprecated
+0xA01C
+VS_RS_DEV
+Yes
+Yes
+Yes
+Yes
+Yes
+0xA020
+VS_WR_MOD
+Yes
+No
+No
+No
+No
+0xA05C
+VS_SDRAM
+No
+Yes
+Ignored
+Ignored
+No
+0xA060
+VS_HOST_ACTION
+No
+Yes
+Yes
+Yes
+Yes
+0xA098
+VS_WRITE_AND_EXECUTE
+No
+No
+No
+Yes
+Yes
+0xA0D4
+VS_RAND_MAC_ADDRESS
+No
+No
+No
+Yes
+Yes</li>
+<li><em>The Softloader, Bootloader and runtime firmware may treat the same MME differently</em> because each is a different program. A notorious obvious example is the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message type. This means that one may need to be aware of the device state when anticipating device behaviour or interpreting device response.</li>
+<li><em>The local host is surrogate flash memory</em>. When dedicated flash memory is not available to a device, the device will request firmware and parameter storage services from the local host using <code class="docutils literal"><span class="pre">VS_HST_ACTION</span></code> messages. The local host must be programmed to detect and respond to these messages or the firmware will appear to hang. See program <a class="reference internal" href="overview.html#program-int6khost"><span class="std std-ref">int6khost</span></a>, <a class="reference internal" href="overview.html#program-int64host"><span class="std std-ref">int64host</span></a>, <a class="reference internal" href="overview.html#program-amphost"><span class="std std-ref">amphost</span></a> or <a class="reference internal" href="overview.html#program-plchost"><span class="std std-ref">plchost</span></a> to demonstrate and experiment with this interaction.</li>
+<li><em>Only runtime firmware can write flash memory</em>. Runtime firmware must be executing in order to write flash memory or upload to the local host. The Softloader and Bootloader cannot perform either operation.</li>
+<li><em>All PIB changes must be written in flash memory</em>. There are several things that can cause PIB changes. When a PIB change is needed,  the Working PIB is copied to a scratch area and modified there. The Scratch PIB must then be written to flash memory or sent to the local host for storage. The device then resets causing the stored PIB to replace the Working PIB. If a freshly downloaded PIB changes for any reason then the cycle will repeat, automatically.</li>
+<li><em>Runtime firmware updates the PIB after joining and before leaving an AVLN</em>. This will cause a device reset in each case. If the device is using the local host for persistent storage, runtime firmware will send the associated <code class="docutils literal"><span class="pre">VS_HST_ACTION</span></code> messages to the host and the host will send the associated <code class="docutils literal"><span class="pre">VS_RD_MOD</span></code> and <code class="docutils literal"><span class="pre">VS_RS_DEV</span></code> messages as per <a class="reference internal" href="#firmware-6000-upload"><span class="std std-ref">Update Local Host</span></a>.</li>
+</ol>
+</div>
+<div class="section" id="every-little-bit-hurts">
+<span id="firmware-caveats-1"></span><h2>Every Little Bit Hurts<a class="headerlink" href="#every-little-bit-hurts" title="Permalink to this headline">¶</a></h2>
+<p>With the addition of <strong class="program">Push Button Encryption</strong>, and other planned features, runtime firmware can now modify the PIB. Consequently, host applications must not assume that the PIB has not changed since it was last downloaded. Atheros strongly recommends that applications always perform a <em>read-modify-write</em> when making PIB modifications. Failure to do so can result in infinite reset loops caused when a device modifies the PIB that has just been downloaded.</p>
+<p>As one example, recent PIBs contain a network membership bit to indicate that the device has successfully joined the network associated with the current NMK. If the firmware detects the network and discovers that the membership bit is clear then it will join the network and set the bit. The firmware will then attempt to preserve the change by sending a <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> message to the local host. If the host application does not upload and store the changed PIB (as the device requested) before resetting the device then the original PIB will be downloaded again,  after reset, and the process will repeat. Of course, a similar situation will occur when the device leaves the network and again when it joins another network.</p>
+</div>
+<div class="section" id="liar-liar-pants-on-fire">
+<span id="firmware-caveats-2"></span><h2>Liar! Liar! Pants on Fire!<a class="headerlink" href="#liar-liar-pants-on-fire" title="Permalink to this headline">¶</a></h2>
+<p>It is important to use the right Boot from Host sequence for each type of Atheros device. This means that you should query the device using a <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message beforehand to determine or confirm the device type. Although this should be a simple operation, there have been several changes that complicate matters.</p>
+<ol class="arabic simple">
+<li>The <em>INT6300</em> <strong class="program">Bootloader</strong> incorrectly identifies the chipset as an <em>INT6000</em> chipset in the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field of the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message.</li>
+<li>The <em>AR7400</em> <strong class="program">Bootloader</strong> incorrectly identifies the chipset as an <em>INT6400</em> chipset in the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field of the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message.</li>
+<li>The <strong class="program">Bootloader</strong>, for <em>INT6400</em> chipsets and later, returns two additional field, <code class="docutils literal"><span class="pre">IDENT</span></code> and <code class="docutils literal"><span class="pre">STEP_NUMBER</span></code> in the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> confirmation message. These fields,  the hardware identifier and step number, are correct but are not returned in earlier chipsets.</li>
+</ol>
+<p>The table below illustrates what is reported by various firmware, in the <code class="docutils literal"><span class="pre">DEVICEID</span></code> field of the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message, on each type of hardware platform.</p>
+<div class="section" id="legacy-device-identification">
+<h3>Legacy Device Identification<a class="headerlink" href="#legacy-device-identification" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="22%" />
+<col width="17%" />
+<col width="20%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Chipset</th>
+<th class="head">DEVICEID/IDENT (Bootloader)</th>
+<th class="head">MVERSION (Bootloader)</th>
+<th class="head">DEVICEID/IDENT (Firmware)</th>
+<th class="head">MVERSION (Firmware)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>INT6000</td>
+<td>0x01 / 0x00000042</td>
+<td>BootLoader</td>
+<td>0x01 / na</td>
+<td>INT6000-MAC-0-0-3213-1206-20071224-FINAL</td>
+</tr>
+<tr class="row-odd"><td>INT6300</td>
+<td>0x02 / 0x00006300</td>
+<td>BootLoader</td>
+<td>0x02 / na</td>
+<td>INT6300-MAC-0-0-4203-00-4089-20091105-FINAL</td>
+</tr>
+<tr class="row-even"><td>INT6400</td>
+<td>0x03 / 0x00006400</td>
+<td>BootLoader</td>
+<td>0x03 / na</td>
+<td>INT6400-MAC-4-3-4304-01-4397-20100924-FINAL</td>
+</tr>
+<tr class="row-odd"><td>INT7400</td>
+<td>0x03 / 0x00007400</td>
+<td>BootLoader</td>
+<td>0x04 / na</td>
+<td>INT7400-MAC-5-2-5213-01-1027-20110428-FINAL</td>
+</tr>
+<tr class="row-even"><td>INT7450</td>
+<td>0x03 / 0x0F001D1A</td>
+<td>BootLoader</td>
+<td>0x20 / 0x00001D1A</td>
+<td>QCA7450-MAC-5-2-5213-01-1027-20110428-FINAL</td>
+</tr>
+<tr class="row-odd"><td>INT7451</td>
+<td>0x03 / 0x00007400</td>
+<td>BootLoader</td>
+<td>0x20 / 0x0E001D1A</td>
+<td>QCA7451-MAC-5-2-5213-01-1027-20110428-FINAL</td>
+</tr>
+<tr class="row-even"><td>AR6405</td>
+<td>0x03 / 0x00006400</td>
+<td>BootLoader</td>
+<td>0x05 / na</td>
+<td>INT6405-MAC-4-3-4304-01-4397-20100924-FINAL</td>
+</tr>
+<tr class="row-odd"><td>AR7420</td>
+<td>0x05 / 0x001CFCFC</td>
+<td>BootLoader</td>
+<td>0x20 / 0x001CFCFC</td>
+<td>MAC-QCA7420-2.5.14.2259-23-20110621-FINAL</td>
+</tr>
+<tr class="row-even"><td>QCA6410</td>
+<td>0x05 / 0x001B58EC</td>
+<td>BootLoader</td>
+<td>0x21 / 0x001B58EC</td>
+<td>MAC-QCA6410-2.5.14.2259-23-20110621-FINAL</td>
+</tr>
+<tr class="row-odd"><td>QCA6411</td>
+<td>0x05 / 0x001B58BC</td>
+<td>BootLoader</td>
+<td>0x21 / 0x001B58BC</td>
+<td>MAC-QCA6411-2.5.14.2259-23-20110621-FINAL</td>
+</tr>
+<tr class="row-even"><td>QCA7000</td>
+<td>0x05 / 0x001B589C</td>
+<td>BootLoader</td>
+<td>0x22 / 0x001B589C</td>
+<td>MAC-QCA7000-1.4.13.3259-43-20110621-FINAL</td>
+</tr>
+</tbody>
+</table>
+<p>To properly detect the correct chipset perform the following steps.</p>
+<ol class="arabic simple">
+<li>Send a <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> request message from the local host to the local device using the Atheros Local Management Address.</li>
+<li>Read the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> confirm message returned to the host by the device.</li>
+<li>Extract and save the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field (a small integer) and the <code class="docutils literal"><span class="pre">MVERSION</span></code> field (a string).</li>
+<li>If the <code class="docutils literal"><span class="pre">MVERSION</span></code> string is &#8220;SoftLoader&#8221; then the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field is valid.</li>
+<li>If the <code class="docutils literal"><span class="pre">MVERSION</span></code> string is not &#8220;BootLoader&#8221; then the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field is valid unless it is <code class="docutils literal"><span class="pre">0x07</span></code>. In that case, set the stored <code class="docutils literal"><span class="pre">DEVICEID</span></code> to <code class="docutils literal"><span class="pre">0x04</span></code> to indicate an <em>AR7400</em>. Do not inspect the <code class="docutils literal"><span class="pre">IDENT</span></code> field because it does not exist in the firmware version of the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message on any platform.</li>
+<li>If the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field is <code class="docutils literal"><span class="pre">1</span></code>,  indicating an <em>INT6000</em>, then the chipset is actually an <em>INT6300</em>. Set the stored <code class="docutils literal"><span class="pre">MDEVICEID</span></code> to <code class="docutils literal"><span class="pre">2</span></code>,  indicating an <em>INT6300</em>. Do not inspect the <code class="docutils literal"><span class="pre">IDENT</span></code> field because it does not exist in the <strong class="program">BootLoader</strong> version of the <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> message for either of these two chipsets.</li>
+<li>If the <code class="docutils literal"><span class="pre">MDEVICEID</span></code> field is <code class="docutils literal"><span class="pre">3</span></code>,  indicating an <em>INT6400</em>, then the chipset could be either an <em>INT6300</em> or an <em>AR7400</em>. Inspect the <code class="docutils literal"><span class="pre">IDENT</span></code> field.</li>
+<li>If the <code class="docutils literal"><span class="pre">IDENT</span></code> field is <code class="docutils literal"><span class="pre">0x6400</span></code>,  indicating an <em>INT6400</em>, then the stored <code class="docutils literal"><span class="pre">MDEVICEID</span></code> is valid.</li>
+<li>If the <code class="docutils literal"><span class="pre">IDENT</span></code> field is <code class="docutils literal"><span class="pre">0x7400</span></code>,  indicating an <em>AR7400</em>, then set the stored <code class="docutils literal"><span class="pre">MDEVICEID</span></code> to <code class="docutils literal"><span class="pre">4</span></code>,  indicating an <em>AR7400</em>.</li>
+</ol>
+<p>Having performed the previous conversions, the expression (<code class="docutils literal"><span class="pre">1</span></code> &lt;&lt; (<code class="docutils literal"><span class="pre">DEVICEID</span></code> - <code class="docutils literal"><span class="pre">1</span></code>)) now indicates the proper <code class="docutils literal"><span class="pre">IGNORE</span></code> bit found in each NVM file header. Unfortunately, this only works for <code class="docutils literal"><span class="pre">DeviceID</span></code> values from <code class="docutils literal"><span class="pre">0x01</span></code> through <code class="docutils literal"><span class="pre">0x06</span></code>. After that, the device identification scheme changes.</p>
+</div>
+</div>
+<div class="section" id="but-wait-there-s-more">
+<span id="firmware-caveats-3"></span><h2>But wait! There&#8217;s more ...<a class="headerlink" href="#but-wait-there-s-more" title="Permalink to this headline">¶</a></h2>
+<p>Starting with the <em>AR7420</em>, the <code class="docutils literal"><span class="pre">DeviceID</span></code> field in <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> is now the <code class="docutils literal"><span class="pre">DEVICE_CLASS</span></code> field and identifies the &#8220;Device Family&#8221;, not the device type. Instead, the <code class="docutils literal"><span class="pre">IDENT</span></code> field in <code class="docutils literal"><span class="pre">VS_SW_VER</span></code> identifies the device type and the <code class="docutils literal"><span class="pre">IDENT</span></code> field is located at a variable offset within the message frame. Previously, the <code class="docutils literal"><span class="pre">IDENT</span></code> was located a fixed offset within the frame.</p>
+<div class="section" id="device-identification">
+<h3>Device Identification<a class="headerlink" href="#device-identification" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="22%" />
+<col width="22%" />
+<col width="18%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Chipset</th>
+<th class="head">Softloader</th>
+<th class="head">Bootloader</th>
+<th class="head">Firmware</th>
+<th class="head">Identity</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>INT6000</td>
+<td>0x01</td>
+<td>&nbsp;</td>
+<td>0x01</td>
+<td>0x00000042</td>
+</tr>
+<tr class="row-odd"><td>INT6300</td>
+<td>&nbsp;</td>
+<td>0x01</td>
+<td>0x02</td>
+<td>0x00006300</td>
+</tr>
+<tr class="row-even"><td>INT6400</td>
+<td>&nbsp;</td>
+<td>0x03</td>
+<td>0x03</td>
+<td>0x00006400</td>
+</tr>
+<tr class="row-odd"><td>AR7400</td>
+<td>&nbsp;</td>
+<td>0x03</td>
+<td>0x04</td>
+<td>0x00007400</td>
+</tr>
+<tr class="row-even"><td>AR6405</td>
+<td>&nbsp;</td>
+<td>0x03</td>
+<td>0x05</td>
+<td>0x00006400</td>
+</tr>
+<tr class="row-odd"><td>AR7420</td>
+<td>&nbsp;</td>
+<td>0x05</td>
+<td>0x20</td>
+<td>0x001CFCFC</td>
+</tr>
+<tr class="row-even"><td>QCA6410</td>
+<td>&nbsp;</td>
+<td>0x05</td>
+<td>0x21</td>
+<td>0x001B58EC</td>
+</tr>
+<tr class="row-odd"><td>QCA7000</td>
+<td>&nbsp;</td>
+<td>0x05</td>
+<td>0x22</td>
+<td>0x001B589C</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="upgrade-device-int6000-int6300-int6400">
+<span id="firmware-6000-flash"></span><h2>Upgrade Device (INT6000/INT6300/INT6400)<a class="headerlink" href="#upgrade-device-int6000-int6300-int6400" title="Permalink to this headline">¶</a></h2>
+<p>The Upgrade Device operation downloads firmware and/or PIB from a remote host to an Atheros device for permanent storage and immediate execution. The device determines where and how it will store the information based on the availability of onboard flash memory. If the device has dedicated flash memory then it will store the firmware and PIB there and reset itself; otherwise, it will hand the firmware and PIB to the local host for storage and the local host will reset the device. The reset ensures that new firmware and PIB take immediate effect once they are saved. This operation requires custom software on the remote host and Atheros firmware on the device.</p>
+<div class="section" id="id3">
+<h3>Upgrade Device (INT6000/INT6300/INT6400)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">REMOTE</span><span class="o">-</span><span class="n">HOST</span>                        <span class="n">INT6300</span><span class="o">/</span><span class="n">INT6400</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">02</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">02</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">02</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">02</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">03</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_MOD_NVM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-----------&gt;|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_MOD_NVM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>Optionally, the remote host writes firmware to the device by sending a series of <code class="docutils literal"><span class="pre">VS_WR_MOD.REQ</span></code> messages and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MOD.CNF</span></code> message after each one. The message <code class="docutils literal"><span class="pre">MODULEID</span></code> field is set to <code class="docutils literal"><span class="pre">0x01</span></code> for this operation.</li>
+<li>Optionally, the remote host writes the PIB to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MOD.REQ</span></code> messages and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MOD.CNF</span></code> message after each one. The <code class="docutils literal"><span class="pre">MODULEID</span></code> is set to <code class="docutils literal"><span class="pre">0x02</span></code> for this operation.</li>
+<li>The remote host commits the firmware and/or PIB to persistent storage by sending a <code class="docutils literal"><span class="pre">VS_MOD_NVM.REQ</span></code> message and waiting for a <code class="docutils literal"><span class="pre">VS_MOD_NVM.CNF</span></code> message.</li>
+<li>The device received the <code class="docutils literal"><span class="pre">VS_MOD_NVM.REQ</span></code> and sends a <code class="docutils literal"><span class="pre">VS_MOD_NVM.CNF</span></code> message to the remote host.</li>
+<li>The remote host receives the <code class="docutils literal"><span class="pre">VS_MOD_NVM.CNF</span></code> and proceeds with other activity. The remote host does not know or care that the device may not have dedicated flash memory available.</li>
+<li>The device determines where and how to store the information. If dedicated flash memory is available, the device writes the downloaded firmware and PIB to flash memory and performs a software reset that results in a normal <em>Boot from Flash</em> operation. If no dedicated flash memory is available, the device initiates an <a class="reference internal" href="#firmware-6000-upload"><span class="std std-ref">Update Local Host</span></a> operation.</li>
+</ol>
+<p>The device does not notify the remote host when the upgrade operation completes. It is therefore incumbent on the remote host to determine ultimate success or failure by polling the device, possiby using a <code class="docutils literal"><span class="pre">VS_SW_VER.REQ</span></code> message, until a response is received. The complete upgrade operation can take from <code class="docutils literal"><span class="pre">20</span></code> seconds to <code class="docutils literal"><span class="pre">45</span></code> seconds depending on device configuration.</p>
+</div>
+</div>
+<div class="section" id="update-local-host-int6000-int6300-int6400">
+<span id="firmware-6000-upload"></span><h2>Update Local Host (INT6000/INT6300/INT6400)<a class="headerlink" href="#update-local-host-int6000-int6300-int6400" title="Permalink to this headline">¶</a></h2>
+<p>The Update Local Host operation transfers a firmware image and/or PIB image from the device to the local host for permanent storage. After the firmware and PIB are stored, the local host will reset the device and the device will retrieve parameters and firmware using the <a class="reference internal" href="#firmware-6000-boot"><span class="std std-ref">Boot from Host</span></a> operation described in the next section.</p>
+<p>The firmware may initiate this operation after a remote host has downloaded new firmware or PIB and issued a <code class="docutils literal"><span class="pre">VS_MOD_NVM.REQ</span></code> to the device,  the device has been asked to restore factory default settings or the firmware has dynamically altered the runtime PIB in some way. Consequently, the device will be reset by the host in each case.</p>
+<p>The device initiates this operation to complete an Upgrade Device operation when the device has no dedicated flash memory onboard. This operation requires running Atheros firmware on the device and custom software on the local host.</p>
+<div class="section" id="id4">
+<h3>Update Local Host (INT6000/INT6300/INT6400)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INT6300</span><span class="o">/</span><span class="n">INT6400</span>                           <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">03</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">02</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">04</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_RD_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">04</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_RD_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">04</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">04</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_RD_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_RD_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_RS_DEV</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_RS_DEV</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The runtime firmware initiates this operation by broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages every 500 milliseconds. The <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field of the message can be either <code class="docutils literal"><span class="pre">0x01</span></code>, <code class="docutils literal"><span class="pre">0x02</span></code> or <code class="docutils literal"><span class="pre">0x03</span></code> to indicate that a firmware image, a parameter block image or both are ready for upload by the local host.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message to the device to indicate the ability and willingness to upload the information. The <code class="docutils literal"><span class="pre">MSTATUS</span></code> field is set to <code class="docutils literal"><span class="pre">0x00</span></code> for affirmative and <code class="docutils literal"><span class="pre">0x01</span></code> for negative.</li>
+<li>Assuming an affirmative response, the device stops broadcasting and will wait indefinitely for local host action.</li>
+<li>Optionally, the local host reads the firmware image from the device by sending a series of VS_RD_MOD.REQ messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_RD_MOD.CNF</span></code> message after each one. The message <code class="docutils literal"><span class="pre">MODULEID</span></code> field is set to <code class="docutils literal"><span class="pre">0x01</span></code> for this operation.</li>
+<li>Optionally, the local host reads the PIB from the device by sending a series of <code class="docutils literal"><span class="pre">VS_RD_MOD.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_RD_MOD.CNF</span></code> message after each one. The message <code class="docutils literal"><span class="pre">MODULEID</span></code> field is set to <code class="docutils literal"><span class="pre">0x02</span></code> for this operation.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_RS_DEV.REQ</span></code> message to the device to initiate a firmware reboot.</li>
+<li>The device sends a <code class="docutils literal"><span class="pre">VS_RS_DEV.CNF</span></code> to the host and performs a software reset. This forces a <a class="reference internal" href="#firmware-6000-boot"><span class="std std-ref">Boot from Host</span></a>.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="boot-from-host-int6000">
+<span id="firmware-6000-boot"></span><h2>Boot from Host (INT6000)<a class="headerlink" href="#boot-from-host-int6000" title="Permalink to this headline">¶</a></h2>
+<p>The Boot from Host operation downloads a firmware image and PIB image from the local host and starts firmware execution. The process is initiated by the INT6000 <strong class="program">Bootloader</strong> following a device reset. The <strong class="program">Bootloader</strong> passes control to the INT6000 <strong class="program">Softloader</strong> to negotiate with the local host. The process therefore requires <strong class="program">Softloader</strong> aware software running on the local host in order to complete.</p>
+<p>The device does not have a unique hardware address until the firmware starts and assigns one. Until that time, the <strong class="program">Softloader</strong> accepts messages addressed to 00:B0:52:00:00:01. In addition, the <strong class="program">Softloader</strong> does not know the hardware address of the local host and so it addresses <code class="docutils literal"><span class="pre">VS_HST_ACTION</span></code> messages to FF:FF:FF:FF:FF:FF; however, these messages are not forwarded over powerline.</p>
+<div class="section" id="id5">
+<h3>Boot from Host (INT6000)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INT6000</span>                             <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">--------&gt;|</span> <span class="p">[</span><span class="mi">03</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">---------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MOD</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The INT6000 <strong class="program">Bootloader</strong> automatically starts after device reset. It reads the <strong class="program">Softloader</strong> from NVRAM,  writes it into SDRAM and starts execution. The <strong class="program">Softloader</strong> then manages the Boot from Host process.</li>
+<li>The <strong class="program">Softloader</strong> broadcasts a <code class="docutils literal"><span class="pre">VS_HST_ACTION.IND</span></code> message every <code class="docutils literal"><span class="pre">500</span></code> milliseconds to request the download of runtime firmware and PIB. The <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field of the message is 0x00 in this case. The message source address if <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> as explained above.</li>
+<li>The local host receives the <code class="docutils literal"><span class="pre">VS_HST_ACTION.IND</span></code> message and inspects the HOST_ACTION_REQ field to determine action requested. It may then elect to service the request or ignore it. On a single-host system, the host must service the request or the device will not start. On a multi-host system,  one of the hosts must elect to service the request or the device will not start.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_HST_ACTION.RSP</span></code> message to the device to indicate the ability and willingness to service the request. The MSTATUS field is set to 0x00 for affirmative and 0x01 for negative.</li>
+<li>The <strong class="program">Softloader</strong> receives the <code class="docutils literal"><span class="pre">VS_HST_ACTION.RSP</span></code> from the host and inspects the MSTATUS field. On affirmative status, the <strong class="program">Softloader</strong> stops sending <code class="docutils literal"><span class="pre">VS_HST_ACTION</span></code> messages and waits indefinitely for the firmware image and PIB.</li>
+<li>The local host determines which firmware image and PIB to download. In some cases there may be no choice. In other cases, there may be a choice between default and custom software or between current and upgraded software. This is a principle design issue to consider.</li>
+<li>The local host downloads a firmware image to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MOD.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> messages from the device after each request. Each message contains an image segment, the memory offset, the segment length and the checksum used to monitor and manage download progress. If a single transaction fails, the local host should detect it and repeat it.</li>
+<li>The local host downloads a PIB to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MOD.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> message from the device after each request. Each message contains an image segement, the  memory offset, the segment length and the checksum used to monitor and manage download progress. If a single transaction fails, the local host should detect it and repeat it.</li>
+<li>The local host starts execution of the downloaded firmware by sending a <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> message to the device. The message contains the start address for the firmware.</li>
+<li>The <strong class="program">Softloader</strong> receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> from the local host, validates the content.</li>
+<li>The <strong class="program">Softloader</strong> sends a <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message to the local host to indicate an ability or willingness to start execution. Assuming an ability and willingness, the <strong class="program">Softloader</strong> immediately starts firmware execution which relinquishes device control to the firmware.</li>
+<li>The local host receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message from the device, inspects the MSTATUS field and acts accordingly. Assuming an affirmative status, this process terminates.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="boot-from-host-int6300">
+<span id="firmware-6300-boot"></span><h2>Boot from Host (INT6300)<a class="headerlink" href="#boot-from-host-int6300" title="Permalink to this headline">¶</a></h2>
+<p>The boot-from-host operation downloads SDRAM configuration information, runtime parameters and runtime firmware from a local host and starts firmware execution. This method is initiated by the device bootloader after reset reset if the device has no flash memory, blank flash memory or corrupted flash memory. The method requires the bootloader aware software running on the local host to detect and service <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages from the device.</p>
+<p>The <em>INT6300</em> boot-from-host method is similar to the <em>INT6000</em> method but it has an extra stage to download SDRAM configuration parameters and it uses <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> messages to download runtime parameters and firmware instead of <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code> messages. The <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> messages write directly to SDRAM and an <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> message is needed to start firmware execution. Once the firmware is running, another method is used to write runtime parameters and firmware to flash memory.</p>
+<p>The <em>INT6300</em> does not have a unique hardware address until runtime firmware starts and assigns one from the runtime parameter block. Until that time, the bootloader will accept messages addressed to <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code>. In addition, the bootloader does not know the hardware address of the local host and so it addresses <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages to <code class="docutils literal"><span class="pre">FF:FF:FF:FF:FF:FF</span></code>; however, these messages are not transmitted over the powerline.</p>
+<div class="section" id="id6">
+<h3>boot-from-host (INT6300)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INT6300</span>                             <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">03</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_SET_SDRAM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">----------|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_SET_SDRAM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">---------&gt;|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">15</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The bootloader automatically starts after device reset and attempts to read the runtime firmware image from flash memory, write it into SDRAM and start execution. If it succeeds then normal operation begins and no further action is required. If it fails, for any reason, then the bootloader starts the boot-from-host process.</li>
+<li>The bootloader broadcasts <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">0x04</span></code> to indicate that configuration is required. The destination address is <code class="docutils literal"><span class="pre">FF:FF:FF:FF:FF:FF</span></code> and the source address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> as explained above. This message is sent every <code class="docutils literal"><span class="pre">10</span></code> seconds which differs from that of other chips.</li>
+<li>The host receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects the HOST_ACTION_REQ field to determine the action requested. On a single-host system,  the local host must elect to service the request or the device will not start. On a multi-host system,  one of the hosts must elect to service the request of the device will not start.</li>
+<li>The host sends a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message to the device to indicate an ability and willingness to service the request. The MSTATUS field is set to <code class="docutils literal"><span class="pre">0x00</span></code> for affirmative and <code class="docutils literal"><span class="pre">0x01</span></code> for negative.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> from the host and inspects the MSTATUS field. On affirmative response, the bootloader stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> and waits indefinitely for SDRAM configuration information from the host.</li>
+<li>The host sends a <code class="docutils literal"><span class="pre">VS_SET_SDRAM.REQ</span></code> message to the device containing an SDRAM configuration block and the block checksum.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_SET_SDRAM.REQ</span></code>, validates the content, initializes SDRAM parameters and sends a <code class="docutils literal"><span class="pre">VS_SET_SDRAM.CNF</span></code> message to the servicing host to indicate either success or failure.</li>
+<li>The local host receives the <code class="docutils literal"><span class="pre">VS_SET_SDRAM.CNF</span></code> and inspects the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field for success or failure. Assuming success, the local host waits indefinitely for further requests from the device.</li>
+<li>The local host determines which parameter block and firmware image to download. In some cases there may be no choice. In other cases, there may be a choice between default and custom software or between current and upgraded software. This is a principle design issue to consider.</li>
+<li>The local host downloads the firmware image to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MEM.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> messages from the device after each request. Each message contains an image segment, the memory offset, the segment length and the checksum used to monitor and manage download progress. It a single transaction fails, the local host should detect it and repeat it.</li>
+<li>The local host downloads a parameter block to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MEM.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> message from the device after each request. Each message contains an image segment,  the memory offset, the segment length and the checksum used to monitor and manage download progress. If a single transaction fails, the local host should detect it and repeat it.</li>
+<li>The local host starts firmware execution by sending a <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> message to the device. The message contains the firmware start address.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> from the local host, validates the content.</li>
+<li>The device sends a <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message to indicate an ability or willingness to start firmware execution. The device immediately starts firmware execution which relinquishes device control to the firmware. It can take <code class="docutils literal"><span class="pre">5</span></code> to <code class="docutils literal"><span class="pre">10</span></code> seconds for the firmware to start.</li>
+<li>The host receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message from the device, inspects the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field and acts accordingly. An afffirmative indication means that the firmware will start executing on the device in <code class="docutils literal"><span class="pre">5</span></code> to <code class="docutils literal"><span class="pre">10</span></code> seconds. Once the firmware starts, future messages will contain the unique hardware address for the device.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="boot-from-host-int6400">
+<span id="firmware-6400-boot"></span><h2>Boot from Host (INT6400)<a class="headerlink" href="#boot-from-host-int6400" title="Permalink to this headline">¶</a></h2>
+<p>The <em>INT6400</em> boot-from-host operation downloads and executes a memory configuration applet then downloads runtime parameters and firmware from a local host and starts firmware execution. This method is initiated by the <em>INT6400</em> bootloader after reset on a device having no flash memory, blank flash memory or corrupted flash memory. The method requires bootloader aware software running on the local host in order to complete.</p>
+<p>The <em>INT6400</em> boot-from-host method is similar to the <em>INT6300</em> boot-from-host method but it downloads and executes an SDRAM configuration applet instead of downloading SDRAM parameters. The applet is downloaded and executed using the same mechanism as runtime firmware. The applet executes and returns to the bootloader when done. The bootloader then continues to drive the boot process using <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages.</p>
+<p>The <em>INT6400</em> boot-from-host method will work for <em>AR7400</em> and <em>QCA7420</em> chipsets but will not work on successive chipsets. Customers should adopt or implement the <em>AR7400</em> boot-from-host method, instead of this one, to avoid building obsolete products.</p>
+<p>The <em>INT6400</em> does not have a unique hardware address until the firmware starts and assigns one from the parameter information block. Until that time, the bootloader will only acknowledge messages addressed to <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code>. In addition, the bootloader does not know the hardware address of the local host and so it addresses <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages to <code class="docutils literal"><span class="pre">FF:FF:FF:FF:FF:FF</span></code>; however, these messages are not transmitted over the powerline.</p>
+<div class="section" id="id7">
+<h3>Boot from Host (INT6400)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">INT6400</span>                            <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">03</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">09</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">14</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">18</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_WR_MEM</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">18</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">18</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">18</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-------------|</span> <span class="p">[</span><span class="mi">19</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_ST_MAC</span><span class="o">.</span><span class="n">CNF</span> <span class="o">------------&gt;|</span> <span class="p">[</span><span class="mi">22</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The bootloader automatically starts after device reset and attempts to read the runtime firmware image from flash memory, write it into SDRAM and start execution. If it succeeds then normal operation begins and no futher action is required. If it fails, for any reason, then the bootloader initiates the boot-from-host sequence.</li>
+<li>The bootloader broadcasts <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">0x04</span></code> to request configuration. The destination address is <code class="docutils literal"><span class="pre">FF:FF:FF:FF:FF:FF</span></code> and source address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> as explained above. This message is sent every <code class="docutils literal"><span class="pre">500</span></code> milliseconds which differs from that of other chips.</li>
+<li>The local host receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects the <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the appropriate action. On a single-host system, the lone host must service the request or the device will not start. On a multi-host system, one host must elect to service the request of the device will not start.</li>
+<li>The local host sends <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> to silence the bootloader or indicate the ability and willingness to service the request. The destination address must be <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> and the source address is that of the host interface. The <code class="docutils literal"><span class="pre">MSTATUS</span></code> field is set to <code class="docutils literal"><span class="pre">0x00</span></code> for affirmative and <code class="docutils literal"><span class="pre">0x01</span></code> for negative.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> from the host and inspects the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field. On affirmative response, the bootloader stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the local host to download a configuation applet and start execution.</li>
+<li>The host downloads the memory control applet to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MEM.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> message from the device after each one. Each message contains an image segment and the segment memory offset, length and checksum. These values are used to monitor and manage download progress. If a transaction fails, the host can detect it and should repeat it.</li>
+<li>The host starts execution of the memory control applet by sending a <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> message to the device. The message contains the applet load address, length, checksum and start address. These values are often obtained from an NVM file image header.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> from the host and validates the contents.</li>
+<li>The bootloader sends a <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message to the host indicating the ability and willingness to start applet execution. The <code class="docutils literal"><span class="pre">MSTATUS</span></code> field is set to <code class="docutils literal"><span class="pre">0x00</span></code> for affirmative and <code class="docutils literal"><span class="pre">0x01</span></code> for negative.</li>
+<li>The host receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message from the device and evaluates the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field. On affirmative,  the host waits for further requests from the device. On negative,  the host may attempt another start or another download followed by a start or attempt to alert a human.</li>
+<li>The bootloader starts applet execution. The applet configures memory, runs to completion and returns to the Bootloader.</li>
+<li>The bootloader broadcasts a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message every 500 milliseconds to request runtime firmware and parameter download. The message destination address is <code class="docutils literal"><span class="pre">FF:FF:FF:FF:FF:FF</span></code> and source address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> as explained above. The <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field is set to <code class="docutils literal"><span class="pre">0x00</span></code>.</li>
+<li>The host receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects the <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the requested action. On a single-host system,  the lone host must service the request or the device will not start. On a multi-host system, one host must elect to service the request of the device will not start.</li>
+<li>The host sends a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message to the device to indicate the ability and willingness to service the request. The <code class="docutils literal"><span class="pre">MSTATUS</span></code> field is set to <code class="docutils literal"><span class="pre">0x00</span></code> for affirmative and <code class="docutils literal"><span class="pre">0x01</span></code> for negative.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> from the host and inspects the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field. On affirmative response, the bootloader stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the host to download the runtime firmware and parameters and start execution.</li>
+<li>The host determines which firmware and parameter image to download. In some cases there may be no choice. In other cases, there may be a choice between default and custom images or between current and upgraded images. This is a principle design issue to consider.</li>
+<li>The host downloads the firmware image to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MEM.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> message from the device after each one. Each message contains an image segment and the segment memory offset, length and checksum. These values are used to monitor and manage download progress. If a transaction fails, the local host can detect it and should repeat it.</li>
+<li>The host downloads the parameter block to the device by sending <code class="docutils literal"><span class="pre">VS_WR_MEM.REQ</span></code> messages to the device and waiting for a <code class="docutils literal"><span class="pre">VS_WR_MEM.CNF</span></code> message from the device after each one. Each message contains an image segment and the segment memory offset, length and checksum. These values are used to monitor and manage download progress. If a transaction fails, the local host can detect it and should repeat it.</li>
+<li>The host starts runtime firmware execution by sending a <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> message to the device. The message contains the firmware load address, length, checksum and start address. These values are often obtained from an NVM file image header.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.REQ</span></code> from the host and validates the content.</li>
+<li>The bootloader sends a <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message to indicate the ability or willingness to start firmware execution.</li>
+<li>The host receives the <code class="docutils literal"><span class="pre">VS_ST_MAC.CNF</span></code> message from the device, inspects the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field and acts accordingly.</li>
+<li>The bootloader starts runtime firmware execution. The firmware reads and validates the parameter block then assumes full control of the device. It can take several seconds for firmware start to be evident. Once the firmware starts,  any future <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages will contain the unique hardware address for the device.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="boot-from-host-ar7400">
+<span id="firmware-7400-boot"></span><h2>Boot from Host (AR7400)<a class="headerlink" href="#boot-from-host-ar7400" title="Permalink to this headline">¶</a></h2>
+<p>The <em>AR7400</em> boot-from-host method downloads and executes a device configuration applet then downloads runtime parameters and firmware from a local host and starts firmware execution. This method is initiated by the <strong class="program">Bootloader</strong> after reset on a device having no flash memory, blank flash memory or corrupted flash memory. The method requires <strong class="program">Bootloader</strong> aware software running on the local host in order to complete.</p>
+<p>The <em>AR7400</em> boot-from-host method is similar to the <em>INT6400</em> boot-from-host method but it uses the <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE</span></code> message instead of the <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> message write into SDRAM and start firmware execution. This eliminates the need for the <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> message. The <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> and <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> message types will no longer be recognized by bootloaders after the <em>QCA7420</em> chipset.</p>
+<p>The <em>AR7400</em> boot-from-host method works on <em>AR6400</em> and will continue to work on <em>QCA7420</em> and planned successors. Customers should implement this boot-from-host method now to avoid building obsolete products.</p>
+<p>The <em>AR7400</em> does not have a unique hardware address until the firmware starts and assigns one read from the PIB. Until that time, the <strong class="program">Bootloader</strong> will only acknowledge messages addressed to 00:B0:52:00:00:01. In addition, the <strong class="program">Bootloader</strong> does not know the hardware address of the local host and so it addresses all <code class="docutils literal"><span class="pre">VS_HOST_ACTION</span></code> messages to FF:FF:FF:FF:FF:FF; however, these messages are not transmitted over the powerline.</p>
+<div class="section" id="id8">
+<h3>Boot from Host (AR7400)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AR7400</span>                             <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">03</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+     <span class="o">|&lt;----</span> <span class="n">VS_WRITE_AND_EXECUTE</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-----|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|-----</span> <span class="n">VS_WRITE_AND_EXECUTE</span><span class="o">.</span><span class="n">CNF</span> <span class="o">----&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">14</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">15</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span>
+     <span class="o">|&lt;-</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">REQ</span> <span class="o">--|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|--</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">19</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span>
+     <span class="o">|&lt;-</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">REQ</span> <span class="o">--|</span> <span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">|--</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">23</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span>
+<span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The bootloader automatically starts after device reset and attempts to read the runtime firmware image from flash memory, write it into SDRAM and start execution. If it succeeds then normal operation begins and no further action is required. If it fails, for any reason, then the bootloader initiates the boot-from-host sequence.</li>
+<li>The bootloader broadcasts <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">0x04</span></code> to indicate that it is waiting to be configured. The bootloader continues to broadcast this message message every <code class="docutils literal"><span class="pre">750</span></code> milliseconds which differs from that of other chips.</li>
+<li>The local host receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> and inspects <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the required action. The local host must be programmed to listen and act appropriately.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> to indicate the start of sequence.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message, stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the local host to act.</li>
+<li>The local host retrieves the firmware chain and extracts the configuration applet image from the chain. The firmware chain may be stored on disk or in memory depending on how the local host is programmed.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code> and <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> to <code class="docutils literal"><span class="pre">1</span></code> to download the applet in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download the applet in relative address mode. The <code class="docutils literal"><span class="pre">TOTAL_LENGTH</span></code> will be the applet image header <code class="docutils literal"><span class="pre">IMAGELENGTH</span></code> but <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> cannot exceed <code class="docutils literal"><span class="pre">1400</span></code> bytes.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to increment <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> and download the configuration applet in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host then sets <code class="docutils literal"><span class="pre">START_ADDR</span></code> to the applet image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, the <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the applet image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code> in the last message frame.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the configuration applet checksum then acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host exists the boot from host sequence and returns to listening mode.</li>
+<li>The bootloader executes the configuration applet. The device hardware address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> in this state.</li>
+<li>The bootloader broadcasts a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> to indicate that it is waiting for runtime parameters and firmware.</li>
+<li>The local host receives a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects the <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the required action. The local host must be programmed to listen and act appropriately.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message, stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the local host to act.</li>
+<li>The local host locates the parameter chain and firmware chain. The chains may be stored on disk or in memory depending on how the local host is programmed.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code> and <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> set to <code class="docutils literal"><span class="pre">1</span></code> to download parameters in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download parameters in relative address mode. The <code class="docutils literal"><span class="pre">TOTAL_LENGTH</span></code> will be the entire parameter file length but the <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> cannot exceed <code class="docutils literal"><span class="pre">1400</span></code> bytes.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> and download the parameter chain in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host then sets the <code class="docutils literal"><span class="pre">START_ADDR</span></code> field to the parameter image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, the <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the parameter image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code> in the last message frame.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the parameter chain checksum and acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code> and <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> to <code class="docutils literal"><span class="pre">1</span></code> to download firmware in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download firmware in relative address mode. The <code class="docutils literal"><span class="pre">TOTAL_LENGTH</span></code> will be the firmware image header <code class="docutils literal"><span class="pre">IMAGELENGTH</span></code> but the <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> cannot exceed <code class="docutils literal"><span class="pre">1400</span></code> bytes.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to increment <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> and download the parameter chain in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host then sets <code class="docutils literal"><span class="pre">START_ADDR</span></code> to the parameter image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, the <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the parameter image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code> in the last message frame.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the firmware chain checksum and acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The bootloader executes the runtime firmware and the device begins operation. The device hardware address will become that programmed into the parameter inforamtion block.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="boot-from-host-ar7420">
+<span id="firmware-7420-boot"></span><h2>Boot from Host (AR7420)<a class="headerlink" href="#boot-from-host-ar7420" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE</span></code> message is now the only way to write runtime parameters and firmware into volatile memory. The legacy <code class="docutils literal"><span class="pre">VS_RD_MEM</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MEM</span></code> and <code class="docutils literal"><span class="pre">VS_ST_MAC</span></code> are deprecated and will no longer be supported by the bootloader. This means that some customers must re-write their applications to boot newer powerline devices.</p>
+<div class="section" id="boot-from-host-ar6410-ar7420">
+<h3>Boot from Host (AR6410/AR7420)<a class="headerlink" href="#boot-from-host-ar6410-ar7420" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AR7420</span>                             <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">01</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">03</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">05</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">06</span><span class="p">]</span>
+     <span class="o">|&lt;----</span> <span class="n">VS_WRITE_AND_EXECUTE</span><span class="o">.</span><span class="n">REQ</span> <span class="o">-----|</span> <span class="p">[</span><span class="mi">07</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">08</span><span class="p">]</span> <span class="o">|-----</span> <span class="n">VS_WRITE_AND_EXECUTE</span><span class="o">.</span><span class="n">CNF</span> <span class="o">----&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span> <span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+<span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">|--------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">IND</span> <span class="o">-------&gt;|</span> <span class="p">[</span><span class="mi">14</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">|&lt;-------</span> <span class="n">VS_HOST_ACTION</span><span class="o">.</span><span class="n">RSP</span> <span class="o">--------|</span> <span class="p">[</span><span class="mi">15</span><span class="p">]</span>
+     <span class="o">|</span>                                    <span class="o">|</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span>
+     <span class="o">|&lt;-</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">REQ</span> <span class="o">--|</span> <span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">18</span><span class="p">]</span> <span class="o">|--</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">19</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">20</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span>
+     <span class="o">|&lt;-</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">REQ</span> <span class="o">--|</span> <span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">|--</span><span class="n">VS_WRITE_AND_EXECUTE_APPLET</span><span class="o">.</span><span class="n">CNF</span> <span class="o">-&gt;|</span>
+     <span class="o">|&lt;-----------------------------------|</span> <span class="p">[</span><span class="mi">23</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">|-----------------------------------&gt;|</span>
+<span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">|</span>                                    <span class="o">|</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The bootloader enters boot-from-host mode based on the hardware strapping or failure to load runtime firmware from flash memory. The device hardware address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> in this state.</li>
+<li>The bootloader broadcasts a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">4</span></code> to indicate that it is waiting to be configured. The bootloader will continue to broadcast the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message every <code class="docutils literal"><span class="pre">750</span></code> ms until it receives a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message from the local host. The BootROM does not know the local host hardware address at this stage so indications are broadcast, not addressed.</li>
+<li>The local host receives a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the required action. The local host must be programmed to listen and act appropriately. The first indcation requests device configuration.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> to indicate a willingness and ability to service the request.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message, stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the local host to act.</li>
+<li>The local host retrieves the firmware chain and extracts the configuration applet image from the chain. The firmware chain may be stored on disk or in memory depending on how the local host is programmed.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> to <code class="docutils literal"><span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to the applet image header <code class="docutils literal"><span class="pre">IMAGEADDRESS</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> to the applet image header <code class="docutils literal"><span class="pre">IMAGELENGTH</span></code> to download the applet in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download the applet in relative address mode.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to download the configuration applet in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host sets <code class="docutils literal"><span class="pre">START_ADDR</span></code> to the applet image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the applet image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code>.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the configuration applet checksum then acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host exists the boot from host sequence and returns to listening mode.</li>
+<li>The bootloader executes the configuration applet. The device hardware address is <code class="docutils literal"><span class="pre">00:B0:52:00:00:01</span></code> in this state.</li>
+<li>The bootloader broadcasts a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message with <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> to indicate that it is waiting for runtime parameters and firmware.</li>
+<li>The local host receives a <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> message and inspects the <code class="docutils literal"><span class="pre">HOST_ACTION_REQ</span></code> field to determine the required action. The local host must be programmed to listen and act appropriately.</li>
+<li>The bootloader receives the <code class="docutils literal"><span class="pre">VS_HOST_ACTION.RSP</span></code> message, stops broadcasting <code class="docutils literal"><span class="pre">VS_HOST_ACTION.IND</span></code> messages and waits indefinitely for the local host to act.</li>
+<li>The local host locates the parameter chain and firmware chain. The chains may be stored on disk or in memory depending on how the local host is programmed.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> set to <code class="docutils literal"><span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to the parameter image header <code class="docutils literal"><span class="pre">IMAGEADDRESS</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> to the entire parameter image chain length to download parameters in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download parameters in relative address mode.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to download the parameter chain in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host then sets the <code class="docutils literal"><span class="pre">START_ADDR</span></code> field to the parameter image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the parameter image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code>.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the parameter chain checksum and acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with <code class="docutils literal"><span class="pre">FLAGS</span></code> set to <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">ALLOWED_MEM_TYPES</span></code> to <code class="docutils literal"><span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to the firmware image header <code class="docutils literal"><span class="pre">IMAGEADDRESS</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_LENGTH</span></code> to the firmware image header <code class="docutils literal"><span class="pre">IMAGELENGTH</span></code> to download firmware in absolute address mode. Alternately, setting <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">CURR_PART_OFFSET</span></code> to <code class="docutils literal"><span class="pre">0</span></code> will download firmware in relative address mode.</li>
+<li>The bootloader acknowledges each <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The local host continues to download the parameter chain in <code class="docutils literal"><span class="pre">1400</span></code> byte blocks until the last block is reached. The local host then sets <code class="docutils literal"><span class="pre">START_ADDR</span></code> to the parameter image header <code class="docutils literal"><span class="pre">ENTRYPOINT</span></code>, <code class="docutils literal"><span class="pre">CHECKSUM</span></code> to the parameter image header <code class="docutils literal"><span class="pre">IMAGECHECKSUM</span></code> and the execute bit in <code class="docutils literal"><span class="pre">FLAGS</span></code> to <code class="docutils literal"><span class="pre">1</span></code>.</li>
+<li>The bootloader receives the last <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.REQ</span></code> message, confirms the firmware chain checksum and acknowledges with a <code class="docutils literal"><span class="pre">VS_WRITE_AND_EXECUTE.CNF</span></code> message having the <code class="docutils literal"><span class="pre">MSTATUS</span></code> field set to <code class="docutils literal"><span class="pre">0</span></code>.</li>
+<li>The bootloader executes the runtime firmware and the device begins operation. The device hardware address will become that programmed into the parameter inforamtion block.</li>
+</ol>
+<p>At this point, runtime firmware is executing in volatile memory with runtime parameters. If the power is reset at this point then all would be lost. If the device has dedicated flash memory attached then we may want to write runtime parameters and firmware to flash memory so that the device can boot from flash in case of a power failure or reset.</p>
+</div>
+</div>
+<div class="section" id="flash-memory-ar6410-ar7420">
+<span id="firmware-ar7420-flash"></span><h2>Flash Memory (AR6410/AR7420)<a class="headerlink" href="#flash-memory-ar6410-ar7420" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION</span></code> message is now the only way of write flash memory. The legacy message types <code class="docutils literal"><span class="pre">VS_RD_MOD</span></code>, <code class="docutils literal"><span class="pre">VS_WR_MOD</span></code>, <code class="docutils literal"><span class="pre">VS_MOD_NVM</span></code> and <code class="docutils literal"><span class="pre">VS_PTS_NVM</span></code> are deprecated and will no longer be supported by runtime firmware. This means that some customers must re-write their applications to flash newer powerline devices.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">The <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION</span></code> message type has many formats and the structure differs with each format. Readers should consult the <em>QCA Firmware Technical Reference Manual</em> for a complete description.</p>
+</div>
+<p>A blank flash memory must first be programmed with a softloader module. The module consists of a manifest, the executable softloader program image and a flash memory map. The map is used to manage flash memory during initializations and upgrades. The softloader module must be written into flash memory as a separate module before parameter and firmware modules are written. After that, parameter and firmware modules may be written and re-written without re-writing the softloader module. Of course, the softloader module must be re-written if flash memory is erased.</p>
+<div class="section" id="flashing-the-softloader-ar7420">
+<h3>Flashing the Softloader (AR7420)<a class="headerlink" href="#flashing-the-softloader-ar7420" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AR7420</span>                                        <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|&lt;-</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">Start</span> <span class="n">Session</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">03</span><span class="p">]</span> <span class="o">|--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">Start</span> <span class="n">Session</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|&lt;--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">Write</span> <span class="n">Module</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|---</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">Write</span> <span class="n">Module</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+     <span class="o">|&lt;---------------------------------------------|</span>
+     <span class="o">|---------------------------------------------&gt;|</span>
+     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|&lt;-</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">Close</span> <span class="n">Session</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">Close</span> <span class="n">Session</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> module write session request to register a session identifier and the module identifier, module length and module checksum of the softloader module. The softloader module identifier is <code class="docutils literal"><span class="pre">0x7003</span></code>. The softloader module is the entire softloader chain including manifest, softloader image and flash memory layout.</li>
+<li>The device receives the request, validates the module identifier and preserves the module length and checksum until the module write session is closed. The local host has <code class="docutils literal"><span class="pre">30</span></code> minutes to complete registered module write operations and close the module write session.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>, if things went well.</li>
+<li>The local host receives the confirmation and prepares to download the softloader module.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> module write request containing the offset, length and content of the first portion of the module being downloaded.</li>
+<li>The device receives the request and write to a scrath region of flash memory awaiting session close.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> if things went well.</li>
+<li>The local host receives the confirmation and continues downloading the softloader in fragments using <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION</span></code> write requests, advancing the offset and adjusting the length with each write.</li>
+<li>The local host send a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> close module write session request having <code class="docutils literal"><span class="pre">COMMIT_CODE</span></code> bits <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">1</span></code> set. to indicate &#8220;Force Commit&#8221; and &#8220;Commit without reset&#8221;, respectively.</li>
+<li>The device recevies the request, verifies the module length and checksum then transfers the module from scratch memory to it&#8217;s final location in flash memory.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> close module write session with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> if things went well. If things did not go well then the local host must request a new write module session and start over.</li>
+</ol>
+<p>Once the softloader module is written, the parameter and firmware modules may be written in much the same way except that they must be written as a pair. The parameter module must be downloaded first. The firmware module cannot be committed to without a compatible parameter module.</p>
+<p>When parameters and firmware are written together the User PIB, Factory PIB and firmware are modified modified. The new User PIB is created by copying the old User PIB over the new one. Consequently the only change comes from extra fields found at the end of the new User PIB. The new Factory PIB becomes the new User PIB with certain fields from the old User PIB preserved, such as the MAC, DAK and so on.</p>
+</div>
+<div class="section" id="flash-parameters-and-firmware-ar7420">
+<h3>Flash Parameters and Firmware (AR7420)<a class="headerlink" href="#flash-parameters-and-firmware-ar7420" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AR7420</span>                                      <span class="n">LOCAL</span><span class="o">-</span><span class="n">HOST</span>
+<span class="p">[</span><span class="mi">02</span><span class="p">]</span> <span class="o">|&lt;-</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">start</span> <span class="n">session</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">01</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">03</span><span class="p">]</span> <span class="o">|--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">start</span> <span class="n">session</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">04</span><span class="p">]</span>
+     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="p">[</span><span class="mi">06</span><span class="p">]</span> <span class="o">|&lt;--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">write</span> <span class="n">module</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">05</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">07</span><span class="p">]</span> <span class="o">|---</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">write</span> <span class="n">module</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">08</span><span class="p">]</span>
+     <span class="o">|&lt;---------------------------------------------|</span>
+     <span class="o">|---------------------------------------------&gt;|</span>
+     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">|&lt;--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">write</span> <span class="n">module</span><span class="p">)</span> <span class="o">---|</span> <span class="p">[</span><span class="mi">09</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">|---</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">write</span> <span class="n">module</span><span class="p">)</span> <span class="o">--&gt;|</span> <span class="p">[</span><span class="mi">12</span><span class="p">]</span>
+     <span class="o">|&lt;---------------------------------------------|</span>
+     <span class="o">|---------------------------------------------&gt;|</span>
+     <span class="o">|</span>                                              <span class="o">|</span>
+<span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">|&lt;-</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">REQ</span> <span class="p">(</span><span class="n">commit</span> <span class="n">modules</span><span class="p">)</span> <span class="o">--|</span> <span class="p">[</span><span class="mi">13</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">|--</span> <span class="n">VS_MODULE_OPERATION</span><span class="o">.</span><span class="n">CNF</span> <span class="p">(</span><span class="n">commit</span> <span class="n">modules</span><span class="p">)</span> <span class="o">-&gt;|</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> module write session request to register the session identifier, module identifiers, module lengths and module checksums. In this case, the two modules are the runtime parameters and runtime firmware. The module identifiers are <code class="docutils literal"><span class="pre">0x7002</span></code> and <code class="docutils literal"><span class="pre">0x7003</span></code>, respectively. The application running on the local must must locate these modules and determine their size and checksum.</li>
+<li>The device receives the request, validates the module identifier and preserves the module lengths and checksums until the module write session is closed. The local host has <code class="docutils literal"><span class="pre">30</span></code> minutes to complete registered module write operations and close the module write session.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code>, if things went well.</li>
+<li>The local host receives the confirmation and prepares to download the parameter module.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> module write request containing the offset, length and content of the first portion of the module being downloaded.</li>
+<li>The device receives the request and write to a scratch region of flash memory awaiting write session close.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> if things went well.</li>
+<li>The local host receives the confirmation and continues downloading the parameter module in fragments using <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION</span></code> write requests, advancing the offset and adjusting the length with each write.</li>
+<li>The local host receives the confirmation and prepares to download the firmware module.</li>
+<li>The local host sends a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> module write request containing the offset, length and content of the first portion of the module being downloaded.</li>
+<li>The device receives the request and write to a scratch region of flash memory awaiting write session close.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> if things went well.</li>
+<li>The local host receives the confirmation and continues downloading the firmware module in fragments using <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION</span></code> write requests, advancing the offset and adjusting the length with each write.</li>
+<li>The local host send a <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.REQ</span></code> close module write session request having <code class="docutils literal"><span class="pre">COMMIT_CODE</span></code> bits <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">1</span></code> set. to indicate &#8220;force commit&#8221; and &#8220;commit without reset&#8221;, respectively.</li>
+<li>The device receives the request, verifies the module length and checksum then transfers the module from scratch memory to it&#8217;s final location in flash memory.</li>
+<li>The device responds with <code class="docutils literal"><span class="pre">VS_MODULE_OPERATION.CNF</span></code> close module write session with <code class="docutils literal"><span class="pre">MSTATUS</span></code> set to <code class="docutils literal"><span class="pre">0</span></code> if things went well. If things did not go well then the local host must request a new write module session and start over.</li>
+</ol>
+<p>At this point, the device is ready to boot from flash memory if the power fails or the device resets.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="open-plc-utils.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Firmware</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#firmware-components">Firmware Components</a><ul>
+<li><a class="reference internal" href="#bootloader">Bootloader</a></li>
+<li><a class="reference internal" href="#softloader">Softloader</a></li>
+<li><a class="reference internal" href="#memory-configuration-parameters">Memory Configuration Parameters</a></li>
+<li><a class="reference internal" href="#runtime-firmware-mac-software">Runtime Firmware (MAC Software)</a></li>
+<li><a class="reference internal" href="#parameter-information-block-pib">Parameter Information Block (PIB)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#architecture-overview">Architecture Overview</a><ul>
+<li><a class="reference internal" href="#simple-network">Simple Network</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#firmware-boot-process">Firmware Boot Process</a></li>
+<li><a class="reference internal" href="#boot-from-host-configuration">Boot from Host Configuration</a></li>
+<li><a class="reference internal" href="#things-to-remember">Things to Remember</a></li>
+<li><a class="reference internal" href="#every-little-bit-hurts">Every Little Bit Hurts</a></li>
+<li><a class="reference internal" href="#liar-liar-pants-on-fire">Liar! Liar! Pants on Fire!</a><ul>
+<li><a class="reference internal" href="#legacy-device-identification">Legacy Device Identification</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#but-wait-there-s-more">But wait! There&#8217;s more ...</a><ul>
+<li><a class="reference internal" href="#device-identification">Device Identification</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrade-device-int6000-int6300-int6400">Upgrade Device (INT6000/INT6300/INT6400)</a><ul>
+<li><a class="reference internal" href="#id3">Upgrade Device (INT6000/INT6300/INT6400)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#update-local-host-int6000-int6300-int6400">Update Local Host (INT6000/INT6300/INT6400)</a><ul>
+<li><a class="reference internal" href="#id4">Update Local Host (INT6000/INT6300/INT6400)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boot-from-host-int6000">Boot from Host (INT6000)</a><ul>
+<li><a class="reference internal" href="#id5">Boot from Host (INT6000)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boot-from-host-int6300">Boot from Host (INT6300)</a><ul>
+<li><a class="reference internal" href="#id6">boot-from-host (INT6300)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boot-from-host-int6400">Boot from Host (INT6400)</a><ul>
+<li><a class="reference internal" href="#id7">Boot from Host (INT6400)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boot-from-host-ar7400">Boot from Host (AR7400)</a><ul>
+<li><a class="reference internal" href="#id8">Boot from Host (AR7400)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boot-from-host-ar7420">Boot from Host (AR7420)</a><ul>
+<li><a class="reference internal" href="#boot-from-host-ar6410-ar7420">Boot from Host (AR6410/AR7420)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flash-memory-ar6410-ar7420">Flash Memory (AR6410/AR7420)</a><ul>
+<li><a class="reference internal" href="#flashing-the-softloader-ar7420">Flashing the Softloader (AR7420)</a></li>
+<li><a class="reference internal" href="#flash-parameters-and-firmware-ar7420">Flash Parameters and Firmware (AR7420)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="software.html"
+                        title="previous chapter">Software</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="procedures.html"
+                        title="next chapter">Procedures</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/firmware.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="procedures.html" title="Procedures"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="software.html" title="Software"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="open-plc-utils.html">open-plc-utils 0.0.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, open-plc-utils developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+    </div>
+  </body>
+</html>
