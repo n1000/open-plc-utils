@@ -23,6 +23,7 @@ add_library(lib_ether STATIC
 	../ether/channel.c
 	../ether/closechannel.c
 	../ether/hostnics.c
+	../ether/initchannel.c
 	../ether/openchannel.c
 	../ether/readpacket.c
 	../ether/sendpacket.c

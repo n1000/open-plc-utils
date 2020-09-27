@@ -13,6 +13,7 @@ add_library(lib_tools STATIC
     decdecode.c
     decout.c
     decstring.c
+    desuid.c
     efreopen.c
     emalloc.c
     error.c
