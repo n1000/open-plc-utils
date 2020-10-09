@@ -28,3 +28,9 @@ add_library(lib_key STATIC
 	../key/keys.c
 	../key/putpwd.c
 	)
+
+install(TARGETS hpavkey hpavkeys mac2pw mac2pwd rkey
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+install(FILES hpavkey.1 hpavkeys.1 mac2pw.1 mac2pwd.1 rkey.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

@@ -9,3 +9,9 @@ add_library(lib_ram STATIC
 	../ram/sdramfile.c
 	../ram/sdrampeek.c
 	)
+
+install(TARGETS config2cfg sdram
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+install(FILES config2cfg.1 sdram.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

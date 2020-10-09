@@ -21,3 +21,9 @@ add_library(lib_slac STATIC
 	../slac/slac_debug.c
 	../slac/slac_session.c
 	)
+
+install(TARGETS evse pev
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE SETUID)
+
+install(FILES evse.1 pev.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

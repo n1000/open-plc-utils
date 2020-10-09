@@ -56,3 +56,9 @@ add_library(lib_pib STATIC
 	../pib/pibpeek2.c
 	../pib/ruledump.c
 	)
+
+install(TARGETS chkpib chkpib2 getpib modpib pib2xml pibcomp pibdump pibruin pibrump psgraph psin pskey psnotch psout setpib xml2pib
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+install(FILES chkpib.1 chkpib2.1 getpib.1 modpib.1 pib2xml.1 pibcomp.1 pibdump.1 pibruin.1 pibrump.1 psgraph.1 psin.1 pskey.1 psnotch.1 psout.1 setpib.1 xml2pib.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

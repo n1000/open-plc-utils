@@ -28,3 +28,9 @@ add_library(lib_ether STATIC
 	../ether/readpacket.c
 	../ether/sendpacket.c
 	)
+
+install(TARGETS edru edsu efbu efeu efru efsu nics
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE SETUID)
+
+install(FILES edru.1 edsu.1 efbu.1 efeu.1 efru.1 efsu.1 nics.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

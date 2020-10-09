@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (open-plc-utils)
 
+include(GNUInstallDirs)
+
 set(CMAKE_C_FLAGS "-Wall -Wextra -Wno-unused-parameter -DMAKEFILE -D__GETOPT_H__ -D_GETOPT_DEFINED_")
 
 add_subdirectory(ether)

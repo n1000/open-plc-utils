@@ -21,3 +21,9 @@ add_library(lib_nvm STATIC
 	../nvm/nvmpeek2.c
 	../nvm/nvmseek2.c
 	)
+
+install(TARGETS chknvm chknvm2 nvmmerge nvmsplit
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+install(FILES chknvm.1 chknvm2.1 nvmmerge.1 nvmsplit.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

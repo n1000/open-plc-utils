@@ -31,3 +31,9 @@ add_library(lib_serial STATIC
 	../serial/openport.c
 	../serial/serial.c
 	)
+
+install(TARGETS int6kbaud int6kdetect int6kuart ptsctl ttycat ttyrecv ttysend ttysig weeder
+	RUNTIME PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+install(FILES int6kbaud.1 int6kdetect.1 int6kuart.1 ptsctl.1 ttycat.1 ttyrecv.1 ttysend.1 ttysig.1 weeder.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)
