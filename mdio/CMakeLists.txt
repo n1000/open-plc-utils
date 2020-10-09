@@ -1,3 +1,5 @@
+string(APPEND CMAKE_C_FLAGS " -DINT6x00")
+
 add_executable(mdioblock mdioblock.c)
 target_link_libraries(mdioblock lib_tools)
 

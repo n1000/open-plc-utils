@@ -1,3 +1,5 @@
+string(APPEND CMAKE_C_FLAGS " -DAR7x00")
+
 add_executable(CMEncrypt CMEncrypt.c)
 target_link_libraries(CMEncrypt lib_plc lib_key lib_ether lib_mme lib_tools)
 
